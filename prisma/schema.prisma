@@ -1,0 +1,132 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Purposes {
+   id    Int     @id @default(autoincrement())
+   address String
+   address2 String
+   type_identification String
+   identification String
+   contractor   Contractors?  @relation(fields: [fk_id_contractor], references: [id])
+   fk_id_contractor Int
+   @@map("purposes")
+}
+
+model Contractors {
+  id    Int     @id @default(autoincrement())
+  email String  @unique
+  first_name  String
+  last_name  String
+  perfil String?
+  status Status @default(ACTIVE)
+  type String
+  identification String
+  dob DateTime
+  telephone String
+  created_at   DateTime @default(now())
+  account   Accounts?  @relation(fields: [fk_id_account], references: [id])
+  fk_id_account Int?
+
+  purposes Purposes?
+  address     Adresseses[]
+  contractor_companies     ContractorCompanies[]
+  @@map("contractors")
+}
+
+model Companies {
+  id    Int     @id @default(autoincrement())
+  name  String
+  created_at   DateTime @default(now())
+  account   Accounts?  @relation(fields: [fk_id_account], references: [id])
+  fk_id_account Int?
+  rangeHour String
+  monday Boolean
+  tuesday Boolean
+  wednesday Boolean
+  thuesday Boolean
+  friday Boolean
+  satuday Boolean
+  sunday Boolean
+  contrators     ContractorCompanies[]
+  @@map("companies")
+}
+
+model Adresseses {
+      id    Int     @id @default(autoincrement())
+      address  String
+      city String
+      zipcode String
+      state String
+      country String
+      contractor   Contractors  @relation(fields: [fk_id_contractor], references: [id])
+      fk_id_contractor Int
+      created_at   DateTime @default(now())
+      @@map("addresses")
+}
+
+model Accounts {
+      id    Int     @id @default(autoincrement())
+      access Access
+      username String
+      password String
+      status Status @default(INACTIVE)
+      created_at   DateTime @default(now())
+      contractor  Contractors?
+      company  Companies?
+      @@map("accounts")
+}
+
+
+
+
+
+
+
+
+
+
+
+model ContractorCompanies {
+  id    Int     @id @default(autoincrement())
+  contractor       Contractors  @relation(fields: [fk_id_contractor], references: [id])
+  fk_id_contractor Int
+  company       Companies  @relation(fields: [fk_id_company], references: [id])
+  fk_id_company Int
+  created_at   DateTime @default(now())
+  value_per_hour Float
+  appointments   Appointments[]
+  @@map("contractorCompanies")
+}
+
+model Appointments {
+    id    Int     @id @default(autoincrement())
+    date_at DateTime
+    value Float
+    relation   ContractorCompanies  @relation(fields: [fk_id_relation], references: [id])
+    created_at   DateTime @default(now())
+    fk_id_relation Int
+    @@map("appointments")
+}
+
+enum Access {
+  CONTRACTOR
+  COMPANY
+  GLOBAL
+  ADMIN
+}
+
+enum Role {
+  CONTRACTOR
+  COMPANY
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+}

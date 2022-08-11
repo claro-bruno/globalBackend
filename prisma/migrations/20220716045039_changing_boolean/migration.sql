@@ -1,0 +1,8 @@
+-- AlterTable
+ALTER TABLE `companies` ALTER COLUMN `friday` DROP DEFAULT,
+    ALTER COLUMN `monday` DROP DEFAULT,
+    ALTER COLUMN `satuday` DROP DEFAULT,
+    ALTER COLUMN `sunday` DROP DEFAULT,
+    ALTER COLUMN `thuesday` DROP DEFAULT,
+    ALTER COLUMN `tuesday` DROP DEFAULT,
+    ALTER COLUMN `wednesday` DROP DEFAULT;
