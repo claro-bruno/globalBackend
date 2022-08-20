@@ -14,23 +14,33 @@ export class AuthenticateContractorUseCase {
 
         // Receber userName, password
         // Verificar se o userName cadastrado
-        const client = await prisma.accounts.findFirst({
+        const contractor_account = await prisma.accounts.findFirst({
             where: {
-                username
+                username,
+                status: 'INACTIVE'
+            },
+            select: {
+                access: true,
+                password: true,
+                contractor: true,
             }
         });
 
-        if(!client) {
+        if(!contractor_account) {
             throw new AppError("Username or Password invalid!");
         }
         // Verificar se a senha corresponde ao username
-        const passwordMatch = await compare(password, client.password);
+        const passwordMatch = await compare(password, contractor_account.password);
 
         if(!password) {
             throw new AppError("Username or Password invalid!");
         }
+
+        const { access, contractor } = contractor_account;
+        const { id: id_contractor } = contractor;
         // Gerar o token
-        const token = sign({ username} , "7dfb4ababc7a6b6d9d57c737c2188402", { subject: client.id, expiresIn: "1d" });
-        return token;
+        const token = sign({ access, id_contractor } , "7dfb4ababc7a6b6d9d57c737c2188402", { expiresIn: "1d" });
+        //retornar a role da permissão de acesso.
+        return { token, access };
     }
 }

@@ -12,10 +12,12 @@ interface ICompany {
     thuesday: boolean;
     friday: boolean;
     saturday: boolean;
+    startHour: string;
+    endHour: string;
 }
 
 export class CreateCompanyUseCase {
-    async execute({ name, rangeHour, monday, sunday, tuesday, wednesday, thuesday, friday, saturday } : ICompany): Promise<any>{
+    async execute({ name, rangeHour, monday, sunday, tuesday, wednesday, thuesday, friday, saturday, startHour, endHour } : ICompany): Promise<any>{
         //validar se o client existe
         const companyExist = await prisma.contractors.findUnique({
            where: {
@@ -54,6 +56,8 @@ export class CreateCompanyUseCase {
                 thuesday,
                 friday,
                 saturday,
+                startHour,
+                endHour,
                 fk_id_account: company_account.id,
             }
         });

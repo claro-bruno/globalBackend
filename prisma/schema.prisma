@@ -7,14 +7,25 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Payments {
+  id    Int     @id @default(autoincrement())
+  value Double
+  method String
+  identification String
+  year Int
+  month String
+  description String
+  created_at DateTime @default(now())
+
+  @@map("payments")
+}
+
 model Purposes {
    id    Int     @id @default(autoincrement())
-   address String
-   address2 String
    type_identification String
    identification String
    contractor   Contractors?  @relation(fields: [fk_id_contractor], references: [id])
-   fk_id_contractor Int
+   fk_id_contractor Int @unique
    @@map("purposes")
 }
 
@@ -22,16 +33,23 @@ model Contractors {
   id    Int     @id @default(autoincrement())
   email String  @unique
   first_name  String
+  middle_name String?
   last_name  String
-  perfil String?
+  urlProfile String?
+  urlDocumentProf String?
+  urlPrimaryResidencyProf String?
+  urlSecondaryResidencyProf String?
   status Status @default(ACTIVE)
+  ein String?
+  acceptTerms Boolean
   type String
   identification String
   dob DateTime
   telephone String
   created_at   DateTime @default(now())
   account   Accounts?  @relation(fields: [fk_id_account], references: [id])
-  fk_id_account Int?
+  fk_id_account Int? @unique
+
 
   purposes Purposes?
   address     Adresseses[]
@@ -44,8 +62,9 @@ model Companies {
   name  String
   created_at   DateTime @default(now())
   account   Accounts?  @relation(fields: [fk_id_account], references: [id])
-  fk_id_account Int?
-  rangeHour String
+  fk_id_account Int? @unique
+  startHour String
+  endHour String
   monday Boolean
   tuesday Boolean
   wednesday Boolean
@@ -54,6 +73,7 @@ model Companies {
   satuday Boolean
   sunday Boolean
   contrators     ContractorCompanies[]
+  status Boolean @default(true)
   @@map("companies")
 }
 
@@ -75,21 +95,13 @@ model Accounts {
       access Access
       username String
       password String
+      resetPassword Boolean @default(false)
       status Status @default(INACTIVE)
       created_at   DateTime @default(now())
       contractor  Contractors?
       company  Companies?
       @@map("accounts")
 }
-
-
-
-
-
-
-
-
-
 
 
 model ContractorCompanies {
@@ -99,18 +111,36 @@ model ContractorCompanies {
   company       Companies  @relation(fields: [fk_id_company], references: [id])
   fk_id_company Int
   created_at   DateTime @default(now())
-  value_per_hour Float
-  appointments   Appointments[]
+  value_hour Double
+  monday Boolean
+  tuesday Boolean
+  wednesday Boolean
+  thuesday Boolean
+  friday Boolean
+  satuday Boolean
+  sunday Boolean
+  contractsFort ContractMonthYear[]
   @@map("contractorCompanies")
+}
+
+model ContractFortnightValue {
+  id Int  @id @default(autoincrement())
+  contractor ContractorCompanies  @relation(fields: [fk_id_contractor_companies], references: [id])
+  fk_id_contractor_companies Int
+  value_hour Double
+  year Int
+  month String
+  appointments   Appointments[]
+  @@map("contractMonthYear")
 }
 
 model Appointments {
     id    Int     @id @default(autoincrement())
     date_at DateTime
     value Float
-    relation   ContractorCompanies  @relation(fields: [fk_id_relation], references: [id])
+    fortnightValue   ContractFortnightValue  @relation(fields: [fk_id_fort], references: [id])
     created_at   DateTime @default(now())
-    fk_id_relation Int
+    fk_id_fort Int
     @@map("appointments")
 }
 
@@ -129,4 +159,10 @@ enum Role {
 enum Status {
   ACTIVE
   INACTIVE
+}
+
+enum Method {
+  CHECK
+  BANK TRANSFER
+  VENMO
 }

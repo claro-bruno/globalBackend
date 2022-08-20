@@ -4,12 +4,19 @@ import { AppError} from "../../../../middlewares/AppError";
 
 interface ICreateContractor {
     firstName: string;
+    middleName: string;
     lastName: string;
     email: string;
     type: string;
     identification: string;
+    ein: string;
     dob: Date;
     telephone: string;
+    acceptTerms: boolean;
+    urlPrimaryResidencyProf: string,
+    urlSecondaryResidencyProf: string,
+    urlDocumentProf: string,
+    urlProfile: string;
 }
 
 interface ICreateContractorAddress {
@@ -22,19 +29,19 @@ interface ICreateContractorAddress {
 
 export class CreateContractorUseCase {
     async execute(
-        { firstName, lastName, email, type, identification, dob, telephone } : ICreateContractor,
+        { firstName, middleName, lastName, email, type, identification, ein, dob, telephone, acceptTerms, urlPrimaryResidencyProf, urlSecondaryResidencyProf, urlDocumentProf, urlProfile } : ICreateContractor,
         { address, city, zipcode, state, country } : ICreateContractorAddress,
-        { address2, city2, zipcode2, state2, country2 } : ICreateContractorAddress | any
+        { address2 = "", city2 = "", zipcode2 = "", state2 = "", country2 = "" } : ICreateContractorAddress | any
     ): Promise<any>{
         //validar se o contractor existe
         const contractorExist = await prisma.contractors.findUnique({
            where: {
-               email: email.toLowerCase()
+               email: email.toLowerCase(),
            }
         });
 
         if(contractorExist) {
-            throw new AppError('Contractor already exists', 422)
+            throw new AppError('Email already exists', 400)
         }
 
         const birthday = new Date(dob);
@@ -57,10 +64,16 @@ export class CreateContractorUseCase {
         const contractor = await prisma.contractors.create({
             data: {
                 first_name: firstName,
+                middle_name: middleName,
                 last_name: lastName,
                 email,
+                acceptTerms,
+                ein,
                 status: "INACTIVE",
-                perfil: "image",
+                urlProfile,
+                urlDocumentProf,
+                urlPrimaryResidencyProf,
+                urlSecondaryResidencyProf,
                 type,
                 identification,
                 dob: birthday,
@@ -80,7 +93,7 @@ export class CreateContractorUseCase {
             }
         });
 
-        const addr2 = (!address2) ? await prisma.adresseses.create({
+        const addr2 = (address2 != "") ? await prisma.adresseses.create({
             data: {
                 address2,
                 city2,
@@ -93,14 +106,13 @@ export class CreateContractorUseCase {
 
         const purpose = await prisma.purposes.create({
             data: {
-                address: 'image',
-                address2: 'image',
-                identification: 'image',
+                type_identification: type,
+                identification: identification != "" ? identification : ein,
                 fk_id_contractor: contractor.id
             }
         });
         
-        return contractor_account;
+        return { username, password };
     }
 
 }
