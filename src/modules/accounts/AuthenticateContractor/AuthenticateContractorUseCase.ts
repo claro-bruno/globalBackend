@@ -32,7 +32,7 @@ export class AuthenticateContractorUseCase {
         // Verificar se a senha corresponde ao username
         const passwordMatch = await compare(password, contractor_account.password);
 
-        if(!password) {
+        if(!passwordMatch) {
             throw new AppError("Username or Password invalid!");
         }
 

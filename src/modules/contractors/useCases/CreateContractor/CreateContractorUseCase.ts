@@ -69,7 +69,7 @@ export class CreateContractorUseCase {
                 email,
                 acceptTerms,
                 ein,
-                status: "INACTIVE",
+                status: "PENDING",
                 urlProfile,
                 urlDocumentProf,
                 urlPrimaryResidencyProf,
@@ -104,13 +104,6 @@ export class CreateContractorUseCase {
             }
         }) : undefined;
 
-        const purpose = await prisma.purposes.create({
-            data: {
-                type_identification: type,
-                identification: identification != "" ? identification : ein,
-                fk_id_contractor: contractor.id
-            }
-        });
         
         return { username, password };
     }

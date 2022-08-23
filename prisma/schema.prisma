@@ -20,14 +20,6 @@ model Payments {
   @@map("payments")
 }
 
-model Purposes {
-   id    Int     @id @default(autoincrement())
-   type_identification String
-   identification String
-   contractor   Contractors?  @relation(fields: [fk_id_contractor], references: [id])
-   fk_id_contractor Int @unique
-   @@map("purposes")
-}
 
 model Contractors {
   id    Int     @id @default(autoincrement())
@@ -50,8 +42,6 @@ model Contractors {
   account   Accounts?  @relation(fields: [fk_id_account], references: [id])
   fk_id_account Int? @unique
 
-
-  purposes Purposes?
   address     Adresseses[]
   contractor_companies     ContractorCompanies[]
   @@map("contractors")
@@ -158,6 +148,7 @@ enum Role {
 enum Status {
   ACTIVE
   INACTIVE
+  PENDING
 }
 
 enum Method {
