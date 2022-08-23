@@ -1,43 +1,54 @@
 import { prisma } from "../../../../database/prismaClient";
-import { hash } from "bcrypt";
 import { AppError} from "../../../../middlewares/AppError";
 
 interface IUpdateCompany {
+    id: string;
     name: string;
+    rangeHour: string;
+    monday: boolean;
+    sunday: boolean;
+    tuesday: boolean
+    wednesday: boolean
+    thuesday: boolean
+    friday: boolean;
+    saturday: boolean;
+    startHour: string;
+    endHour: string;
+    status: boolean
 }
 
 
 export class UpdateCompanyUseCase {
-    async execute({ name } : IUpdateCompany): Promise<any>{
+    async execute({ id, name, rangeHour, monday, sunday, tuesday, wednesday, thuesday, friday, saturday, startHour, endHour  }  : IUpdateCompany): Promise<any>{
         //validar se o client existe
         const companyExist = await prisma.contractors.findUnique({
            where: {
-               name: name.toLowerCase()
+               id
            }
         });
 
         if(!companyExist) {
             throw new AppError('Company does not exists', 401)
         }
-        //criptografar a senha
-        const hashPassword = await hash(password, 10);
         //salvar o client
-        const client = await prisma.contractors.update({
+        const company = await prisma.contractors.update({
             where: {
                 id
             },
             data: {
-                username,
-                password: hashPassword,
-                email,
                 name,
-                identification,
-                address,
-                birthday,
-                telephone,
-
+                rangeHour,
+                monday, 
+                sunday, 
+                tuesday, 
+                wednesday, 
+                thuesday, 
+                friday, 
+                saturday,
+                startHour, 
+                endHour
             }
         });
-        return client;
+        return company;
     }
 }

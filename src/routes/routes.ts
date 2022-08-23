@@ -43,12 +43,5 @@ routes.post("/contractor",
     use(createContractorController.handle)
 //
 );
-/** Process POST request with a mutter's middleware */
-
-// routes.put("/contractor/documents/:id",
-//     multer(uploadDocuments.getConfig).single("imgAddress1"),
-//     multer(uploadDocuments.getConfig).single("imgAddress2"),
-//     multer(uploadDocuments.getConfig).single("imgDocument"),
-//     createContractorUploadController.handle);
 
 export { routes };

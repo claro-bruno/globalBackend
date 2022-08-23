@@ -9,7 +9,7 @@ datasource db {
 
 model Payments {
   id    Int     @id @default(autoincrement())
-  value Double
+  value Float
   method String
   identification String
   year Int
@@ -111,7 +111,6 @@ model ContractorCompanies {
   company       Companies  @relation(fields: [fk_id_company], references: [id])
   fk_id_company Int
   created_at   DateTime @default(now())
-  value_hour Double
   monday Boolean
   tuesday Boolean
   wednesday Boolean
@@ -119,7 +118,7 @@ model ContractorCompanies {
   friday Boolean
   satuday Boolean
   sunday Boolean
-  contractsFort ContractMonthYear[]
+  contractsFort ContractFortnightValue[]
   @@map("contractorCompanies")
 }
 
@@ -127,7 +126,7 @@ model ContractFortnightValue {
   id Int  @id @default(autoincrement())
   contractor ContractorCompanies  @relation(fields: [fk_id_contractor_companies], references: [id])
   fk_id_contractor_companies Int
-  value_hour Double
+  value_hour Float
   year Int
   month String
   appointments   Appointments[]
@@ -163,6 +162,6 @@ enum Status {
 
 enum Method {
   CHECK
-  BANK TRANSFER
+  TRANSFER
   VENMO
 }
