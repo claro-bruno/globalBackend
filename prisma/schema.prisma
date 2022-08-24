@@ -43,28 +43,29 @@ model Contractors {
   fk_id_account Int? @unique
 
   address     Adresseses[]
-  contractor_companies     ContractorCompanies[]
+  services     Services[]
   @@map("contractors")
 }
 
-model Companies {
+
+model Clients {
   id    Int     @id @default(autoincrement())
   name  String
   created_at   DateTime @default(now())
   account   Accounts?  @relation(fields: [fk_id_account], references: [id])
   fk_id_account Int? @unique
-  startHour String
-  endHour String
+  startHour Int
+  endHour Int
   monday Boolean
   tuesday Boolean
   wednesday Boolean
-  thuesday Boolean
+  thursday Boolean
   friday Boolean
-  satuday Boolean
+  saturday Boolean
   sunday Boolean
-  contrators     ContractorCompanies[]
+  services Services[]
   status Boolean @default(true)
-  @@map("companies")
+  @@map("clients")
 }
 
 model Adresseses {
@@ -89,60 +90,60 @@ model Accounts {
       status Status @default(INACTIVE)
       created_at   DateTime @default(now())
       contractor  Contractors?
-      company  Companies?
+      client  Clients?
       @@map("accounts")
 }
 
 
-model ContractorCompanies {
+model Services {
   id    Int     @id @default(autoincrement())
   contractor       Contractors  @relation(fields: [fk_id_contractor], references: [id])
   fk_id_contractor Int
-  company       Companies  @relation(fields: [fk_id_company], references: [id])
-  fk_id_company Int
+  client       Clients  @relation(fields: [fk_id_client], references: [id])
+  fk_id_client Int
   created_at   DateTime @default(now())
   monday Boolean
   tuesday Boolean
   wednesday Boolean
-  thuesday Boolean
+  thursday Boolean
   friday Boolean
   satuday Boolean
   sunday Boolean
-  contractsFort ContractFortnightValue[]
-  @@map("contractorCompanies")
+  quarter Quarter[]
+  @@map("services")
 }
 
-model ContractFortnightValue {
+model Quarter {
   id Int  @id @default(autoincrement())
-  contractor ContractorCompanies  @relation(fields: [fk_id_contractor_companies], references: [id])
-  fk_id_contractor_companies Int
+  contractor Services  @relation(fields: [fk_id_service], references: [id])
+  fk_id_service Int
   value_hour Float
   year Int
   month String
   appointments   Appointments[]
-  @@map("contractMonthYear")
+  @@map("quarter")
 }
 
 model Appointments {
     id    Int     @id @default(autoincrement())
     date_at DateTime
     value Float
-    fortnightValue   ContractFortnightValue  @relation(fields: [fk_id_fort], references: [id])
+    quarter   Quarter  @relation(fields: [fk_id_quarter], references: [id])
     created_at   DateTime @default(now())
-    fk_id_fort Int
+    fk_id_quarter Int
     @@map("appointments")
 }
 
 enum Access {
   CONTRACTOR
-  COMPANY
+  CLIENT
   GLOBAL
   ADMIN
 }
 
 enum Role {
   CONTRACTOR
-  COMPANY
+  CLIENT
 }
 
 enum Status {

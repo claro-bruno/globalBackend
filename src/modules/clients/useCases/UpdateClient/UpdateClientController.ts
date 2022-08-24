@@ -1,12 +1,12 @@
 import {NextFunction, Request, Response} from "express";
-import {UpdateCompanyUseCase} from "./UpdateCompanyUseCase";
+import {UpdateClientUseCase} from "./UpdateClientUseCase";
 
-export class UpdateCompanyController {
+export class UpdateClientController {
     async handle(request: Request, response: Response, next: NextFunction): Promise<Response>  {
         const { id } = request.params;
-        const { name, rangeHour, monday, sunday, tuesday, wednesday, thuesday, friday, saturday, startHour, endHour, status  } = request.body;
-        const updateCompanyUseCase = new UpdateCompanyUseCase();
-        const result = await updateCompanyUseCase.execute({
+        const { name, rangeHour, monday, sunday, tuesday, wednesday, thursday, friday, saturday, startHour, endHour, status  } = request.body;
+        const updateClientUseCase = new UpdateClientUseCase();
+        const result = await updateClientUseCase.execute({
             id,
             name,
             rangeHour,
@@ -14,7 +14,7 @@ export class UpdateCompanyController {
             sunday,
             tuesday,
             wednesday,
-            thuesday,
+            thursday,
             friday,
             saturday,
             startHour,

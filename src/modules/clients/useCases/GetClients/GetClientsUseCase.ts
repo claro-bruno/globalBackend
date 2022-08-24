@@ -3,16 +3,16 @@ import { prisma} from "../../../../database/prismaClient";
 import { compare } from "bcrypt";
 import { sign } from "jsonwebtoken";
 import { AppError} from "../../../../middlewares/AppError";
-export class GetCompaniesUseCase {
+export class GetClientsUseCase {
     async execute() {
 
-        const companies = await prisma.companies.findMany({
+        const clients = await prisma.clients.findMany({
             where: {
                 status: true,
             }
         });
 
-        return companies;
+        return clients;
 
     }
 }

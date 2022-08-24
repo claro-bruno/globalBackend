@@ -20,7 +20,7 @@ router.get("/", (request, response) => {
 
 router.use("/account", accountsRoutes);
 router.use("/contractor", contractorsRoutes);
-// router.use("/client", clientsRoutes);
+router.use("/client", clientsRoutes);
 // router.use("/service", servicesRoutes);
 
 

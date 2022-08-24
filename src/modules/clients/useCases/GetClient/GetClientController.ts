@@ -1,11 +1,11 @@
 import {NextFunction, Request, Response} from "express";
-import { GetCompanyUseCase} from "./GetCompanyUseCase";
+import { GetClientUseCase} from "./GetClientUseCase";
 
-export class GetCompanyController {
+export class GetClientController {
     async handle(request: Request, response: Response, next: NextFunction)  {
         const { id } = request.params;
-        const getCompanyUseCase = new GetCompanyUseCase();
-        const result = await getCompanyUseCase.execute({
+        const getClientUseCase = new GetClientUseCase();
+        const result = await getClientUseCase.execute({
             id,
         });
 

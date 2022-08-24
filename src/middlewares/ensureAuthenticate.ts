@@ -1,12 +1,25 @@
 import {NextFunction, Request, Response} from "express";
 import {AppError} from "./AppError";
 import { verify } from "jsonwebtoken";
+import { getFileContent } from "../helpers/getFileContent";
+
+const secret = getFileContent('jwt.evaluation.key');
 
 interface IPayLoad {
-    sub: string;
+    access: string;
+    id: number;
 }
 
-export async function ensureAuthenticateContractor(request: Request, response: Response, next: NextFunction) {
+declare module 'express-serve-static-core' {
+    interface Request {
+        id: number;
+        access: string;
+    }
+}
+
+
+
+export async function ensureAuthenticate(request: Request, response: Response, next: NextFunction) {
     const authHeader = request.headers.authorization;
     if(!authHeader) {
         throw new AppError("Token missing");
@@ -19,8 +32,10 @@ export async function ensureAuthenticateContractor(request: Request, response: R
     
     try {
 
-        const { sub } = verify(token, "7dfb4ababc7a6b6d9d57c737c2188402") as IPayLoad;
-        // request.id_client = sub;
+        const { id, access } = verify(token, secret) as IPayLoad;
+
+        request.id = id;
+        request.access = access;
         return next();
 
     } catch (err) {

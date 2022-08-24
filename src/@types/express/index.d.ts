@@ -1,7 +1,7 @@
 declare namespace Express {
     export interface Request {
-        id_contractor: number;
-        access: string;
+        id: any;
+        access: any;
         files: object;
     }
 }

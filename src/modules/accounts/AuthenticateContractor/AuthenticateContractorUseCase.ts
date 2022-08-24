@@ -4,6 +4,11 @@ import { compare } from "bcrypt";
 import { sign } from "jsonwebtoken";
 import { AppError} from "../../../middlewares/AppError";
 
+import {getFileContent} from "../../../helpers/getFileContent";
+
+const secret = getFileContent('jwt.evaluation.key');
+
+
 interface IAuthenticateClient {
      username: string;
      password: string;
@@ -37,9 +42,9 @@ export class AuthenticateContractorUseCase {
         }
 
         const { access, contractor } = contractor_account;
-        const { id: id_contractor } = contractor;
+        const { id } = contractor;
         // Gerar o token
-        const token = sign({ access, id_contractor } , "7dfb4ababc7a6b6d9d57c737c2188402", { expiresIn: "1d" });
+        const token = sign({ access, id } , secret, { expiresIn: "300d" });
         //retornar a role da permissão de acesso.
         return { token, access };
     }

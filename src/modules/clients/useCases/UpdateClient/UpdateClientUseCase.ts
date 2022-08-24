@@ -9,7 +9,7 @@ interface IUpdateCompany {
     sunday: boolean;
     tuesday: boolean
     wednesday: boolean
-    thuesday: boolean
+    thursday: boolean
     friday: boolean;
     saturday: boolean;
     startHour: string;
@@ -18,20 +18,20 @@ interface IUpdateCompany {
 }
 
 
-export class UpdateCompanyUseCase {
-    async execute({ id, name, rangeHour, monday, sunday, tuesday, wednesday, thuesday, friday, saturday, startHour, endHour  }  : IUpdateCompany): Promise<any>{
+export class UpdateClientUseCase {
+    async execute({ id, name, rangeHour, monday, sunday, tuesday, wednesday, thursday, friday, saturday, startHour, endHour, status  }  : IUpdateCompany): Promise<any>{
         //validar se o client existe
-        const companyExist = await prisma.contractors.findUnique({
+        const clientExist = await prisma.clients.findUnique({
            where: {
                id
            }
         });
 
-        if(!companyExist) {
-            throw new AppError('Company does not exists', 401)
+        if(!clientExist) {
+            throw new AppError('Client does not exists', 401)
         }
         //salvar o client
-        const company = await prisma.contractors.update({
+        const client = await prisma.clients.update({
             where: {
                 id
             },
@@ -41,14 +41,15 @@ export class UpdateCompanyUseCase {
                 monday, 
                 sunday, 
                 tuesday, 
-                wednesday, 
-                thuesday, 
+                wednesday,
+                thursday,
                 friday, 
                 saturday,
                 startHour, 
-                endHour
+                endHour,
+                status
             }
         });
-        return company;
+        return client;
     }
 }

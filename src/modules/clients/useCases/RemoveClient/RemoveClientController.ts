@@ -1,11 +1,11 @@
 import {NextFunction, Request, Response} from "express";
-import { RemoveCompanyUseCase} from "./RemoveCompanyUseCase";
+import { RemoveClientUseCase} from "./RemoveClientUseCase";
 
-export class RemoveCompanyController {
+export class RemoveClientController {
     async handle(request: Request, response: Response, next: NextFunction)  {
         const { id } = request.params;
-        const removeCompanyUseCase = new RemoveCompanyUseCase();
-        const result = await removeCompanyUseCase.execute({
+        const removeClientUseCase = new RemoveClientUseCase();
+        const result = await removeClientUseCase.execute({
             id,
         });
 
