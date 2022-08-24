@@ -1,8 +1,9 @@
 
 // const dayjs = require('dayjs')
 //import dayjs from 'dayjs' // ES 2015
+const valueByHour = 20;
 
-const arrDays = [];
+
 
 const sunday = false;
 const monday = true;
@@ -11,7 +12,9 @@ const wednesday = true;
 const thursday = true;
 const friday = true;
 const saturday = false;
-const quinzena = 1;
+const quarter_option = 1;
+
+const arrDays = [];
 const arr = [];
 
 if(sunday) arrDays.push('Sunday');
@@ -22,15 +25,15 @@ if(thursday) arrDays.push('Thursday');
 if(friday) arrDays.push('Friday');
 if(saturday) arrDays.push('Saturday');
 
-const valueByHour = 20;
+
 const month = 'January';
 const monthValue = getMonthFromString(month);
 const year = 2022;
 
 const last_date = new Date(year, monthValue, 0);
 
-const inicio = quinzena === 1 ? 1 : 16;
-const end = quinzena === 1 ? 15 : last_date.getDate();
+const inicio = quarter_option === 1 ? 1 : 16;
+const end = quarter_option === 1 ? 15 : last_date.getDate();
 
 for(i=inicio; i<= end; i += 1) {
     let dataValue = new Date(year, monthValue, i);

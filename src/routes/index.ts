@@ -10,10 +10,6 @@ import { servicesRoutes } from "./services.routes";
 const router = Router();
 
 
-const use = (fn: Function) => async (req: Request, res: Response, next: NextFunction) => {
-    await fn(req, res, next).catch(next)
-}
-
 router.get("/", (request, response) => {
     response.json("Testando API");
 });
@@ -21,7 +17,7 @@ router.get("/", (request, response) => {
 router.use("/account", accountsRoutes);
 router.use("/contractor", contractorsRoutes);
 router.use("/client", clientsRoutes);
-// router.use("/service", servicesRoutes);
+router.use("/service", servicesRoutes);
 
 
 export { router };

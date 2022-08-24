@@ -1,15 +1,28 @@
 import { NextFunction, Request, Response } from "express";
 import { CreateServicesUseCase } from "./CreateServicesUseCase";
 
+
 export class CreateServicesController {
     async handle(request: Request, response: Response, next: NextFunction)  {
-        const { idClient, idContractor, sunday, monday, tuesday, thursday, friday, saturday, value, month, year, quarter  } = request.body;
+        const { id_client, sunday, monday, tuesday, wednesday, thursday, friday, saturday, value, month, year, quarter  } = request.body;
         const createServicesUseCase = new CreateServicesUseCase();
         const result = await createServicesUseCase.execute({
-            idClient
+            id_contractor: request.id,
+            id_client,
+            sunday,
+            monday,
+            tuesday,
+            wednesday,
+            thursday,
+            friday,
+            saturday,
+            value,
+            year,
+            month,
+            quarter_option: quarter
         });
 
-        return response.json('');
+        return response.json(result);
 
 
     }

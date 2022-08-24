@@ -109,11 +109,12 @@ model Services {
   friday Boolean
   satuday Boolean
   sunday Boolean
-  quarter Quarter[]
+  status Boolean @default(true)
+  quarter Quarters[]
   @@map("services")
 }
 
-model Quarter {
+model Quarters {
   id Int  @id @default(autoincrement())
   contractor Services  @relation(fields: [fk_id_service], references: [id])
   fk_id_service Int
@@ -121,14 +122,14 @@ model Quarter {
   year Int
   month String
   appointments   Appointments[]
-  @@map("quarter")
+  @@map("quarters")
 }
 
 model Appointments {
     id    Int     @id @default(autoincrement())
-    date_at DateTime
     value Float
-    quarter   Quarter  @relation(fields: [fk_id_quarter], references: [id])
+    date_at DateTime
+    quarter   Quarters  @relation(fields: [fk_id_quarter], references: [id])
     created_at   DateTime @default(now())
     fk_id_quarter Int
     @@map("appointments")

@@ -1,12 +1,15 @@
 import { Router } from "express";
-import { Request, Response, NextFunction } from "express-serve-static-core";
-
+import {ensureAuthenticate} from "../middlewares/ensureAuthenticate";
+import {CreateServicesController} from "../modules/services/CreateService/CreateServicesController";
+import {use} from "../middlewares/use";
 
 
 const servicesRoutes = Router();
 
-const use = (fn: Function) => async (req: Request, res: Response, next: NextFunction) => {
-    await fn(req, res, next).catch(next)
-}
+const createServicesController = new CreateServicesController();
+
+
+servicesRoutes.post("/", use(ensureAuthenticate), use(createServicesController.handle));
+
 
 export { servicesRoutes };
