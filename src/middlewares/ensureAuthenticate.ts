@@ -28,11 +28,11 @@ export async function ensureAuthenticate(request: Request, response: Response, n
     //Bearer asdjasdhjasdhjasdhaskdj
     //[0] Bearer
     //[1] asdjasdhjasdhjasdhaskdj
-    const [,token] = authHeader.split(" ")
+    // const [,token] = authHeader.split(" ")
     
     try {
 
-        const { id, access } = verify(token, secret) as IPayLoad;
+        const { id, access } = verify(authHeader, secret) as IPayLoad;
 
         request.id = id;
         request.access = access;
