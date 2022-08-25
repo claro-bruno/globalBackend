@@ -2,7 +2,7 @@ import { prisma } from "../../../../database/prismaClient";
 import { AppError} from "../../../../middlewares/AppError";
 
 interface IUpdateCompany {
-    id: string;
+    id: number;
     status: boolean
 }
 
@@ -10,7 +10,7 @@ interface IUpdateCompany {
 export class UpdateStatusClientUseCase {
     async execute({ id, status  }  : IUpdateCompany): Promise<any>{
         //validar se o client existe
-        const clientExist = await prisma.clients.findUnique({
+        const clientExist = await prisma.clients.findFirst({
            where: {
                id
            }

@@ -54,8 +54,8 @@ model Clients {
   created_at   DateTime @default(now())
   account   Accounts?  @relation(fields: [fk_id_account], references: [id])
   fk_id_account Int? @unique
-  startHour Int
-  endHour Int
+  start String
+  end String
   monday Boolean
   tuesday Boolean
   wednesday Boolean

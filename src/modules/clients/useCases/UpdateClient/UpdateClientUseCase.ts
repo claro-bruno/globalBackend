@@ -2,26 +2,25 @@ import { prisma } from "../../../../database/prismaClient";
 import { AppError} from "../../../../middlewares/AppError";
 
 interface IUpdateCompany {
-    id: string;
+    id: number;
     name: string;
-    rangeHour: string;
-    monday: boolean;
     sunday: boolean;
+    monday: boolean;
     tuesday: boolean
     wednesday: boolean
     thursday: boolean
     friday: boolean;
     saturday: boolean;
-    startHour: string;
-    endHour: string;
+    start: string;
+    end: string;
     status: boolean
 }
 
 
 export class UpdateClientUseCase {
-    async execute({ id, name, rangeHour, monday, sunday, tuesday, wednesday, thursday, friday, saturday, startHour, endHour, status  }  : IUpdateCompany): Promise<any>{
+    async execute({ id, name, sunday, monday, tuesday, wednesday, thursday, friday, saturday, start, end, status  }  : IUpdateCompany): Promise<any>{
         //validar se o client existe
-        const clientExist = await prisma.clients.findUnique({
+        const clientExist = await prisma.clients.findFirst({
            where: {
                id
            }
@@ -37,16 +36,15 @@ export class UpdateClientUseCase {
             },
             data: {
                 name,
-                rangeHour,
-                monday, 
-                sunday, 
+                sunday,
+                monday,
                 tuesday, 
                 wednesday,
                 thursday,
                 friday, 
                 saturday,
-                startHour, 
-                endHour,
+                start,
+                end,
                 status
             }
         });

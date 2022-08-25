@@ -4,24 +4,21 @@ import { compare } from "bcrypt";
 import { sign } from "jsonwebtoken";
 import { AppError} from "../../../../middlewares/AppError";
 export class RemoveContractorUseCase {
-    async execute(id) {
-
-        // Receber userName, password
-        // Verificar se o userName cadastrado
-        const contractorExist = await prisma.contractors.findFirst({
+    async execute(id: number) {
+        const clientExist = await prisma.clients.findFirst({
             where: {
                 id
             }
         });
 
-        if(!contractorExist) {
-            throw new AppError("Contractor does not exists");
+        if(!clientExist) {
+            throw new AppError("Client does not exists");
         }
 
 
-        const client = await prisma.contractors.remove({
+        const client = await prisma.clients.remove({
             where: {
-                id,
+                id
             }
         });
 

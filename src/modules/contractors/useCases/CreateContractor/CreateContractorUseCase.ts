@@ -61,6 +61,7 @@ export class CreateContractorUseCase {
             }
         });
 
+
         const contractor = await prisma.contractors.create({
             data: {
                 first_name: firstName,

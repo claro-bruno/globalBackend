@@ -22,7 +22,7 @@ export class AuthenticateContractorUseCase {
         const contractor_account = await prisma.accounts.findFirst({
             where: {
                 username,
-                status: 'INACTIVE'
+                status: 'ACTIVE'
             },
             select: {
                 access: true,

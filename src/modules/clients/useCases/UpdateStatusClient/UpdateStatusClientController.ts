@@ -7,7 +7,7 @@ export class UpdateStatusClientController {
         const { status  } = request.body;
         const updateClientUseCase = new UpdateStatusClientUseCase();
         const result = await updateClientUseCase.execute({
-            id,
+            id: +id,
             status
         });
         return response.json(result);
