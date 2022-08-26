@@ -7,7 +7,6 @@ interface ICreateContractor {
     middleName: string;
     lastName: string;
     email: string;
-    type: string;
     identification: string;
     ein: string;
     dob: Date;
@@ -24,14 +23,13 @@ interface ICreateContractorAddress {
     city: string;
     zipcode: string;
     state: string;
-    country: string;
 }
 
 export class CreateContractorUseCase {
     async execute(
-        { firstName, middleName, lastName, email, type, identification, ein, dob, telephone, acceptTerms, urlPrimaryResidencyProf, urlSecondaryResidencyProf, urlDocumentProf, urlProfile } : ICreateContractor,
-        { address, city, zipcode, state, country } : ICreateContractorAddress,
-        { address2 = "", city2 = "", zipcode2 = "", state2 = "", country2 = "" } : ICreateContractorAddress | any
+        { firstName, middleName, lastName, email, identification, ein, dob, telephone, acceptTerms, urlPrimaryResidencyProf, urlSecondaryResidencyProf, urlDocumentProf, urlProfile } : ICreateContractor,
+        { address, city, zipcode, state } : ICreateContractorAddress,
+        { address2 = "", city2 = "", zipcode2 = "", state2 = "" } : ICreateContractorAddress | any
     ): Promise<any>{
         //validar se o contractor existe
         const contractorExist = await prisma.contractors.findUnique({
@@ -75,7 +73,6 @@ export class CreateContractorUseCase {
                 urlDocumentProf,
                 urlPrimaryResidencyProf,
                 urlSecondaryResidencyProf,
-                type,
                 identification,
                 dob: birthday,
                 telephone,
@@ -89,18 +86,16 @@ export class CreateContractorUseCase {
                 city,
                 zipcode,
                 state,
-                country,
                 fk_id_contractor: contractor.id
             }
         });
 
         const addr2 = (address2 != "") ? await prisma.adresseses.create({
             data: {
-                address2,
-                city2,
-                zipcode2,
-                state2,
-                country2,
+                address: address2,
+                city: city2,
+                zipcode: zipcode2,
+                state: state2,
                 fk_id_contractor: contractor.id
             }
         }) : undefined;

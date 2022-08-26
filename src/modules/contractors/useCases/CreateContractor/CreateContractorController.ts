@@ -30,20 +30,19 @@ export class CreateContractorController {
             urlProfile = profile ? `${request.protocol}://${request.hostname}:${process.env.PORT}/src/${profile[0].path}` : "";
         }
         const infoResult = JSON.parse(request.body.body);
-        const { firstName, middleName ,lastName, email, type, identification, dob, telephone, acceptTerms, ein, primaryAddress, secondaryAddress = undefined } = infoResult;
-        const { address, city, zipcode, state, country  } = primaryAddress;
-        const { address2, city2, zipcode2, state2, country2 } = secondaryAddress;
-        const adr2 = 'address2' in  secondaryAddress ? { address2, city2, zipcode2, state2, country2} : { address2: "", city2: "", zipcode2: "", state2: "", country2: "" };
+        const { firstName, middleName ,lastName, email, ssnOrItin, birthDate, phone, acceptTerms, ein, primaryAddress, secondaryAddress = undefined } = infoResult;
+        const { address, city, zipcode, state  } = primaryAddress;
+        const { address: address2, city: city2, zipcode: zipcode2, state: state2  } = secondaryAddress;
+        const adr2 = 'address2' in  secondaryAddress ? { address2, city2, zipcode2, state2} : { address2: "", city2: "", zipcode2: "", state2: "" };
         const createClientUseCase = new CreateContractorUseCase();
         const result = await createClientUseCase.execute({
              firstName,
              middleName,
              lastName,
              email,
-             type,
-             identification,
-             dob,
-             telephone,
+             identification: ssnOrItin,
+             dob: birthDate,
+             telephone: phone,
              acceptTerms,
              ein,
              urlPrimaryResidencyProf,
@@ -55,8 +54,7 @@ export class CreateContractorController {
             address,
             city,
             zipcode,
-            state,
-            country
+            state
         },
             adr2
         );

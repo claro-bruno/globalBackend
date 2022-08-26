@@ -34,7 +34,6 @@ model Contractors {
   status Status @default(ACTIVE)
   ein String?
   acceptTerms Boolean
-  type String
   identification String
   dob DateTime
   telephone String
@@ -74,7 +73,6 @@ model Adresseses {
       city String
       zipcode String
       state String
-      country String
       contractor   Contractors  @relation(fields: [fk_id_contractor], references: [id])
       fk_id_contractor Int
       created_at   DateTime @default(now())
