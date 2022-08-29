@@ -20,7 +20,6 @@ interface IService {
     value: number;
     year: number;
     month: string;
-    quarter_option: number;
 }
 
 function getMonthFromString(mon: string){
@@ -33,7 +32,7 @@ function getMonthFromString(mon: string){
 }
 
 export class CreateServicesUseCase {
-    async execute({ id_contractor, id_client, sunday, monday, tuesday, wednesday, thursday, friday, saturday, value, year, month, quarter_option }: IService) {
+    async execute({ id_contractor, id_client, sunday, monday, tuesday, wednesday, thursday, friday, saturday, value, year, month }: IService) {
         const arrDays = [];
         const arr = [];
         const existService = await prisma.services.findFirst({
@@ -82,7 +81,7 @@ export class CreateServicesUseCase {
 
         const monthValue = getMonthFromString(month);
 
-
+        const quarter_option = new Date(Date.now()).getDay() > 15 ? 2 : 1;
         const last_date = new Date(year, monthValue, 0);
 
         const inicio = quarter_option === 1 ? 1 : 16;

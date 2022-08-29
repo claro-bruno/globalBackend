@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {ensureAuthenticate} from "../middlewares/ensureAuthenticate";
-import {CreateServicesController} from "../modules/services/CreateService/CreateServicesController";
+import {CreateServicesController} from "../modules/services/CreateServices/CreateServicesController";
 import {use} from "../middlewares/use";
 
 
