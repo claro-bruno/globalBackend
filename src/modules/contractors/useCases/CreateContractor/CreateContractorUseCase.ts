@@ -8,7 +8,7 @@ interface ICreateContractor {
     lastName: string;
     email: string;
     identification: string;
-    ein: string;
+    ein?: string;
     dob: Date;
     telephone: string;
     acceptTerms: boolean;
