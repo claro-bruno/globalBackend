@@ -12,9 +12,9 @@ interface ICreateContractor {
     dob: Date;
     telephone: string;
     acceptTerms: boolean;
-    urlPrimaryResidencyProf: string,
-    urlSecondaryResidencyProf: string,
-    urlDocumentProf: string,
+    urlPrimaryResidencyProof: string,
+    urlSecondaryResidencyProof: string,
+    urlDocumentProof: string,
     urlProfile: string;
 }
 
@@ -27,7 +27,7 @@ interface ICreateContractorAddress {
 
 export class CreateContractorUseCase {
     async execute(
-        { firstName, middleName, lastName, email, identification, ein, dob, telephone, acceptTerms, urlPrimaryResidencyProf, urlSecondaryResidencyProf, urlDocumentProf, urlProfile } : ICreateContractor,
+        { firstName, middleName, lastName, email, identification, ein, dob, telephone, acceptTerms, urlPrimaryResidencyProof, urlSecondaryResidencyProof, urlDocumentProof, urlProfile } : ICreateContractor,
         { address, city, zipcode, state } : ICreateContractorAddress,
         { address2 = "", city2 = "", zipcode2 = "", state2 = "" } : ICreateContractorAddress | any
     ): Promise<any>{
@@ -70,9 +70,9 @@ export class CreateContractorUseCase {
                 ein,
                 status: "PENDING",
                 urlProfile,
-                urlDocumentProf,
-                urlPrimaryResidencyProf,
-                urlSecondaryResidencyProf,
+                urlDocumentProof,
+                urlPrimaryResidencyProof,
+                urlSecondaryResidencyProof,
                 identification,
                 dob: birthday,
                 telephone,

@@ -6,9 +6,9 @@ dotenv.config();
 declare module 'express-serve-static-core' {
     interface Request {
         files?: {
-            primaryResidencyProf?: any;
-            secondaryResidencyProf?: any;
-            documentProf?: any;
+            primaryResidencyProof?: any;
+            secondaryResidencyProof?: any;
+            documentProof?: any;
             profile?: any;
         }
     }
@@ -17,16 +17,16 @@ declare module 'express-serve-static-core' {
 
 export class CreateContractorController {
     async handle(request: Request, response: Response, next: NextFunction): Promise<Response>  {
-        let urlPrimaryResidencyProf= "";
-        let urlSecondaryResidencyProf = "";
-        let urlDocumentProf = "";
+        let urlPrimaryResidencyProof= "";
+        let urlSecondaryResidencyProof = "";
+        let urlDocumentProof = "";
         let urlProfile = "";
 
         if (request.files) {
-            const { primaryResidencyProf, secondaryResidencyProf, documentProf, profile } = request.files;
-            urlPrimaryResidencyProf = primaryResidencyProf ? `${request.protocol}://${request.hostname}:${process.env.PORT}/src/${primaryResidencyProf[0].path}` : "";
-            urlSecondaryResidencyProf = secondaryResidencyProf ? `${request.protocol}://${request.hostname}:${process.env.PORT}/src/${secondaryResidencyProf[0].path}` : "";
-            urlDocumentProf = documentProf ? `${request.protocol}://${request.hostname}:${process.env.PORT}/src/${documentProf[0].path}` : "";
+            const { primaryResidencyProof, secondaryResidencyProof, documentProof, profile } = request.files;
+            urlPrimaryResidencyProof = primaryResidencyProof ? `${request.protocol}://${request.hostname}:${process.env.PORT}/src/${primaryResidencyProof[0].path}` : "";
+            urlSecondaryResidencyProof = secondaryResidencyProof ? `${request.protocol}://${request.hostname}:${process.env.PORT}/src/${secondaryResidencyProof[0].path}` : "";
+            urlDocumentProof = documentProof ? `${request.protocol}://${request.hostname}:${process.env.PORT}/src/${documentProof[0].path}` : "";
             urlProfile = profile ? `${request.protocol}://${request.hostname}:${process.env.PORT}/src/${profile[0].path}` : "";
         }
         let adr2 = { address: "", city: "", zipcode: "", state: "" };
@@ -50,9 +50,9 @@ export class CreateContractorController {
              telephone: phone,
              acceptTerms,
              ein: einn,
-             urlPrimaryResidencyProf,
-             urlSecondaryResidencyProf,
-             urlDocumentProf,
+             urlPrimaryResidencyProof,
+             urlSecondaryResidencyProof,
+             urlDocumentProof,
              urlProfile
         },
         {

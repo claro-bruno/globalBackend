@@ -28,9 +28,9 @@ model Contractors {
   middle_name String?
   last_name  String
   urlProfile String?
-  urlDocumentProf String?
-  urlPrimaryResidencyProf String?
-  urlSecondaryResidencyProf String?
+  urlDocumentProof String?
+  urlPrimaryResidencyProof String?
+  urlSecondaryResidencyProof String?
   status Status @default(ACTIVE)
   ein String?
   acceptTerms Boolean
@@ -42,7 +42,7 @@ model Contractors {
   fk_id_account Int? @unique
 
   address     Adresseses[]
-  services     Services[]
+  jobs     Jobs[]
   @@map("contractors")
 }
 
@@ -62,7 +62,7 @@ model Clients {
   friday Boolean
   saturday Boolean
   sunday Boolean
-  services Services[]
+  jobs Jobs[]
   status Boolean @default(true)
   @@map("clients")
 }
@@ -93,7 +93,7 @@ model Accounts {
 }
 
 
-model Services {
+model Jobs {
   id    Int     @id @default(autoincrement())
   contractor       Contractors  @relation(fields: [fk_id_contractor], references: [id])
   fk_id_contractor Int
@@ -105,20 +105,21 @@ model Services {
   wednesday Boolean
   thursday Boolean
   friday Boolean
-  satuday Boolean
+  saturday Boolean
   sunday Boolean
   status Boolean @default(true)
   quarter Quarters[]
-  @@map("services")
+  @@map("jobs")
 }
 
 model Quarters {
   id Int  @id @default(autoincrement())
-  contractor Services  @relation(fields: [fk_id_service], references: [id])
-  fk_id_service Int
+  job Jobs  @relation(fields: [fk_id_job], references: [id])
+  fk_id_job Int
   value_hour Float
   year Int
-  month String
+  month Int
+  order Int
   appointments   Appointments[]
   @@map("quarters")
 }

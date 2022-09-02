@@ -8,6 +8,7 @@ interface IAppointment {
 }
 
 interface IService {
+    id: number;
     id_contractor: number;
     id_client: number;
     sunday: boolean;
@@ -18,41 +19,32 @@ interface IService {
     friday: boolean;
     saturday: boolean;
     value: number;
-    year: number;
-    month: string;
+    value_hour: number;
 }
 
-function getMonthFromString(mon: string){
-
-    var d = Date.parse(mon + "1, 2022");
-    if(!isNaN(d)){
-        return new Date(d).getMonth() + 1;
-    }
-    return -1;
-}
-
-export class CreateServicesUseCase {
-    async execute({ id_contractor, id_client, sunday, monday, tuesday, wednesday, thursday, friday, saturday, value, year, month }: IService) {
-        const arrDays = [];
-        const arr = [];
-        const existService = await prisma.services.findFirst({
+export class UpdateJobsUseCase {
+    async execute({ id, id_contractor, id_client, sunday, monday, tuesday, wednesday, thursday, friday, saturday, value, value_hour }: IService) {
+        const arrDays = [] as any;
+        const arr = [] as any;
+        const existJob = await prisma.jobs.findFirst({
             where: {
-                fk_id_contractor: id_contractor,
-                fk_id_client: id_client,
-                status: true,
+                id
             }
         });
 
-        if(existService) {
-            throw new AppError("Service already exist");
+        if(!existJob) {
+            throw new AppError("Job does not exist");
         }
 
-        const service = await prisma.services.create({
+        const job = await prisma.jobs.update({
+            where: {
+                id
+            },
             data: {
                 fk_id_contractor: id_contractor,
                 fk_id_client: id_client,
-                monday,
                 sunday,
+                monday,
                 tuesday,
                 wednesday,
                 thursday,
@@ -61,14 +53,43 @@ export class CreateServicesUseCase {
             }
         });
 
-        const quarter = await prisma.quarters.create({
-            data: {
-                fk_id_service: service.id,
-                value_hour: value,
+
+        const date = new Date(Date.now());
+        const month = date.getMonth();
+        const year = date.getFullYear();
+        const quarter_option = new Date(Date.now()).getDay() > 15 ? 2 : 1;
+        const last_date = new Date(year, month, 0);
+
+        let quarterExist = await prisma.quarters.findFirst({
+            where: {
+                month,
                 year,
-                month
+                order: quarter_option,
+                fk_id_job: id
             }
         });
+
+        if(quarterExist) {
+            quarterExist = await prisma.quarters.update({
+                where: {
+                    id: quarterExist.id
+                },
+                data: {
+                    value_hour
+                }
+            });
+        } else {
+            quarterExist = await prisma.quarters.create({
+                data: {
+                    fk_id_job: job.id,
+                    value_hour,
+                    year,
+                    month,
+                    order: quarter_option,
+                }
+            });
+        }
+
 
         if(sunday) arrDays.push('Sunday');
         if(monday) arrDays.push('Monday');
@@ -79,16 +100,18 @@ export class CreateServicesUseCase {
         if(saturday) arrDays.push('Saturday');
 
 
-        const monthValue = getMonthFromString(month);
-
-        const quarter_option = new Date(Date.now()).getDay() > 15 ? 2 : 1;
-        const last_date = new Date(year, monthValue, 0);
-
         const inicio = quarter_option === 1 ? 1 : 16;
         const end = quarter_option === 1 ? 15 : last_date.getDate();
 
+        await prisma.appointments.deleteMany({
+            where: {
+                fk_id_quarter: quarterExist.id,
+
+            }
+        });
+
         for(let i=inicio; i<= end; i += 1) {
-            let dataValue = new Date(year, monthValue, i);
+            let dataValue = new Date(year, month, i);
             if(arrDays.includes(dataValue.toLocaleString('default', {weekday: 'long'}))) {
 
                 arr.push({date: dataValue, value});
@@ -102,7 +125,7 @@ export class CreateServicesUseCase {
             await memo;
             await prisma.appointments.create({
                 data: {
-                    fk_id_quarter: quarter.id,
+                    fk_id_quarter: quarterExist.id,
                     value,
                     date_at: date
                 }

@@ -28,6 +28,7 @@ export class AuthenticateContractorUseCase {
                 access: true,
                 password: true,
                 contractor: true,
+                resetPassword: true
             }
         });
 
@@ -41,11 +42,11 @@ export class AuthenticateContractorUseCase {
             throw new AppError("Username or Password invalid!");
         }
 
-        const { access, contractor } = contractor_account;
+        const { access, contractor, resetPassword  } = contractor_account;
         const { id } = contractor;
         // Gerar o token
-        const token = sign({ access, id } , secret, { expiresIn: "300d" });
+        const token = sign({ access, id } , secret, { expiresIn: "7d" });
         //retornar a role da permissão de acesso.
-        return { token, access };
+        return { token, access, reset: resetPassword };
     }
 }

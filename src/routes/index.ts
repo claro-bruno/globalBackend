@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from "express-serve-static-core";
 import { accountsRoutes } from "./accounts.routes";
 import { clientsRoutes } from "./clients.routes";
 import { contractorsRoutes } from "./contractors.routes";
-import { servicesRoutes } from "./services.routes";
+import { jobsRoutes } from "./jobs.routes";
 
 
 const router = Router();
@@ -17,7 +17,7 @@ router.get("/", (request, response) => {
 router.use("/account", accountsRoutes);
 router.use("/contractor", contractorsRoutes);
 router.use("/client", clientsRoutes);
-router.use("/service", servicesRoutes);
+router.use("/job", jobsRoutes);
 
 
 export { router };
