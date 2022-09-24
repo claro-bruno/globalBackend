@@ -30,6 +30,15 @@ function getMonthFromString(mon: string){
     return -1;
 }
 
+function toMonthName(monthNumber: number) {
+    const date = new Date();
+    date.setMonth(monthNumber - 1);
+  
+    return date.toLocaleString('en-US', {
+      month: 'long',
+    });
+  }
+
 export class CreateJobsUseCase {
     async execute({ id_contractor, id_client, sunday, monday, tuesday, wednesday, thursday, friday, saturday, value, value_hour }: IService) {
         const arrDays = [];
@@ -62,17 +71,29 @@ export class CreateJobsUseCase {
         const date = new Date(Date.now());
         const month = date.getMonth();
         const year = date.getFullYear();
-        const quarter_option = new Date(Date.now()).getDay() > 15 ? 2 : 1;
+        // const quarter_option = new Date(Date.now()).getDay() > 15 ? 2 : 1;
         const last_date = new Date(year, month, 0);
-        const quarter = await prisma.quarters.create({
+        // const quarter = await prisma.quarters.create({
+        //     data: {
+        //         fk_id_job: job.id,
+        //         value_hour,
+        //         year,
+        //         month,
+        //         order: quarter_option,
+        //     }
+        // });
+
+        let quarter = await prisma.quarters.create({
             data: {
                 fk_id_job: job.id,
                 value_hour,
                 year,
-                month,
-                order: quarter_option,
+                month: toMonthName(month),
+                order: 1,
             }
         });
+
+        
 
         if(sunday) arrDays.push('Sunday');
         if(monday) arrDays.push('Monday');
@@ -82,9 +103,10 @@ export class CreateJobsUseCase {
         if(friday) arrDays.push('Friday');
         if(saturday) arrDays.push('Saturday');
 
-
-        const inicio = quarter_option === 1 ? 1 : 16;
-        const end = quarter_option === 1 ? 15 : last_date.getDate();
+        // let inicio = quarter_option === 1 ? 1 : 16;
+        // let end = quarter_option === 1 ? 15 : last_date.getDate();
+        let inicio = 1;
+        let end = 15;
 
         for(let i=inicio; i<= end; i += 1) {
             let dataValue = new Date(year, month, i);
@@ -110,9 +132,41 @@ export class CreateJobsUseCase {
         }, undefined);
 
 
+        quarter = await prisma.quarters.create({
+            data: {
+                fk_id_job: job.id,
+                value_hour,
+                year,
+                month,
+                order: 2,
+            }
+        });
 
+        inicio = 16;
+        end = last_date.getDate();
 
+        for(let i=1; i<= end; i += 1) {
+            let dataValue = new Date(year, month, i);
+            if(arrDays.includes(dataValue.toLocaleString('default', {weekday: 'long'}))) {
 
+                arr.push({date: dataValue, value});
+            }
+            else {
+                arr.push({date: dataValue, value: 0});
+            }
+        }
+
+        await arr.reduce(async (memo: any, { date, value }: IAppointment) => {
+            await memo;
+            await prisma.appointments.create({
+                data: {
+                    fk_id_quarter: quarter.id,
+                    value,
+                    date_at: date
+                }
+            });
+
+        }, undefined);
 
         return 'Ok';
     }

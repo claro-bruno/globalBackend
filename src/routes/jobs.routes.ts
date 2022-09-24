@@ -18,7 +18,6 @@ const completeJobsController = new CompleteJobsController();
 
 jobsRoutes.post("/", use(ensureAuthenticate), use(createServicesController.handle));
 jobsRoutes.put("/:id", use(ensureAuthenticate), use(completeJobsController.handle));
-// jobsRoutes.put("/", use(ensureAuthenticate), use(completeJobsController.handle));
 jobsRoutes.get("/contractor/:id", use(ensureAuthenticate), use(getJobsByContractorController.handle));
 jobsRoutes.get("/client/:id", use(ensureAuthenticate), use(getJobsByClientController.handle));
 jobsRoutes.get("/", use(ensureAuthenticate), use(getJobsController.handle));

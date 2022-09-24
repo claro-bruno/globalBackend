@@ -11,19 +11,20 @@ interface IService {
     id: number;
     id_contractor: number;
     id_client: number;
-    sunday: boolean;
-    monday: boolean;
-    tuesday: boolean;
-    wednesday: boolean;
-    thursday: boolean;
-    friday: boolean;
-    saturday: boolean;
-    value: number;
+    // sunday: boolean;
+    // monday: boolean;
+    // tuesday: boolean;
+    // wednesday: boolean;
+    // thursday: boolean;
+    // friday: boolean;
+    // saturday: boolean;
+    // value: number;
     value_hour: number;
 }
 
 export class UpdateJobsUseCase {
-    async execute({ id, id_contractor, id_client, sunday, monday, tuesday, wednesday, thursday, friday, saturday, value, value_hour }: IService) {
+    // async execute({ id, id_contractor, id_client, sunday, monday, tuesday, wednesday, thursday, friday, saturday, value, value_hour }: IService) {
+    async execute({ id, id_contractor, id_client, value_hour }: IService) {
         const arrDays = [] as any;
         const arr = [] as any;
         const existJob = await prisma.jobs.findFirst({
@@ -43,13 +44,13 @@ export class UpdateJobsUseCase {
             data: {
                 fk_id_contractor: id_contractor,
                 fk_id_client: id_client,
-                sunday,
-                monday,
-                tuesday,
-                wednesday,
-                thursday,
-                friday,
-                saturday
+                // sunday,
+                // monday,
+                // tuesday,
+                // wednesday,
+                // thursday,
+                // friday,
+                // saturday
             }
         });
 
@@ -91,47 +92,47 @@ export class UpdateJobsUseCase {
         }
 
 
-        if(sunday) arrDays.push('Sunday');
-        if(monday) arrDays.push('Monday');
-        if(tuesday) arrDays.push('Tuesday');
-        if(wednesday) arrDays.push('Wednesday');
-        if(thursday) arrDays.push('Thursday');
-        if(friday) arrDays.push('Friday');
-        if(saturday) arrDays.push('Saturday');
+        // if(sunday) arrDays.push('Sunday');
+        // if(monday) arrDays.push('Monday');
+        // if(tuesday) arrDays.push('Tuesday');
+        // if(wednesday) arrDays.push('Wednesday');
+        // if(thursday) arrDays.push('Thursday');
+        // if(friday) arrDays.push('Friday');
+        // if(saturday) arrDays.push('Saturday');
 
 
-        const inicio = quarter_option === 1 ? 1 : 16;
-        const end = quarter_option === 1 ? 15 : last_date.getDate();
+        // const inicio = quarter_option === 1 ? 1 : 16;
+        // const end = quarter_option === 1 ? 15 : last_date.getDate();
 
-        await prisma.appointments.deleteMany({
-            where: {
-                fk_id_quarter: quarterExist.id,
+        // await prisma.appointments.deleteMany({
+        //     where: {
+        //         fk_id_quarter: quarterExist.id,
 
-            }
-        });
+        //     }
+        // });
 
-        for(let i=inicio; i<= end; i += 1) {
-            let dataValue = new Date(year, month, i);
-            if(arrDays.includes(dataValue.toLocaleString('default', {weekday: 'long'}))) {
+        // for(let i=inicio; i<= end; i += 1) {
+        //     let dataValue = new Date(year, month, i);
+        //     if(arrDays.includes(dataValue.toLocaleString('default', {weekday: 'long'}))) {
 
-                arr.push({date: dataValue, value});
-            }
-            else {
-                arr.push({date: dataValue, value: 0});
-            }
-        }
+        //         arr.push({date: dataValue, value});
+        //     }
+        //     else {
+        //         arr.push({date: dataValue, value: 0});
+        //     }
+        // }
 
-        await arr.reduce(async (memo: any, { date, value }: IAppointment) => {
-            await memo;
-            await prisma.appointments.create({
-                data: {
-                    fk_id_quarter: quarterExist.id,
-                    value,
-                    date_at: date
-                }
-            });
+        // await arr.reduce(async (memo: any, { date, value }: IAppointment) => {
+        //     await memo;
+        //     await prisma.appointments.create({
+        //         data: {
+        //             fk_id_quarter: quarterExist.id,
+        //             value,
+        //             date_at: date
+        //         }
+        //     });
 
-        }, undefined);
+        // }, undefined);
 
 
 

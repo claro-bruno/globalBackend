@@ -2,21 +2,24 @@ import { prisma } from "../../../../database/prismaClient";
 import { hash } from "bcrypt";
 import { AppError} from "../../../../middlewares/AppError";
 
-interface ICreateClient {
-    username: string;
-    password: string;
+interface IUpdateClient {
+    // username: string;
+    // password: string;
+    id: number,
     email: string;
-    name: string;
-    role?: string;
+    // name: string;
     identification?: string;
-    address?: string;
-    birthday?: string;
+    // address?: string;
+    // birthday?: string;
     telephone?: string;
+    urlPrimaryResidencyProof: string;
+    urlDocumentProof: string;
+    urlProfile: string;
 }
 
 
 export class UpdateContractorUseCase {
-    async execute({ username, password, email, name, identification, address,birthday, telephone } : ICreateClient): Promise<any>{
+    async execute({ id, email, identification, telephone,urlPrimaryResidencyProof, urlDocumentProof, urlProfile } : IUpdateClient): Promise<any>{
         //validar se o client existe
         const clientExist = await prisma.contractors.findUnique({
            where: {
@@ -27,23 +30,19 @@ export class UpdateContractorUseCase {
         if(!clientExist) {
             throw new AppError('Contractor does not exists', 401)
         }
-        //criptografar a senha
-        const hashPassword = await hash(password, 10);
-        //salvar o client
+
+        //atualizar o contractor
         const client = await prisma.contractors.update({
             where: {
-                username
+                id
             },
             data: {
-                username,
-                password: hashPassword,
                 email,
-                name,
                 identification,
-                address,
-                birthday,
                 telephone,
-
+                urlDocumentProof,
+                urlPrimaryResidencyProof,
+                urlProfile,
             }
         });
         return client;

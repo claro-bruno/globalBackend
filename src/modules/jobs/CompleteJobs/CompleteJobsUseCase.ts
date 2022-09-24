@@ -4,7 +4,7 @@ import { AppError } from "../../../middlewares/AppError";
 
 interface IServiceComplete {
     id: number;
-    month: number;
+    month: string;
     year: number;
     valueHour: number;
     quarter: number;
@@ -16,6 +16,24 @@ interface IAppointment {
     date: any;
     value: number;
 }
+
+function getMonthFromString(mon: string){
+
+    var d = Date.parse(mon + "1, 2022");
+    if(!isNaN(d)){
+        return new Date(d).getMonth() + 1;
+    }
+    return -1;
+}
+
+function toMonthName(monthNumber: number) {
+    const date = new Date();
+    date.setMonth(monthNumber - 1);
+  
+    return date.toLocaleString('en-US', {
+      month: 'long',
+    });
+  }
 
 export class CompleteJobsUseCase {
     async execute({id, month, year, valueHour, quarter, status, workedDaysInfos}: IServiceComplete ) {
@@ -42,6 +60,7 @@ export class CompleteJobsUseCase {
 
         let quarterResult = await prisma.quarters.findFirst({
             where: {
+                // month: getMonthFromString(month),
                 month,
                 year,
                 order: quarter,
@@ -55,6 +74,7 @@ export class CompleteJobsUseCase {
                     fk_id_job: id,
                     value_hour: valueHour,
                     year,
+                    // month: getMonthFromString(month),
                     month,
                     order: quarter
                 }

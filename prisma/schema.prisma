@@ -95,9 +95,9 @@ model Accounts {
 
 model Jobs {
   id    Int     @id @default(autoincrement())
-  contractor       Contractors  @relation(fields: [fk_id_contractor], references: [id])
+  contractors       Contractors  @relation(fields: [fk_id_contractor], references: [id])
   fk_id_contractor Int
-  client       Clients  @relation(fields: [fk_id_client], references: [id])
+  clients       Clients  @relation(fields: [fk_id_client], references: [id])
   fk_id_client Int
   created_at   DateTime @default(now())
   monday Boolean
@@ -107,14 +107,14 @@ model Jobs {
   friday Boolean
   saturday Boolean
   sunday Boolean
-  status Boolean @default(true)
-  quarter Quarters[]
+  status Status @default(ACTIVE)
+  quarters Quarters[]
   @@map("jobs")
 }
 
 model Quarters {
   id Int  @id @default(autoincrement())
-  job Jobs  @relation(fields: [fk_id_job], references: [id])
+  jobs Jobs  @relation(fields: [fk_id_job], references: [id])
   fk_id_job Int
   value_hour Float
   year Int

@@ -8,7 +8,7 @@ export class CompleteJobsController {
         const completeJobsUseCase = new CompleteJobsUseCase();
         const result = await completeJobsUseCase.execute({
             id: +id,
-            month: +month,
+            month,
             year: +year,
             valueHour: +valueHour,
             quarter: +quarter,

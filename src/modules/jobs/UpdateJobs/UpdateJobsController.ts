@@ -4,20 +4,22 @@ import { UpdateJobsUseCase } from "./UpdateJobsUseCase";
 
 export class UpdateJobsController {
     async handle(request: Request, response: Response, next: NextFunction)  {
-        const { id, id_client, id_contractor, sunday, monday, tuesday, wednesday, thursday, friday, saturday, value, value_hour  } = request.body;
+        // const { id, id_client, id_contractor, sunday, monday, tuesday, wednesday, thursday, friday, saturday, hours, value_hour  } = request.body;
+        const { id, id_client, id_contractor, value_hour  } = request.body;
+
         const createJobsUseCase = new UpdateJobsUseCase();
         const result = await createJobsUseCase.execute({
             id: +id,
             id_contractor: +id_contractor,
             id_client: +id_client,
-            sunday,
-            monday,
-            tuesday,
-            wednesday,
-            thursday,
-            friday,
-            saturday,
-            value: +value,
+            // sunday,
+            // monday,
+            // tuesday,
+            // wednesday,
+            // thursday,
+            // friday,
+            // saturday,
+            // value: +hours,
             value_hour: +value_hour
         });
 

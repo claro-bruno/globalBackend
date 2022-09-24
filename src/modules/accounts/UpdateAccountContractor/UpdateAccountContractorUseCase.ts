@@ -5,10 +5,11 @@ import {AppError} from "../../../middlewares/AppError";
 interface IAccountContractor {
     id: number;
     access: string;
+    status: string;
 }
 
 export class UpdateAccountContractorUseCase {
-    async execute({ id, access}: IAccountContractor): Promise<any>{
+    async execute({ id, access, status }: IAccountContractor): Promise<any>{
 
         if(access!=="ADMIN") {
             throw new AppError('Permission Denied', 401)
@@ -37,7 +38,7 @@ export class UpdateAccountContractorUseCase {
                 id
             },
             data: {
-                status: 'ACTIVE'
+                status
             }
         });
 
@@ -46,8 +47,8 @@ export class UpdateAccountContractorUseCase {
                 id: contractorAccountExist.id
             },
             data: {
-                status: 'ACTIVE',
-                resetPassword: true
+                status,
+                // resetPassword: true
             }
         });
         return contractor;
