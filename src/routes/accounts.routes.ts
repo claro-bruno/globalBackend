@@ -25,7 +25,7 @@ const getJobsByContractorController = new GetJobsByContractorController();
 accountsRoutes.post("/contractor", use(authenticateContractorController.handle));
 accountsRoutes.post("/authentication", use(ensureAuthenticate), use(validateAuthentication.handle));
 accountsRoutes.get("/", use(ensureAuthenticate), use(getJobsController.handle));
-accountsRoutes.get("/contractor", use(ensureAuthenticate), use(getJobsByContractorController.handle));
+accountsRoutes.get("/contractor/:id", use(ensureAuthenticate), use(getJobsByContractorController.handle));
 accountsRoutes.put("/contractor/access/:id", use(ensureAuthenticate), use(updateAccountContractorController.handle));
 accountsRoutes.put("/contractor/password/:id", use(ensureAuthenticate), use(updatePasswordAccountContractorController.handle));
 
