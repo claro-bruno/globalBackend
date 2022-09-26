@@ -112,7 +112,7 @@ export class CompleteJobsUseCase {
                     data: {
                         fk_id_quarter: quarterResult.id,
                         value,
-                        date_at: date
+                        date: date
                     }
                 });
 

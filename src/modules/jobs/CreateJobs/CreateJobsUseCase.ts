@@ -125,7 +125,7 @@ export class CreateJobsUseCase {
                 data: {
                     fk_id_quarter: quarter.id,
                     value,
-                    date_at: date
+                    date: date
                 }
             });
 
@@ -162,7 +162,7 @@ export class CreateJobsUseCase {
                 data: {
                     fk_id_quarter: quarter.id,
                     value,
-                    date_at: date
+                    date: date
                 }
             });
 
