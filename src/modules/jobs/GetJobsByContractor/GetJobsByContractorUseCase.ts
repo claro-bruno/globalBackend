@@ -29,19 +29,20 @@ export class GetJobsByContractorUseCase {
                         name: true,
                         id: true, 
                     },
-                    contractors: {
+                    contractor: {
                         select: {
                             name: true,
                             id: true,
                         }
                     },
-                    quarters: {
+                    quarter: {
                         select: {
                             month: true,
                             year: true,
                             value_hour: true,
                         },
-                        appointments: {
+                        appointment: {
+                            date: true,
                             value: true,
                         }
                     }

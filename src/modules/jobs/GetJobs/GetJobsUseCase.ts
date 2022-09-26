@@ -25,26 +25,27 @@ export class GetJobsUseCase {
             },
             select: {
                 id: true,
-                clients: {
+                client: {
                     select: {
                         name: true,
                         id: true, 
                     }
                 },
                 status: true,
-                contractors: {
+                contractor: {
                     select: {
                         name: true,
                         id: true,
                     }
                 },
-                quarters: {
+                quarter: {
                     select: {
                         month: true,
                         year: true,
                         value_hour: true,
                     },
-                    appointments: {
+                    appointment: {
+                        date: true,
                         value: true,
                     }
                 }
