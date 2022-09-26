@@ -11,9 +11,9 @@ model Payments {
   id    Int     @id @default(autoincrement())
   value Float
   method String
+  quarter   Quarters  @relation(fields: [fk_id_quarter], references: [id])
+  fk_id_quarter Int? @unique
   identification String
-  year Int
-  month String
   description String
   created_at DateTime @default(now())
 
@@ -120,6 +120,7 @@ model Quarters {
   year Int
   month Int
   order Int
+  payment Payments[]
   appointment   Appointments[]
   @@map("quarters")
 }

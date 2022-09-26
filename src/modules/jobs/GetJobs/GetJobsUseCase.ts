@@ -25,6 +25,16 @@ export class GetJobsUseCase {
             },
             select: {
                 id: true,
+                _sum: {
+                    quarter: {
+                        select: {
+                            appointment: {
+                                value: true,
+                            }
+                        },
+
+                    }
+                },
                 client: {
                     select: {
                         name: true,
@@ -40,14 +50,24 @@ export class GetJobsUseCase {
                 },
                 quarter: {
                     select: {
+                        _sum : {
+                            appointment: {
+                                select: {
+                                    value: true,
+                                }
+                            }
+                        },
                         month: true,
                         year: true,
                         value_hour: true,
+                        appointment: {
+                            select: {
+                                date: true,
+                                value: true,
+                            }
+                        }
                     },
-                    appointment: {
-                        date: true,
-                        value: true,
-                    }
+                    
                 }
             }
         });
