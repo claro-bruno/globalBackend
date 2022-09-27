@@ -9,7 +9,7 @@ export class GetClientUseCase {
         const client = await prisma.clients.findFirst({
             where: {
                 id,
-                status: true
+                status: 'ACTIVE'
             }
         });
 

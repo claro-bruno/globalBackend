@@ -8,7 +8,7 @@ export class GetClientsUseCase {
 
         const clients = await prisma.clients.findMany({
             where: {
-                status: true,
+                status: 'ACTIVE',
             }
         });
 

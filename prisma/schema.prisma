@@ -63,7 +63,7 @@ model Clients {
   saturday Boolean
   sunday Boolean
   jobs Jobs[]
-  status Boolean @default(true)
+  status Status @default(ACTIVE)
   @@map("clients")
 }
 
