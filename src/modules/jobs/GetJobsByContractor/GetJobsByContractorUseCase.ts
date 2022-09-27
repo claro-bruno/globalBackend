@@ -17,7 +17,7 @@ export class GetJobsByContractorUseCase {
         const jobs = await prisma.jobs.findMany({
             where: {
                 status: true,
-                quarters: {
+                quarter: {
                     month: +getMonthFromString(month),
                     year
                 }

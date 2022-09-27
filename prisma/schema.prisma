@@ -11,8 +11,8 @@ model Payments {
   id    Int     @id @default(autoincrement())
   value Float
   method String
-  fk_id_quarter Int? @unique
-  quarter   Quarters?  @relation(fields: [fk_id_quarter], references: [id])
+  year Int
+  month String
   identification String
   description String
   created_at DateTime @default(now())

@@ -10,12 +10,12 @@ function getMonthFromString(mon: string){
     return -1;
 }
 
-export class GetJobsUseCase {
+export class GetPaymentsByContractorUseCase {
     async execute(year: number, month: string) {
 
         // Receber userName, password
         // Verificar se o userName cadastrado
-        const jobs = await prisma.jobs.findMany({
+        const jobs = await prisma.payments.findMany({
             where: {
                 status: true,
                 quarter: {
@@ -25,22 +25,6 @@ export class GetJobsUseCase {
             },
             select: {
                 id: true,
-                _sum: {
-                    quarter: {
-                        select: {
-                            appointment: {
-                                value: true,
-                            }
-                        },
-
-                    }
-                },
-                client: {
-                    select: {
-                        name: true,
-                        id: true, 
-                    }
-                },
                 status: true,
                 contractor: {
                     select: {

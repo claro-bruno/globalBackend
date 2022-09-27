@@ -10,7 +10,7 @@ function getMonthFromString(mon: string){
     return -1;
 }
 
-export class GetJobsUseCase {
+export class GetPaymentsUseCase {
     async execute(year: number, month: string) {
 
         // Receber userName, password
@@ -18,7 +18,7 @@ export class GetJobsUseCase {
         const jobs = await prisma.jobs.findMany({
             where: {
                 status: true,
-                quarter: {
+                quarters: {
                     month: +getMonthFromString(month),
                     year
                 }
