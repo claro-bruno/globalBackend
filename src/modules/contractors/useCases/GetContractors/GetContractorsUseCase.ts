@@ -7,7 +7,11 @@ export class GetContractorsUseCase {
     async execute() {
         // Receber userName, password
         // Verificar se o userName cadastrado
-        const contractors = await prisma.contractors.findMany();
+        const contractors = await prisma.contractors.findMany({
+            include: {
+                address: true,
+            }
+        });
         return contractors;
     }
 }

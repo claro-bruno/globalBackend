@@ -8,6 +8,9 @@ export class GetContractorUseCase {
         const contractor = await prisma.contractors.findFirst({
             where: {
                 id
+            },
+            include: {
+                address: true,
             }
         });
 
