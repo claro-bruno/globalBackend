@@ -120,7 +120,6 @@ model Quarters {
   year Int
   month Int
   order Int
-  payment Payments[]
   appointment   Appointments[]
   @@map("quarters")
 }

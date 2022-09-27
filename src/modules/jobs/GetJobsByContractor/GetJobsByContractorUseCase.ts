@@ -18,8 +18,10 @@ export class GetJobsByContractorUseCase {
             where: {
                 status: true,
                 quarter: {
-                    month: +getMonthFromString(month),
-                    year
+                    select: {
+                        month: +getMonthFromString(month),
+                        year
+                    }
                 }
             },
             select: {
