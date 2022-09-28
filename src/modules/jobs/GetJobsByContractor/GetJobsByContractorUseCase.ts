@@ -14,30 +14,27 @@ function getMonthFromString(mon: string){
 export class GetJobsByContractorUseCase {
     async execute(id: number, year: number, month: string) {
 
-        const jobs = await prisma.jobs.findMany({
+        const jobs =  prisma.jobs.findMany({
             where: {
-                status: true,
+                status: 'ACTIVE',
+                fk_id_contractor: +id,
                 quarter: {
-                    select: {
-                        month: +getMonthFromString(month),
-                        year
-                    }
+                    some: { 
+                        year: {
+                            equals: year,
+                        },
+                        month: {
+                            equals: +getMonthFromString(month),
+                        }
+                    }    
                 }
             },
             select: {
                 id: true,
-                _sum: {
-                    quarter: {
-                        select: {
-                            appointment: {
-                                value: true,
-                            }
-                        },
-
-                    }
-                },
                 client: {
-                    select: {
+                    
+                    select: 
+                    {
                         name: true,
                         id: true, 
                     }
@@ -45,24 +42,21 @@ export class GetJobsByContractorUseCase {
                 status: true,
                 contractor: {
                     select: {
-                        name: true,
+                        first_name: true,
+                        middle_name: true,
+                        last_name: true,
                         id: true,
-                    }
+                     }
                 },
                 quarter: {
                     select: {
-                        _sum : {
-                            appointment: {
-                                select: {
-                                    value: true,
-                                }
-                            }
-                        },
                         month: true,
                         year: true,
                         value_hour: true,
-                        appointment: {
-                            select: {
+                        appointment: 
+                        {
+                            select: 
+                            {
                                 date: true,
                                 value: true,
                             }
@@ -73,7 +67,72 @@ export class GetJobsByContractorUseCase {
             }
         });
 
+        // await prisma.jobs.groupBy({
+        //     by: ['id'],
+        //     where: {
+        //         status: 'ACTIVE',
+        //         quarter: {
+        //             some: { 
+        //                 year: {
+        //                     equals: year,
+        //                 },
+        //                 month: {
+        //                     equals: +getMonthFromString(month),
+        //                 }
+        //             }    
+        //         }
+        //     },
+        
+        //     _sum: {
+                
+        //     }
+            
+        // });
 
-        return jobs;
+        // await prisma.jobs.aggregate({
+        //     where: {
+        //         status: 'ACTIVE',
+        //         quarter: {
+        //             some: { 
+        //                 year: {
+        //                     equals: year,
+        //                 },
+        //                 month: {
+        //                     equals: +getMonthFromString(month),
+        //                 }
+        //             }    
+        //         }
+        //     },
+            
+        //     _sum: {
+
+        //     }
+            
+        // });
+
+        const res = await prisma.$queryRaw`
+            SELECT sum(a.value) as total 
+            FROM jobs as j
+            INNER JOIN quarters as q ON q.fk_id_job = j.id
+            INNER JOIN appointments as a ON a.fk_id_quarter = q.id
+            WHERE 
+            j.status = 'ACTIVE' AND 
+            q.year = ${year} AND 
+            q.month = ${+getMonthFromString(month)} AND
+            j.fk_id_contractor = ${id}
+
+            ;`
+        
+        const res2 = await prisma.$queryRaw`
+            SELECT sum(a.value) as total 
+            FROM jobs as j
+            INNER JOIN quarters as q ON q.fk_id_job = j.id
+            INNER JOIN appointments as a ON a.fk_id_quarter = q.id
+            WHERE j.status = 'ACTIVE' AND q.year = ${year} AND q.month = ${+getMonthFromString(month)} AND
+            j.fk_id_contractor = ${id}
+            GROUP BY j.id
+            ;`
+        return res2;
+
     }
 }

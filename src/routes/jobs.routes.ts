@@ -20,7 +20,8 @@ jobsRoutes.post("/", use(ensureAuthenticate), use(createServicesController.handl
 jobsRoutes.put("/:id", use(ensureAuthenticate), use(completeJobsController.handle));
 jobsRoutes.get("/contractor/:id", use(ensureAuthenticate), use(getJobsByContractorController.handle));
 jobsRoutes.get("/client/:id", use(ensureAuthenticate), use(getJobsByClientController.handle));
-jobsRoutes.get("/", use(ensureAuthenticate), use(getJobsController.handle));
+// jobsRoutes.get("/", use(ensureAuthenticate), use(getJobsController.handle));
+jobsRoutes.get("/", use(getJobsController.handle));
 
 
 

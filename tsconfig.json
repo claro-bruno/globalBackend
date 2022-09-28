@@ -1,9 +1,12 @@
 {
   "compilerOptions": {
-    "sourceMap": true,
+    // "sourceMap": true,
     "outDir": "dist",
     "strict": true,
     "lib": ["esnext"],
     "esModuleInterop": true,
+    "target": "ES2022",
+    "typeRoots": ["./node_modules/@types", "./src/@types"],
+    "module": "CommonJS"
   }
 }
