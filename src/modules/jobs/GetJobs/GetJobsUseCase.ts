@@ -24,7 +24,7 @@ export class GetJobsUseCase {
                 quarter: {
                     some: { 
                         year: {
-                            equals: year,
+                            equals: +year,
                         },
                         month: {
                             equals: month,
@@ -71,55 +71,11 @@ export class GetJobsUseCase {
             }
         });
 
-        
-
-        // await prisma.jobs.groupBy({
-        //     by: ['id'],
-        //     where: {
-        //         status: 'ACTIVE',
-        //         quarter: {
-        //             some: { 
-        //                 year: {
-        //                     equals: year,
-        //                 },
-        //                 month: {
-        //                     equals: +getMonthFromString(month),
-        //                 }
-        //             }    
-        //         }
-        //     },
-        
-        //     _sum: {
-                
-        //     }
-            
-        // });
-
-        // await prisma.jobs.aggregate({
-        //     where: {
-        //         status: 'ACTIVE',
-        //         quarter: {
-        //             some: { 
-        //                 year: {
-        //                     equals: year,
-        //                 },
-        //                 month: {
-        //                     equals: +getMonthFromString(month),
-        //                 }
-        //             }    
-        //         }
-        //     },
-            
-        //     _sum: {
-
-        //     }
-            
-        // });
+    
         let total = 0;
         let total_1quarter = 0;
         let total_2quarter = 0;
         jobs.forEach((job: any)=>{
-            
             job.quarter.forEach((quarter: any)=>{
                 let total_hours = 0;
                 quarter.appointment.forEach((appointment: any)=>{

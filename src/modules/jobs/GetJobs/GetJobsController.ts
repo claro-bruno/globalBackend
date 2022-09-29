@@ -4,11 +4,15 @@ import { GetJobsUseCase } from "./GetJobsUseCase";
 export class GetJobsController {
     async handle(request: Request, response: Response, next: NextFunction)  {
 
-        const { month, year } = request.body;
+        const { month, year } = request.query;
         const getJobsUseCase = new GetJobsUseCase();
-        const result = await getJobsUseCase.execute(+year, month);
+        if(month && year) {
+            const result = await getJobsUseCase.execute(+year, month as string);
+            return response.json(result);
+        }
+        
 
-        return response.json(result);
+        
 
 
     }
