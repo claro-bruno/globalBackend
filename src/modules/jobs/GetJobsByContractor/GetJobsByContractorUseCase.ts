@@ -14,7 +14,7 @@ function getMonthFromString(mon: string){
 export class GetJobsByContractorUseCase {
     async execute(id: number, year: number, month: string) {
 
-        const jobs =  prisma.jobs.findMany({
+        const jobs =  await prisma.jobs.findMany({
             where: {
                 status: 'ACTIVE',
                 fk_id_contractor: +id,
@@ -24,7 +24,7 @@ export class GetJobsByContractorUseCase {
                             equals: year,
                         },
                         month: {
-                            equals: +getMonthFromString(month),
+                            equals: month,
                         }
                     }    
                 }
@@ -50,6 +50,7 @@ export class GetJobsByContractorUseCase {
                 },
                 quarter: {
                     select: {
+                        order: true,
                         month: true,
                         year: true,
                         value_hour: true,
@@ -66,6 +67,35 @@ export class GetJobsByContractorUseCase {
                 }
             }
         });
+
+        let total = 0;
+        let total_1quarter = 0;
+        let total_2quarter = 0;
+        jobs.forEach((job: any)=>{
+            
+            job.quarter.forEach((quarter: any)=>{
+                let total_hours = 0;
+                quarter.appointment.forEach((appointment: any)=>{
+                    total_hours += appointment.value;
+                });
+                quarter.total_hours = total_hours;
+                quarter.total = total_hours * quarter.value_hour;
+                if(quarter.order === 1) {
+                    total_1quarter += total_hours * quarter.value_hour;
+                }
+                    
+                if(quarter.order === 2) {
+                    total_2quarter += total_hours * quarter.value_hour;
+                } 
+                    
+                total += total_hours * quarter.value_hour;
+            });
+        });
+        const result = [];
+        result.push(jobs); 
+        result.push({ total });
+        result.push({ total_1quarter });
+        result.push({ total_2quarter });
 
         // await prisma.jobs.groupBy({
         //     by: ['id'],
@@ -110,29 +140,8 @@ export class GetJobsByContractorUseCase {
             
         // });
 
-        const res = await prisma.$queryRaw`
-            SELECT sum(a.value) as total 
-            FROM jobs as j
-            INNER JOIN quarters as q ON q.fk_id_job = j.id
-            INNER JOIN appointments as a ON a.fk_id_quarter = q.id
-            WHERE 
-            j.status = 'ACTIVE' AND 
-            q.year = ${year} AND 
-            q.month = ${+getMonthFromString(month)} AND
-            j.fk_id_contractor = ${id}
-
-            ;`
         
-        const res2 = await prisma.$queryRaw`
-            SELECT sum(a.value) as total 
-            FROM jobs as j
-            INNER JOIN quarters as q ON q.fk_id_job = j.id
-            INNER JOIN appointments as a ON a.fk_id_quarter = q.id
-            WHERE j.status = 'ACTIVE' AND q.year = ${year} AND q.month = ${+getMonthFromString(month)} AND
-            j.fk_id_contractor = ${id}
-            GROUP BY j.id
-            ;`
-        return res2;
+        return result;
 
     }
 }
