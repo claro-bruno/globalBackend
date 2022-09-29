@@ -45,7 +45,7 @@ export class AuthenticateContractorUseCase {
         const { access, contractor, resetPassword  } = contractor_account;
         const { id } = contractor;
         // Gerar o token
-        const token = sign({ access, id } , secret, { expiresIn: "7d" });
+        const token = sign({ access, id } , secret, { expiresIn: "1d" });
         //retornar a role da permissão de acesso.
         return { token, access, contractor_id: id ,reset: resetPassword };
     }

@@ -27,7 +27,7 @@ export class GetJobsUseCase {
                             equals: year,
                         },
                         month: {
-                            equals: +getMonthFromString(month),
+                            equals: month,
                         }
                     }    
                 }
@@ -69,6 +69,8 @@ export class GetJobsUseCase {
                 }
             }
         });
+
+        
 
         // await prisma.jobs.groupBy({
         //     by: ['id'],
@@ -113,12 +115,28 @@ export class GetJobsUseCase {
             
         // });
 
+        const result = jobs.reduce((acc, curr) => {
+            const job = { ...curr, quarter: curr.quarter.reduce(
+                (ac,current) => {
+                    const app = { ...current, total: current.appointment.reduce((accumulator, currently) =>{
+                        accumulator+= currently.value;
+                        return accumulator;
+                    },0) 
+                };
+            }
+                
+            ) }
+            return job;
+        }, []);
+
         const res = await prisma.$queryRaw`
-            SELECT sum(a.value) as total 
+            SELECT sum(a.value) as total, 
+            j.id 
             FROM jobs as j
             INNER JOIN quarters as q ON q.fk_id_job = j.id
             INNER JOIN appointments as a ON a.fk_id_quarter = q.id
-            WHERE j.status = 'ACTIVE' AND q.year = ${year} AND q.month = ${+getMonthFromString(month)}
+            WHERE j.status = 'ACTIVE' AND q.year = ${year} AND q.month = ${month}
+            GROUP BY j.id
             ;`
         
         const res2 = await prisma.$queryRaw`
@@ -126,9 +144,9 @@ export class GetJobsUseCase {
             FROM jobs as j
             INNER JOIN quarters as q ON q.fk_id_job = j.id
             INNER JOIN appointments as a ON a.fk_id_quarter = q.id
-            WHERE j.status = 'ACTIVE' AND q.year = ${year} AND q.month = ${+getMonthFromString(month)}
+            WHERE j.status = 'ACTIVE' AND q.year = ${year} AND q.month = ${month}
             GROUP BY q.order
             ;`
-        return res2;
+        return jobs;
     }
 }

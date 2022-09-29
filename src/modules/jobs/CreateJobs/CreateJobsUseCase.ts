@@ -42,12 +42,12 @@ function toMonthName(monthNumber: number) {
 export class CreateJobsUseCase {
     async execute({ id_contractor, id_client, sunday, monday, tuesday, wednesday, thursday, friday, saturday, value, value_hour }: IService) {
         const arrDays = [];
-        const arr = [];
+        let arr = [];
         const existJob = await prisma.jobs.findFirst({
             where: {
                 fk_id_contractor: id_contractor,
                 fk_id_client: id_client,
-                status: true,
+                status: 'ACTIVE',
             }
         });
 
@@ -69,7 +69,7 @@ export class CreateJobsUseCase {
             }
         });
         const date = new Date(Date.now());
-        const month = date.getMonth();
+        const month = date.getMonth() + 1;
         const year = date.getFullYear();
         // const quarter_option = new Date(Date.now()).getDay() > 15 ? 2 : 1;
         const last_date = new Date(year, month, 0);
@@ -137,15 +137,15 @@ export class CreateJobsUseCase {
                 fk_id_job: job.id,
                 value_hour,
                 year,
-                month,
+                month: toMonthName(month),
                 order: 2,
             }
         });
 
         inicio = 16;
         end = last_date.getDate();
-
-        for(let i=1; i<= end; i += 1) {
+        arr = [];
+        for(let i=16; i<= end; i += 1) {
             let dataValue = new Date(year, month, i);
             if(arrDays.includes(dataValue.toLocaleString('default', {weekday: 'long'}))) {
 

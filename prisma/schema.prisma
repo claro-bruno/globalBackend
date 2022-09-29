@@ -118,7 +118,7 @@ model Quarters {
   fk_id_job Int
   value_hour Float
   year Int
-  month Int
+  month String
   order Int
   appointment   Appointments[]
   @@map("quarters")
