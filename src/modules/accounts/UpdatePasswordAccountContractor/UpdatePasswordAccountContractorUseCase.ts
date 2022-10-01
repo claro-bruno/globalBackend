@@ -28,7 +28,7 @@ export class UpdatePasswordAccountContractorUseCase {
         const contractorAccount = await prisma.accounts.findFirst({
             where: {
                 id: contractorExist.fk_id_account,
-                resetPassword: true
+                // resetPassword: true
             }
         });
 

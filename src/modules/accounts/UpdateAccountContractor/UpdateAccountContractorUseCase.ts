@@ -42,13 +42,13 @@ export class UpdateAccountContractorUseCase {
             }
         });
 
-        const contractorAccount = await prisma.accounts.update({
+        await prisma.accounts.update({
             where: {
                 id: contractorAccountExist.id
             },
             data: {
                 status,
-                // resetPassword: true
+                resetPassword: true
             }
         });
         return contractor;

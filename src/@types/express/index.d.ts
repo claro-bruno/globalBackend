@@ -3,6 +3,7 @@ declare namespace Express {
         id: any;
         access: any;
         contractor_id: any;
+        account_id: number;
         // files: object;
     }
 }
