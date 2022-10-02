@@ -7,15 +7,19 @@ interface IAccountContractor {
     id: number;
     password: string;
     idToken: number;
+    account_id: number,
 }
 
 export class UpdatePasswordAccountContractorUseCase {
-    async execute({ id, idToken, password  }  : IAccountContractor): Promise<any>{
+    async execute({ id, idToken, account_id, password  }  : IAccountContractor): Promise<any>{
+
+        console.log(id,idToken);
         if(id!=idToken) throw new AppError('Invalid Request', 401)
 
         const contractorExist = await prisma.contractors.findFirst({
             where: {
-                id
+                id,
+                fk_id_account: account_id
             }
         });
 
@@ -25,18 +29,12 @@ export class UpdatePasswordAccountContractorUseCase {
             throw new AppError('Contractor does not exists', 401)
         }
 
-        const contractorAccount = await prisma.accounts.findFirst({
-            where: {
-                id: contractorExist.fk_id_account,
-                // resetPassword: true
-            }
-        });
 
         const hashPassword = await hash(password, 10);
 
         const contractor = await prisma.accounts.update({
             where: {
-                id: contractorAccount.id
+                id: +account_id
             },
             data: {
                 password: hashPassword,

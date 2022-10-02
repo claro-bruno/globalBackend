@@ -32,7 +32,7 @@ function getMonthFromString(mon: string){
 
 function toMonthName(monthNumber: number) {
     const date = new Date();
-    date.setMonth(monthNumber - 1);
+    date.setMonth(monthNumber);
   
     return date.toLocaleString('en-US', {
       month: 'long',
@@ -69,7 +69,7 @@ export class CreateJobsUseCase {
             }
         });
         const date = new Date(Date.now());
-        const month = date.getMonth() + 1;
+        const month = date.getMonth();
         const year = date.getFullYear();
 
         if(sunday) arrDays.push('Sunday');

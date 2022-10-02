@@ -44,10 +44,10 @@ export class AuthenticateContractorUseCase {
             throw new AppError("Username or Password invalid!");
         }
 
-        const { access, contractor, resetPassword,id: account_id  } = contractor_account;
+        const { access, contractor, resetPassword, id: account_id  } = contractor_account;
         const { id: contractor_id } = contractor as any;
         // Gerar o token
-        const token = sign({ access, contractor_id, account_id } , secret, { expiresIn: "10d" });
+        const token = sign({ access, contractor_id: +contractor_id, account_id: +account_id } , secret, { expiresIn: "10d" });
         //retornar a role da permissão de acesso.
         return { token, access, contractor_id ,reset: resetPassword, account_id };
     }

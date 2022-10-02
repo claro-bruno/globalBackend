@@ -8,7 +8,7 @@ interface IServiceComplete {
     year: number;
     valueHour: number;
     quarter: number;
-    status: boolean;
+    status: string;
     workedDaysInfos: { dateValue: string }[];
 }
 
@@ -54,7 +54,7 @@ export class CompleteJobsUseCase {
                 id
             },
             data: {
-                status
+                status: status as any
             }
         });
 
@@ -63,16 +63,15 @@ export class CompleteJobsUseCase {
                 // month: getMonthFromString(month),
                 month,
                 year,
-                order: quarter,
+                order: +quarter,
                 fk_id_job: id
             }
         });
-
         if(!quarterResult) {
             quarterResult = await prisma.quarters.create({
                 data: {
                     fk_id_job: id,
-                    value_hour: valueHour,
+                    value_hour: +valueHour,
                     year,
                     // month: getMonthFromString(month),
                     month,
@@ -85,7 +84,7 @@ export class CompleteJobsUseCase {
                     id: quarterResult.id
                 },
                 data: {
-                    value_hour: valueHour
+                    value_hour: +valueHour
                 }
             });
         }
@@ -105,18 +104,20 @@ export class CompleteJobsUseCase {
 
                 }
             });
-
-            await arr.reduce(async (memo: any, { date, value }: IAppointment) => {
-                await memo;
-                await prisma.appointments.create({
-                    data: {
-                        fk_id_quarter: quarterResult.id,
-                        value,
-                        date: date
-                    }
-                });
-
-            }, undefined);
+            if(quarterResult) {
+                await arr.reduce(async (memo: any, { date, value }: IAppointment) => {
+                    await memo;
+                    await prisma.appointments.create({
+                        data: {
+                            fk_id_quarter: quarterResult.id,
+                            value: +value,
+                            date: date
+                        }
+                    });
+    
+                }, undefined);
+            }
+            
 
 
 

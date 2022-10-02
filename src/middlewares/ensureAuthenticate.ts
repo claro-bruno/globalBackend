@@ -7,7 +7,8 @@ const secret = getFileContent('jwt.evaluation.key');
 
 interface IPayLoad {
     access: string;
-    id: number;
+    account_id: number;
+    contractor_id: number;
 }
 
 declare module 'express-serve-static-core' {
@@ -32,9 +33,10 @@ export async function ensureAuthenticate(request: Request, response: Response, n
     
     try {
 
-        const { id, access } = verify(authHeader, secret) as IPayLoad;
+        const { access, contractor_id, account_id } = verify(authHeader, secret) as IPayLoad;
 
-        request.id = id;
+        request.account_id = +account_id;
+        request.contractor_id = +contractor_id;
         request.access = access;
         return next();
 

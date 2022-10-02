@@ -4,67 +4,76 @@ import { AppError } from "../../../../middlewares/AppError";
 
 export class GetPaymentsUseCase {
     async execute(year: number, month: string) {
-
-        // Receber userName, password
-        // Verificar se o userName cadastrado
-        // const payments = await prisma.jobs.findMany({
-        //     where: {
-        //         status: true,
-        //         quarters: {
-        //             month: +getMonthFromString(month),
-        //             year
-        //         }
-        //     },
-        //     select: {
-        //         id: true,
-        //         _sum: {
-        //             quarter: {
-        //                 select: {
-        //                     appointment: {
-        //                         value: true,
-        //                     }
-        //                 },
-
-        //             }
-        //         },
-        //         client: {
-        //             select: {
-        //                 name: true,
-        //                 id: true, 
-        //             }
-        //         },
-        //         status: true,
-        //         contractor: {
-        //             select: {
-        //                 name: true,
-        //                 id: true,
-        //             }
-        //         },
-        //         quarter: {
-        //             select: {
-        //                 _sum : {
-        //                     appointment: {
-        //                         select: {
-        //                             value: true,
-        //                         }
-        //                     }
-        //                 },
-        //                 month: true,
-        //                 year: true,
-        //                 value_hour: true,
-        //                 appointment: {
-        //                     select: {
-        //                         date: true,
-        //                         value: true,
-        //                     }
-        //                 }
-        //             },
+        const jobs =  await prisma.jobs.findMany({
+            distinct: ['fk_id_contractor'],
+            where: {
+                status: 'ACTIVE',
+                quarter: {
+                    some: { 
+                        year: {
+                            equals: +year,
+                        },
+                        month: {
+                            equals: month,
+                        }
+                    }    
+                }
+            },
+            select: {
+                
+                id: true,
+                client: {
                     
-        //         }
-        //     }
-        // });
+                    select: 
+                    {
+                        name: true,
+                        id: true, 
+                    }
+                },
+                status: true,
+                contractor: {
+                    select: {
+                        first_name: true,
+                        middle_name: true,
+                        last_name: true,
+                        id: true,
+                     }
+                },
+                quarter: {
+                    select: {
+                        order: true,
+                        month: true,
+                        year: true,
+                        value_hour: true,
+                        appointment: 
+                        {
+                            select: 
+                            {
+                                date: true,
+                                value: true,
+                            }
+                        }
+                    },
+                    
+                }
+            }
+        });
+        // const payments = await prisma.$queryRaw`
+        //     SELECT 
+            //     p.year,
+            //     p.month,
+            //     p.identification,
+            //     p.value,
+            //     p.quarter
+        //     FROM contractors AS c
+        //     INNER JOIN payments as p ON p.fk_id_contractor = c.id
+        //     RIGHT JOIN jobs as j ON j.fk_id_contractor = c.id
+        //     WHERE p.month = 'October' AND p.year = 2022
+        //     ;`
+
+    
 
 
-        return '';
+        return jobs;
     }
 }
