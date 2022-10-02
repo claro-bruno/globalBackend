@@ -13,8 +13,11 @@ model Payments {
   method String
   year Int
   month String
+  quarter Int
   identification String
-  description String
+  contractor  Contractors?  @relation(fields: [fk_id_contractor], references: [id])
+  fk_id_contractor Int?
+  description String?
   created_at DateTime @default(now())
 
   @@map("payments")
@@ -41,6 +44,7 @@ model Contractors {
   account   Accounts?  @relation(fields: [fk_id_account], references: [id])
   fk_id_account Int? @unique
 
+  payments Payments[]
   address     Adresseses[]
   jobs     Jobs[]
   @@map("contractors")

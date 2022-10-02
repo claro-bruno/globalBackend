@@ -71,29 +71,6 @@ export class CreateJobsUseCase {
         const date = new Date(Date.now());
         const month = date.getMonth() + 1;
         const year = date.getFullYear();
-        // const quarter_option = new Date(Date.now()).getDay() > 15 ? 2 : 1;
-        const last_date = new Date(year, month, 0);
-        // const quarter = await prisma.quarters.create({
-        //     data: {
-        //         fk_id_job: job.id,
-        //         value_hour,
-        //         year,
-        //         month,
-        //         order: quarter_option,
-        //     }
-        // });
-
-        let quarter = await prisma.quarters.create({
-            data: {
-                fk_id_job: job.id,
-                value_hour,
-                year,
-                month: toMonthName(month),
-                order: 1,
-            }
-        });
-
-        
 
         if(sunday) arrDays.push('Sunday');
         if(monday) arrDays.push('Monday');
@@ -103,36 +80,48 @@ export class CreateJobsUseCase {
         if(friday) arrDays.push('Friday');
         if(saturday) arrDays.push('Saturday');
 
-        // let inicio = quarter_option === 1 ? 1 : 16;
-        // let end = quarter_option === 1 ? 15 : last_date.getDate();
-        let inicio = 1;
-        let end = 15;
 
-        for(let i=inicio; i<= end; i += 1) {
-            let dataValue = new Date(year, month, i);
-            if(arrDays.includes(dataValue.toLocaleString('default', {weekday: 'long'}))) {
-
-                arr.push({date: dataValue, value});
-            }
-            else {
-                arr.push({date: dataValue, value: 0});
-            }
-        }
-
-        await arr.reduce(async (memo: any, { date, value }: IAppointment) => {
-            await memo;
-            await prisma.appointments.create({
+        if(new Date(Date.now()).getDay() <= 15) {
+            const quarter_1 = await prisma.quarters.create({
                 data: {
-                    fk_id_quarter: quarter.id,
-                    value,
-                    date: date
+                    fk_id_job: job.id,
+                    value_hour,
+                    year,
+                    month: toMonthName(month),
+                    order: 1,
                 }
             });
 
-        }, undefined);
+            for(let i=1; i<= 15; i += 1) {
+                let dataValue = new Date(year, month, i);
+                if(arrDays.includes(dataValue.toLocaleString('default', {weekday: 'long'}))) {
+    
+                    arr.push({date: dataValue, value});
+                }
+                else {
+                    arr.push({date: dataValue, value: 0});
+                }
+            }
+    
+            await arr.reduce(async (memo: any, { date, value }: IAppointment) => {
+                await memo;
+                await prisma.appointments.create({
+                    data: {
+                        fk_id_quarter: quarter_1.id,
+                        value,
+                        date: date
+                    }
+                });
+    
+            }, undefined);
+        }
+        const last_date = new Date(year, month, 0);
 
 
-        quarter = await prisma.quarters.create({
+        
+
+
+        const quarter_2 = await prisma.quarters.create({
             data: {
                 fk_id_job: job.id,
                 value_hour,
@@ -142,10 +131,8 @@ export class CreateJobsUseCase {
             }
         });
 
-        inicio = 16;
-        end = last_date.getDate();
         arr = [];
-        for(let i=16; i<= end; i += 1) {
+        for(let i=16; i<= last_date.getDate(); i += 1) {
             let dataValue = new Date(year, month, i);
             if(arrDays.includes(dataValue.toLocaleString('default', {weekday: 'long'}))) {
 
@@ -160,7 +147,7 @@ export class CreateJobsUseCase {
             await memo;
             await prisma.appointments.create({
                 data: {
-                    fk_id_quarter: quarter.id,
+                    fk_id_quarter: quarter_2.id,
                     value,
                     date: date
                 }

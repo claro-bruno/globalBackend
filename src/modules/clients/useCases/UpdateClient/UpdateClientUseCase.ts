@@ -13,7 +13,7 @@ interface IUpdateCompany {
     saturday: boolean;
     start: string;
     end: string;
-    status: boolean
+    status: string
 }
 
 
