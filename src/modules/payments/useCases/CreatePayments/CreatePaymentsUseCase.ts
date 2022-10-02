@@ -1,14 +1,6 @@
 
 import { prisma } from "../../../../database/prismaClient";
 import { AppError } from "../../../../middlewares/AppError";
-function getMonthFromString(mon: string){
-
-    var d = Date.parse(mon + "1, 2022");
-    if(!isNaN(d)){
-        return new Date(d).getMonth() + 1;
-    }
-    return -1;
-}
 
 interface ICreatePayments {
     contractor_id: string;
@@ -30,7 +22,7 @@ export class CreatePaymentsUseCase {
              throw new AppError('Contractor does not exists', 400)
          }
 
-         let { type, identifier, value, quarter } = payments[0];
+         const { type, identifier, value, quarter } = payments[0];
          let paymentExist = await prisma.payments.findFirst({
             where: {
                 month: month as any,
@@ -53,9 +45,9 @@ export class CreatePaymentsUseCase {
                     method: type,
                     year: +year,
                     month,
-                    quarter: +quarter,
+                    quarter: 1,
                     identification: identifier,
-                    fk_id_contractor: +contractor_id as number
+                    fk_id_contractor: +contractor_id
                 }
             });
         } else {
@@ -68,20 +60,20 @@ export class CreatePaymentsUseCase {
                     quarter: +quarter,
                     identification: identifier,
                     description: 'descricao',
-                    fk_id_contractor: +contractor_id as number
+                    fk_id_contractor: +contractor_id
                 }
             });
         }
  
 
-        const { type_2, identifier_2, value_2, quarter_2 } = payments[1];
+        const { type: type_2, identifier: identifier_2, value: value_2, quarter: quarter_2 } = payments[1];
         paymentExist = await prisma.payments.findFirst({
             where: {
                 month: month as string,
                 year: +year,
-                quarter: 2,
+                quarter: +quarter_2,
                 identification: identifier_2,
-                fk_id_contractor: +contractor_id as number,
+                fk_id_contractor: +contractor_id
             }
          });
 
@@ -99,7 +91,7 @@ export class CreatePaymentsUseCase {
                     month,
                     quarter: +quarter_2,
                     identification: identifier_2,
-                    fk_id_contractor: +contractor_id as number
+                    fk_id_contractor: +contractor_id
                 }
             });
         } else {
@@ -109,10 +101,10 @@ export class CreatePaymentsUseCase {
                     method: type_2,
                     year: +year,
                     month,
-                    quarter: +quarter_2,
+                    quarter: 2,
                     identification: identifier_2,
                     description: 'descricao',
-                    fk_id_contractor: +contractor_id as number
+                    fk_id_contractor: +contractor_id
                 }
             });
         }
