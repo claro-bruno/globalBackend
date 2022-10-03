@@ -7,6 +7,7 @@ export class GetPaymentsController {
         const getPaymentsUseCase = new GetPaymentsUseCase();
         if(month && year){
             const result = await getPaymentsUseCase.execute(+year, month as string);
+            
             return response.json(result);
         }
         
