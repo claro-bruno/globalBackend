@@ -175,6 +175,7 @@ export class GetPaymentsUseCase {
                     
                     total += total_hours * quarter.value_hour;
                 });
+                obj.total = total_1quarter + total_2quarter;
                 obj.total_1quarter = total_1quarter;
                 obj.total_2quarter = total_2quarter;
 
