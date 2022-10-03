@@ -1,4 +1,5 @@
 
+import { AnyARecord } from "dns";
 import { prisma } from "../../../../database/prismaClient";
 import { AppError } from "../../../../middlewares/AppError";
 
@@ -62,7 +63,7 @@ export class GetPaymentsUseCase {
         });
         const grouped = groupBy(jobs, (job: any) => job.fk_id_contractor);
 
-        const payments: any = await prisma.$queryRaw`
+        let payments: any = await prisma.$queryRaw`
             SELECT 
             DISTINCT jobs.fk_id_contractor,
             quarters.year,
@@ -117,24 +118,62 @@ export class GetPaymentsUseCase {
 
         JSON.stringify(payments, (_, v) => typeof v === 'bigint' ? v.toString() : v);
         
-        
-        // console.log(grouped);
-        // console.log(payments);
-        
-
+        const result: any = [];
+        let total = 0;
+        let total_1quarter = 0;
+        let total_2quarter = 0;
+        let total_1 = 0;
+        let total_2 = 0;
+        let total_hours = 0;
+        let obj: any = {};
         payments.forEach((info: any) => {
-            console.log(info);
-            console.log(grouped.get(info.fk_id_contractor));
+            obj = {};
+            total_1quarter = 0;
+            total_2quarter = 0;
+            obj.fk_id_contractor = info.fk_id_contractor;
+            obj.year = info.year;
+            obj.mont = info.month;
+            obj.name = info.name;
+            obj.value_1 = info.value_1;
+            obj.identification_1 = info.identification_1;
+            obj.method_1 = info.method_1;
+            obj.quarter_1 = 1;
+            obj.value_2 = info.value_2;
+            obj.identification_2 = info.identification_2;
+            obj.method_2 = info.method_2;
+            obj.quarter_2 = 2;
+            let map_info = grouped.get(info.fk_id_contractor);
+
+            map_info.forEach((job: any) => {
+                job.quarter.forEach((quarter: any)=>{
+                    total_hours = 0;
+                    quarter.appointment.forEach((appointment: any) =>{
+                        total_hours += appointment.value;
+                        
+                    });
+                    if(quarter.order === 1) {
+                        total_1quarter += total_hours * quarter.value_hour;
+                        total_1 += total_hours * quarter.value_hour;
+                    }
+                        
+                    if(quarter.order === 2) {
+                        total_2quarter += total_hours * quarter.value_hour;
+                        total_2 += total_hours * quarter.value_hour;
+                    }
+                    
+                    total += total_hours * quarter.value_hour;
+                });
+                obj.total_1quarter = total_1quarter;
+                obj.total_2quarter = total_2quarter;
+
+            });
+            result.push(obj);
         });
-        // payments.forEach((info: any, index: number)=> {
-        //     let filtered: any = grouped.filter((info)=> {
+        result.push({total});
+        result.push({total_1});
+        result.push({total_2});
 
-        //     });
-        //     console.log(info, grouped[0]);
-        // });
-
-
-        return jobs;
+        return result;
     }
 }
 
