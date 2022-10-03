@@ -140,7 +140,7 @@ export class GetPaymentsUseCase {
             obj.name = info.name;
             
             pays.value = info.value_1;
-            pays.identification = info.identification_1;
+            pays.identifier = info.identification_1;
             pays.method = info.method_1;
             pays.quarter = 1;
 
@@ -148,7 +148,7 @@ export class GetPaymentsUseCase {
             
             pays = {};
             pays.value = info.value_2;
-            pays.identification = info.identification_2;
+            pays.identifier = info.identification_2;
             pays.method = info.method_2;
             pays.quarter = 2;
             payy.push(pays);
