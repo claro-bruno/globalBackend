@@ -119,7 +119,9 @@ export class GetPaymentsUseCase {
         JSON.stringify(payments, (_, v) => typeof v === 'bigint' ? v.toString() : v);
         
         const result: any = [];
+        let payy: any = [];
         let total = 0;
+        let pays: any = {};
         let total_1quarter = 0;
         let total_2quarter = 0;
         let total_1 = 0;
@@ -128,20 +130,30 @@ export class GetPaymentsUseCase {
         let obj: any = {};
         payments.forEach((info: any) => {
             obj = {};
+            payy = [];
+            pays = {};
             total_1quarter = 0;
             total_2quarter = 0;
             obj.fk_id_contractor = info.fk_id_contractor;
             obj.year = info.year;
             obj.mont = info.month;
             obj.name = info.name;
-            obj.value_1 = info.value_1;
-            obj.identification_1 = info.identification_1;
-            obj.method_1 = info.method_1;
-            obj.quarter_1 = 1;
-            obj.value_2 = info.value_2;
-            obj.identification_2 = info.identification_2;
-            obj.method_2 = info.method_2;
-            obj.quarter_2 = 2;
+            
+            pays.value = info.value_1;
+            pays.identification = info.identification_1;
+            pays.method = info.method_1;
+            pays.quarter = 1;
+
+            payy.push(pays);
+            
+            pays = {};
+            pays.value = info.value_2;
+            pays.identification = info.identification_2;
+            pays.method = info.method_2;
+            pays.quarter = 2;
+            payy.push(pays);
+            obj.payments = payy;
+
             let map_info = grouped.get(info.fk_id_contractor);
 
             map_info.forEach((job: any) => {
