@@ -113,31 +113,25 @@ export class GetPaymentsUseCase {
             INNER JOIN contractors AS c ON jobs.fk_id_contractor = c.id
 			WHERE quarters.month = ${month} AND quarters.year = ${year} 
             order by jobs.fk_id_contractor ASC
-            -- group by jobs.fk_id_contractor
             ;`
 
         JSON.stringify(payments, (_, v) => typeof v === 'bigint' ? v.toString() : v);
-        // console.log(jobs);
-        // const payments_result = [] as any;
-
-        // try {
-        //     payments.forEach((element: any) => {
-        //         const r = payments_result.find((pay: any) => {
-        //             return pay.name = element.name;
-        //         });
-        //         console.log(r);
-                
-        //         if (typeof r === 'undefined') {
-        //             payments_result.push(element);
-        //         }
-        //         console.log(payments_result);
-        //     });
-        // } catch(e) {
-        //     if (e instanceof Error) {
-        //         console.log(e.message)
-        //     }
-        // }
         
+        
+        // console.log(grouped);
+        // console.log(payments);
+        
+
+        payments.forEach((info: any) => {
+            console.log(info);
+            console.log(grouped.get(info.fk_id_contractor));
+        });
+        // payments.forEach((info: any, index: number)=> {
+        //     let filtered: any = grouped.filter((info)=> {
+
+        //     });
+        //     console.log(info, grouped[0]);
+        // });
 
 
         return jobs;
