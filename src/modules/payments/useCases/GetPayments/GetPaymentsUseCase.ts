@@ -136,7 +136,7 @@ export class GetPaymentsUseCase {
             total_2quarter = 0;
             obj.fk_id_contractor = info.fk_id_contractor;
             obj.year = info.year;
-            obj.mont = info.month;
+            obj.month = info.month;
             obj.name = info.name;
             
             pays.value = info.value_1;
