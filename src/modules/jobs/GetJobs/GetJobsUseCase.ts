@@ -12,12 +12,63 @@ function getMonthFromString(mon: string){
 }
 
 
+function toJson(data: any) {
+    if (data !== undefined) {
+      let intCount = 0, repCount = 0;
+      const json = JSON.stringify(data, (_, v) => {
+        if (typeof v === 'bigint') {
+          intCount++;
+          return `${v}#bigint`;
+        }
+        return v;
+      });
+      const res = json.replace(/"(-?\d+)#bigint"/g, (_, a) => {
+        repCount++;
+        return a;
+      });
+      if (repCount > intCount) {
+        // You have a string somewhere that looks like "123#bigint";
+        throw new Error(`BigInt serialization conflict with a string value.`);
+      }
+      return res;
+    }
+  }
+
+
 export class GetJobsUseCase {
     async execute(year: number, month: string) {
 
         // const mo = +getMonthFromString(month);
         // Receber userName, password
         // Verificar se o userName cadastrado
+
+        // const quarterExists = await prisma.jobs.findMany({
+        //     where: {
+        //         status: 'ACTIVE',
+        //         quarter: {
+        //             some: { 
+        //                 year: {
+        //                     equals: +year,
+        //                 },
+        //                 month: {
+        //                     equals: month,
+        //                 }
+        //             }    
+        //         }
+        //     },
+        // });
+
+        // if(quarterExists.length == 0) {
+            
+        //     const activeJobs = await prisma.jobs.findMany({
+        //         where: {
+        //             status: 'ACTIVE',
+        //         }
+        //     });
+
+            
+        // }
+
         const jobs =  await prisma.jobs.findMany({
             where: {
                 status: 'ACTIVE',
@@ -94,11 +145,7 @@ export class GetJobsUseCase {
                 total += total_hours * quarter.value_hour;
             });
         });
-        const result = [];
-        result.push(jobs); 
-        result.push({ total });
-        result.push({ total_1quarter });
-        result.push({ total_2quarter });
+
         
         // const result = (await jobs).reduce((acc:any, curr:any) => {
         //     const job = {...curr, quarter: curr.quarter.reduce((ac:any, current:any) => {
@@ -135,6 +182,6 @@ export class GetJobsUseCase {
         //     GROUP BY q.order
         //     ;`
 
-        return result;
+        return jobs;
     }
 }

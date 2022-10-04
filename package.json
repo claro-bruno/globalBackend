@@ -6,6 +6,9 @@
   "scripts": {
     "dev": "ts-node-dev --inspect --exit-child --transpile-only --ignore-watch node_modules src/api/server.ts"
   },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
   "dependencies": {
     "@prisma/client": "^4.4.0",
     "bcrypt": "^5.0.1",

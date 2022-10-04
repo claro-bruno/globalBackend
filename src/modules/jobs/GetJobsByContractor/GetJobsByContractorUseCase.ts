@@ -69,6 +69,9 @@ export class GetJobsByContractorUseCase {
         });
 
         let total = 0;
+        let total_horas = 0;
+        let total_horas_1 = 0;
+        let total_horas_2 = 0;
         let total_1quarter = 0;
         let total_2quarter = 0;
         jobs.forEach((job: any)=>{
@@ -81,21 +84,22 @@ export class GetJobsByContractorUseCase {
                 quarter.total_hours = total_hours;
                 quarter.total = total_hours * quarter.value_hour;
                 if(quarter.order === 1) {
+                    total_horas_1 += total_hours;
                     total_1quarter += total_hours * quarter.value_hour;
                 }
                     
                 if(quarter.order === 2) {
+                    total_horas_2 += total_hours;
                     total_2quarter += total_hours * quarter.value_hour;
                 } 
                     
                 total += total_hours * quarter.value_hour;
+                total_horas += total_hours;
             });
         });
-        const result = [];
-        result.push(jobs); 
-        result.push({ total });
-        result.push({ total_1quarter });
-        result.push({ total_2quarter });
+
+
+        return {contractor_jobs:jobs, totals:[{ total, total_horas },{ total_horas_1, total_1quarter },{ total_horas_2 ,total_2quarter }]};
 
         // await prisma.jobs.groupBy({
         //     by: ['id'],
@@ -140,8 +144,6 @@ export class GetJobsByContractorUseCase {
             
         // });
 
-        
-        return result;
 
     }
 }

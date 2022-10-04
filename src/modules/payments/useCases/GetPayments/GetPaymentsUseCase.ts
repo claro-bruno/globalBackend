@@ -70,6 +70,11 @@ export class GetPaymentsUseCase {
             quarters.month,
             CONCAT(c.first_name, " ",c.middle_name, " ",c.last_name) AS name,
             (
+				SELECT id
+                FROM payments as pa
+                where pa.month = ${month} AND pa.year = ${year} AND pa.fk_id_contractor = c.id AND pa.quarter = 1
+            ) AS id_1,
+            (
 				SELECT value AS value_1
                 FROM payments as pa
                 where pa.month = ${month} AND pa.year = ${year} AND pa.fk_id_contractor = c.id AND pa.quarter = 1
@@ -89,6 +94,11 @@ export class GetPaymentsUseCase {
                 FROM payments as pa
                 where pa.month = ${month} AND pa.year = ${year} AND pa.fk_id_contractor = c.id AND pa.quarter = 1
             ) AS quarter_1,
+            (
+				SELECT value AS id
+                FROM payments as pa
+                where pa.month = ${month} AND pa.year = ${year} AND pa.fk_id_contractor = c.id AND pa.quarter = 1
+            ) AS id_2,
             (
 				SELECT value 
                 FROM payments as pa
@@ -115,8 +125,8 @@ export class GetPaymentsUseCase {
 			WHERE quarters.month = ${month} AND quarters.year = ${year} 
             order by jobs.fk_id_contractor ASC
             ;`
-
-        JSON.stringify(payments, (_, v) => typeof v === 'bigint' ? v.toString() : v);
+        
+        // JSON.stringify(payments, (_, v) => typeof v === 'bigint' ? v.toString() : v);
         
         const result: any = [];
         let payy: any = [];
@@ -139,6 +149,7 @@ export class GetPaymentsUseCase {
             obj.month = info.month;
             obj.name = info.name;
             
+            pays.id = info.id_1;
             pays.value = info.value_1;
             pays.identifier = info.identification_1;
             pays.method = info.method_1;
@@ -147,6 +158,7 @@ export class GetPaymentsUseCase {
             payy.push(pays);
             
             pays = {};
+            pays.id = 0;
             pays.value = info.value_2;
             pays.identifier = info.identification_2;
             pays.method = info.method_2;
@@ -182,11 +194,9 @@ export class GetPaymentsUseCase {
             });
             result.push(obj);
         });
-        result.push({total});
-        result.push({total_1});
-        result.push({total_2});
 
-        return result;
+        return {payments:result, total:[{total},{total_1quarter:total_1},{total_2quarter:total_2}]};
+        ;
     }
 }
 
