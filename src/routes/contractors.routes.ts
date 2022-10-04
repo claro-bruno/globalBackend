@@ -14,6 +14,27 @@ const getContractorController = new GetContractorController();
 
 contractorsRoutes.get("/:id", use(ensureAuthenticate), use(getContractorController.handle));
 contractorsRoutes.get("/", use(ensureAuthenticate), use(getContractorsController.handle));
+contractorsRoutes.put("/:id",use(ensureAuthenticate),
+        multer(new UploadDocuments()).fields(
+        [
+            {
+                name: 'primaryResidencyProf',
+            },
+            {
+                name: 'secondaryResidencyProf',
+
+            },
+            {
+                name: 'documentProf',
+
+            },
+            {
+                name: 'profile',
+
+            }
+        ]),
+    use(createContractorController.handle)
+);
 contractorsRoutes.post("/",
     multer(new UploadDocuments()).fields(
         [
