@@ -9,7 +9,6 @@ export class GetJobsController {
         if(month && year) {
             let result: any = await getJobsUseCase.execute(+year, month as string);
             result = toJson(result);
-            // JSON.stringify(result, (_, v) => typeof v === 'bigint' ? v.toString() : v)
             return response.json(result);
         }
         

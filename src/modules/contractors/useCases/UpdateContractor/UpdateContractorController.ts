@@ -12,15 +12,18 @@ declare module 'express-serve-static-core' {
     }
 }
 
+
 export class UpdateContractorController {
     async handle(request: Request, response: Response, next: NextFunction): Promise<Response>  {
         const updateContractorUseCase = new UpdateContractorUseCase();
         const { id } = request.params;
+        
+
         let urlPrimaryResidencyProof= "";
         let urlSecondaryResidencyProof = "";
         let urlDocumentProof = "";
         let urlProfile = "";
-    
+
         if (request.files) {
             const { primaryResidencyProof, secondaryResidencyProof, documentProof, profile } = request.files;
             urlPrimaryResidencyProof = primaryResidencyProof ? `${request.protocol}://${request.hostname}:${process.env.PORT}/src/${primaryResidencyProof[0].path}` : "";
@@ -28,27 +31,39 @@ export class UpdateContractorController {
             urlDocumentProof = documentProof ? `${request.protocol}://${request.hostname}:${process.env.PORT}/src/${documentProof[0].path}` : "";
             urlProfile = profile ? `${request.protocol}://${request.hostname}:${process.env.PORT}/src/${profile[0].path}` : "";
         }
-        // let adr2 = { address: "", city: "", zipcode: "", state: "" };
+        let adr2 = { address: "", city: "", zipcode: "", state: "" };
         const infoResult = JSON.parse(request.body.body);
+        const { firstName, middleName ,lastName, email, ssnOrItin, birthDate, phone, acceptTerms, ein = undefined, primaryAddress, secondaryAddress = undefined } = infoResult;
+        const { address, city, zipcode, state  } = primaryAddress;
+        if (secondaryAddress != undefined ) {
+            const { address: address2, city: city2, zipcode: zipcode2, state:state2  } = secondaryAddress;
+            adr2 = { address: address2, city: city2, zipcode: zipcode2, state: state2};
 
-        const { email, ssnOrItin, phone } = infoResult;
-        // const einn = ein != undefined ? ein : "";
+        }
+        const einn = ein != undefined ? ein : "";
         const result = await updateContractorUseCase.execute({
-            //  firstName,
-            //  middleName,
-            //  lastName,
-            id: +id,
+             id: +id,
+             firstName,
+             middleName,
+             lastName,
              email,
              identification: ssnOrItin,
-            //  dob: birthDate,
+             dob: birthDate,
              telephone: phone,
-            //  acceptTerms,
-            //  ein: einn,
+             acceptTerms,
+             ein: einn,
              urlPrimaryResidencyProof,
-            //  urlSecondaryResidencyProof,
+             urlSecondaryResidencyProof,
              urlDocumentProof,
              urlProfile
         },
+        {
+            address,
+            city,
+            zipcode,
+            state
+        },
+            adr2
         );
 
         return response.json(result);

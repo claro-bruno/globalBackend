@@ -80,7 +80,7 @@ export class CreateContractorUseCase {
             }
         });
 
-        const addr1 = await prisma.Adresseses.create({
+        const addr1 = await prisma.adresseses.create({
             data: {
                 address,
                 city,
