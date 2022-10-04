@@ -42,32 +42,32 @@ export class GetJobsUseCase {
         // Receber userName, password
         // Verificar se o userName cadastrado
 
-        // const quarterExists = await prisma.jobs.findMany({
-        //     where: {
-        //         status: 'ACTIVE',
-        //         quarter: {
-        //             some: { 
-        //                 year: {
-        //                     equals: +year,
-        //                 },
-        //                 month: {
-        //                     equals: month,
-        //                 }
-        //             }    
-        //         }
-        //     },
-        // });
+        const quarterExists = await prisma.jobs.findMany({
+            where: {
+                status: 'ACTIVE',
+                quarter: {
+                    some: { 
+                        year: {
+                            equals: +year,
+                        },
+                        month: {
+                            equals: month,
+                        }
+                    }    
+                }
+            },
+        });
 
-        // if(quarterExists.length == 0) {
+        if(quarterExists.length == 0) {
             
-        //     const activeJobs = await prisma.jobs.findMany({
-        //         where: {
-        //             status: 'ACTIVE',
-        //         }
-        //     });
+            const activeJobs = await prisma.jobs.findMany({
+                where: {
+                    status: 'ACTIVE',
+                }
+            });
 
             
-        // }
+        }
 
         const jobs =  await prisma.jobs.findMany({
             where: {
