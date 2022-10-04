@@ -99,7 +99,7 @@ export class GetJobsByContractorUseCase {
         });
 
 
-        return {contractor_jobs:jobs, totals:[{ total, total_horas },{ total_horas_1, total_1quarter },{ total_horas_2 ,total_2quarter }]};
+        return {contractor_jobs:jobs, totals:[{ total, total_hours: total_horas },{ total_1hours: total_horas_1, total_1quarter },{ total_2hours: total_horas ,total_2quarter }]};
 
         // await prisma.jobs.groupBy({
         //     by: ['id'],
