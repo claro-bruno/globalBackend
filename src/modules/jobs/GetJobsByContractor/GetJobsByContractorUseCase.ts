@@ -11,6 +11,16 @@ function getMonthFromString(mon: string){
     return -1;
 }
 
+function toMonthName(monthNumber: number) {
+    const date = new Date();
+    date.setMonth(monthNumber);
+  
+    return date.toLocaleString('en-US', {
+      month: 'long',
+    });
+  }
+
+
 interface IAppointment {
     date: any;
     value: number;
@@ -18,7 +28,9 @@ interface IAppointment {
 
 export class GetJobsByContractorUseCase {
     async execute(id: number, year: number, month: string) {
-
+        
+        console.log(getMonthFromString(month));
+        const actualMonth = toMonthName(new Date(Date.now()).getMonth());
         let arr: any = [];
         const quarterExists = await prisma.jobs.findMany({
             where: {
@@ -32,7 +44,7 @@ export class GetJobsByContractorUseCase {
             },
         });
 
-        if(quarterExists.length == 0) {
+        if(quarterExists.length == 0 && actualMonth == month) {
             
             const activeJobs = await prisma.jobs.findMany({
                 where: {
