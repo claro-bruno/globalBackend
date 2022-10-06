@@ -23,91 +23,102 @@ export class CreatePaymentsUseCase {
          }
 
          const { type, identifier, value, quarter } = payments[0];
-         let paymentExist = await prisma.payments.findFirst({
-            where: {
-                month: month as any,
-                year: +year,
-                quarter: 1,
-                identification: identifier,
-                fk_id_contractor: +contractor_id
-            }
-         });
 
-
-
-         if(paymentExist) {
-            await prisma.payments.update({
+         if(identifier != null) {
+            const paymentExist_1 = await prisma.payments.findFirst({
                 where: {
-                    id: paymentExist.id
-                },
-                data: {
-                    value: +value,
-                    method: type,
+                    month: month as any,
                     year: +year,
-                    month,
                     quarter: 1,
                     identification: identifier,
                     fk_id_contractor: +contractor_id
                 }
-            });
-        } else {
-            await prisma.payments.create({
-                data: {
-                    value: +value,
-                    method: type,
-                    year: +year,
-                    month,
-                    quarter: +quarter,
-                    identification: identifier,
-                    description: 'descricao',
-                    fk_id_contractor: +contractor_id
-                }
-            });
-        }
+             });
+             if(paymentExist_1) {
+                await prisma.payments.update({
+                    where: {
+                        id: paymentExist_1.id
+                    },
+                    data: {
+                        value: +value,
+                        method: type,
+                        year: +year,
+                        month,
+                        quarter: 1,
+                        identification: identifier,
+                        fk_id_contractor: +contractor_id
+                    }
+                });
+            } else {
+                await prisma.payments.create({
+                    data: {
+                        value: +value,
+                        method: type,
+                        year: +year,
+                        month,
+                        quarter: +quarter,
+                        identification: identifier,
+                        description: 'descricao',
+                        fk_id_contractor: +contractor_id
+                    }
+                });
+            }
+         }
+         
+
+
+         
  
 
         const { type: type_2, identifier: identifier_2, value: value_2, quarter: quarter_2 } = payments[1];
-        paymentExist = await prisma.payments.findFirst({
-            where: {
-                month: month as string,
-                year: +year,
-                quarter: +quarter_2,
-                identification: identifier_2,
-                fk_id_contractor: +contractor_id
-            }
-         });
 
-
-
-         if(paymentExist) {
-            await prisma.payments.update({
+        if(identifier_2 != null) {
+            const paymentExist_2 = await prisma.payments.findFirst({
                 where: {
-                    id: paymentExist.id
-                },
-                data: {
-                    value: +value_2,
-                    method: type_2,
+                    month: month as string,
                     year: +year,
-                    month,
                     quarter: +quarter_2,
                     identification: identifier_2,
                     fk_id_contractor: +contractor_id
                 }
-            });
-        } else {
-            await prisma.payments.create({
-                data: {
-                    value: +value_2,
-                    method: type_2,
-                    year: +year,
-                    month,
-                    quarter: 2,
-                    identification: identifier_2,
-                    description: 'descricao',
-                    fk_id_contractor: +contractor_id
-                }
-            });
+             });
+
+             if(paymentExist_2) {
+                await prisma.payments.update({
+                    where: {
+                        id: paymentExist_2.id
+                    },
+                    data: {
+                        value: +value_2,
+                        method: type_2,
+                        year: +year,
+                        month,
+                        quarter: +quarter_2,
+                        identification: identifier_2,
+                        fk_id_contractor: +contractor_id
+                    }
+                });
+            } else {
+                await prisma.payments.create({
+                    data: {
+                        value: +value_2,
+                        method: type_2,
+                        year: +year,
+                        month,
+                        quarter: 2,
+                        identification: identifier_2,
+                        description: 'descricao',
+                        fk_id_contractor: +contractor_id
+                    }
+                });
+            }
         }
+
+        
+
+
+
+         
  
        
 

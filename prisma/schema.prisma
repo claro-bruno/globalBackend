@@ -129,7 +129,7 @@ model Quarters {
 }
 
 model Appointments {
-    id    Int     @id @default(autoincrement())
+    id    BigInt     @id @default(autoincrement())
     value Float
     date DateTime
     quarter   Quarters  @relation(fields: [fk_id_quarter], references: [id])
