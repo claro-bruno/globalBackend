@@ -28,18 +28,17 @@ interface IAppointment {
 
 export class GetJobsByContractorUseCase {
     async execute(id: number, year: number, month: string) {
-        
+        let order = new Date(Date.now()).getDay() <= 15 ? 1 : 2;
         const actualMonth = toMonthName(new Date(Date.now()).getMonth());
         let arr: any = [];
-        const quarterExists = await prisma.jobs.findMany({
+        const quarterExists = await prisma.quarters.findMany({
             where: {
-                status: 'ACTIVE',
-                quarter: {
-                    some: { 
-                        month: month,
-                        year: +year
-                    }                          
-                }
+                jobs: {
+                    status: 'ACTIVE',
+                },
+                month: month,
+                year: +year,
+                order: +order
             },
         });
 
@@ -68,7 +67,6 @@ export class GetJobsByContractorUseCase {
                 });
                 
                 if(last_value?.value_hour != undefined) {
-                    let order = new Date(Date.now()).getDay() <= 15 ? 1 : 2;
                     let quarterCreated = await prisma.quarters.create({
                         data: {
                             fk_id_job: +job.id,
