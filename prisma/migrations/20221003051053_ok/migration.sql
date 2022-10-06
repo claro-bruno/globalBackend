@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE `quarters` ADD COLUMN `status` ENUM('ACTIVE', 'INACTIVE', 'PENDING') NOT NULL DEFAULT 'ACTIVE';
