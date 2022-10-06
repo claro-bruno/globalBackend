@@ -29,7 +29,6 @@ interface IAppointment {
 export class GetJobsByContractorUseCase {
     async execute(id: number, year: number, month: string) {
         
-        console.log(getMonthFromString(month));
         const actualMonth = toMonthName(new Date(Date.now()).getMonth());
         let arr: any = [];
         const quarterExists = await prisma.jobs.findMany({
@@ -243,27 +242,40 @@ export class GetJobsByContractorUseCase {
         // });
         
         let total = 0;
+        
         let total_horas = 0;
         let total_horas_1 = 0;
         let total_horas_2 = 0;
+        
         let total_1quarter = 0;
         let total_2quarter = 0;
         activeJobs.forEach((job: any)=>{
-            
+            let total_hours = 0;
             job.quarter.forEach((quarter: any)=>{
-                let total_hours = 0;
+                // total_hours = 0;
+                total_horas = 0;
+                // total_horas_1 = 0;
+                // total_horas_2 = 0;
+
                 quarter.appointment.forEach((appointment: any)=>{
                     total_hours += appointment.value;
                 });
                 quarter.total_hours = total_hours;
                 quarter.total = total_hours * quarter.value_hour;
                 if(quarter.order === 1) {
-                    total_horas_1 += total_hours;
+                    const valor_hora = quarter.appointment.reduce((acc: number, curr: any) => acc  += curr.value
+
+                    , 0);
+                    console.log(valor_hora);
+                    total_horas_1 = valor_hora;
                     total_1quarter += total_hours * quarter.value_hour;
                 }
                     
                 if(quarter.order === 2) {
-                    total_horas_2 += total_hours;
+                    const valor_hora = quarter.appointment.reduce((acc: number, curr: any) => acc  += curr.value
+
+                    , 0);
+                    total_horas_2 = valor_hora;
                     total_2quarter += total_hours * quarter.value_hour;
                 } 
                     
@@ -273,7 +285,7 @@ export class GetJobsByContractorUseCase {
         });
 
 
-        return {contractor_jobs:activeJobs, totals:[{ total, total_hours: total_horas },{ total_1hours: total_horas_1, total_1quarter },{ total_2hours: total_horas ,total_2quarter }]};
+        return {contractor_jobs:activeJobs, totals:[{ total, total_hours: total_horas },{ total_1hours: total_horas_1, total_1quarter },{ total_2hours: total_horas_2 ,total_2quarter }]};
 
     }
 }

@@ -201,20 +201,7 @@ export class GetPaymentsUseCase {
             obj.month = info.month;
             obj.name = info.name;
             
-            pays.value = info.value_1;
-            pays.identifier = info.identification_1;
-            pays.method = info.method_1;
-            pays.quarter = 1;
-
-            payy.push(pays);
             
-            pays = {};
-            pays.value = info.value_2;
-            pays.identifier = info.identification_2;
-            pays.method = info.method_2;
-            pays.quarter = 2;
-            payy.push(pays);
-            obj.payments = payy;
 
             let map_info = grouped.get(info.fk_id_contractor);
 
@@ -237,11 +224,27 @@ export class GetPaymentsUseCase {
                     
                     total += total_hours * quarter.value_hour;
                 });
-                obj.total = total_1quarter + total_2quarter;
-                obj.total_1quarter = total_1quarter;
-                obj.total_2quarter = total_2quarter;
+                // obj.total = total_1quarter + total_2quarter;
+                // obj.total_1quarter = total_1quarter;
+                // obj.total_2quarter = total_2quarter;
 
             });
+
+            pays.value = total_1quarter;
+            pays.identifier = info.identification_1;
+            pays.method = info.method_1;
+            pays.quarter = 1;
+
+            payy.push(pays);
+            
+            pays = {};
+            pays.value = total_2quarter;
+            pays.identifier = info.identification_2;
+            pays.method = info.method_2;
+            pays.quarter = 2;
+            payy.push(pays);
+            obj.payments = payy;
+
             result.push(obj);
         });
 
