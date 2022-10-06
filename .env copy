@@ -1,1 +1,3 @@
-DATABASE_URL="mysql://global:Pwdgrund9745@localhost:3306/global"
+
+
+DATABASE_URL="postgresql://postgres:Pwdgrund9745@db.hvqzvxbykppqqizzxccv.supabase.co:5432/postgres"
