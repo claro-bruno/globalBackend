@@ -246,10 +246,7 @@ export class GetJobsUseCase {
         let total_2quarter = 0;
         activeJobs.forEach((job: any)=>{
             job.quarter.forEach((quarter: any)=>{
-                let total_hours = 0;
-                quarter.appointment.forEach((appointment: any)=>{
-                    total_hours += appointment.value;
-                });
+                let total_hours = quarter.appointment.reduce((acc: number, curr: any) => acc  += curr.value, 0);
                 quarter.total_hours = total_hours;
                 quarter.total = total_hours * quarter.value_hour;
                 if(quarter.order === 1) {

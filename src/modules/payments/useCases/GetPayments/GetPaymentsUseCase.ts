@@ -207,11 +207,7 @@ export class GetPaymentsUseCase {
 
             map_info.forEach((job: any) => {
                 job.quarter.forEach((quarter: any)=>{
-                    total_hours = 0;
-                    quarter.appointment.forEach((appointment: any) =>{
-                        total_hours += appointment.value;
-                        
-                    });
+                    let total_hours = quarter.appointment.reduce((acc: number, curr: any) => acc  += curr.value, 0);
                     if(quarter.order === 1) {
                         total_1quarter += total_hours * quarter.value_hour;
                         total_1 += total_hours * quarter.value_hour;

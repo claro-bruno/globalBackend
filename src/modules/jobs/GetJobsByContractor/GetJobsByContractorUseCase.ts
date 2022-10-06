@@ -250,35 +250,37 @@ export class GetJobsByContractorUseCase {
         activeJobs.forEach((job: any)=>{
             let total_hours = 0;
             job.quarter.forEach((quarter: any)=>{
-                // total_hours = 0;
-                total_horas = 0;
+                
+                
                 // total_horas_1 = 0;
                 // total_horas_2 = 0;
 
-                quarter.appointment.forEach((appointment: any)=>{
-                    total_hours += appointment.value;
-                });
+                // quarter.appointment.forEach((appointment: any)=>{
+                //     total_hours += appointment.value;
+                // });
+                let total_hours = quarter.appointment.reduce((acc: number, curr: any) => acc  += curr.value, 0);
                 quarter.total_hours = total_hours;
                 quarter.total = total_hours * quarter.value_hour;
                 if(quarter.order === 1) {
-                    const valor_hora = quarter.appointment.reduce((acc: number, curr: any) => acc  += curr.value
+                    // const valor_hora = quarter.appointment.reduce((acc: number, curr: any) => acc  += curr.value
 
-                    , 0);
-                    console.log(valor_hora);
-                    total_horas_1 = valor_hora;
+                    // , 0);
+                    total_horas_1 = total_hours;
                     total_1quarter += total_hours * quarter.value_hour;
                 }
                     
                 if(quarter.order === 2) {
-                    const valor_hora = quarter.appointment.reduce((acc: number, curr: any) => acc  += curr.value
+                    // const valor_hora = quarter.appointment.reduce((acc: number, curr: any) => acc  += curr.value
 
-                    , 0);
-                    total_horas_2 = valor_hora;
+                    // , 0);
+                    total_horas_2 = total_hours;
                     total_2quarter += total_hours * quarter.value_hour;
                 } 
                     
                 total += total_hours * quarter.value_hour;
                 total_horas += total_hours;
+                // total_horas = 0;
+                total_hours = 0;
             });
         });
 
