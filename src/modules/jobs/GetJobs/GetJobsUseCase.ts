@@ -147,7 +147,7 @@ export class GetJobsUseCase {
                 month,
                 year: +year,
                 jobs: {
-                    status: 'ACTIVE'
+                    // status: 'ACTIVE'
                 }
             },
             select: {

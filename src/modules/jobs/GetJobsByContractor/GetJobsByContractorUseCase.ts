@@ -120,6 +120,7 @@ export class GetJobsByContractorUseCase {
             },
             select: {
                 id: true,
+    
                 client: {
                     select: 
                     {

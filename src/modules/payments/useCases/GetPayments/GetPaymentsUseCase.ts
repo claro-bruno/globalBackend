@@ -9,9 +9,9 @@ export class GetPaymentsUseCase {
             orderBy: [{
                 id: 'asc'
             }],
-            where: {
-                status: 'ACTIVE',
-            },
+            // where: {
+            //     status: 'ACTIVE',
+            // },
             select: {
                 id: true,
                 fk_id_contractor: true,
@@ -41,9 +41,9 @@ export class GetPaymentsUseCase {
             where: {
                 month,
                 year: +year,
-                jobs: {
-                    status: 'ACTIVE'
-                }
+                // jobs: {
+                //     status: 'ACTIVE'
+                // }
             },
             select: {
                 fk_id_job: true,
