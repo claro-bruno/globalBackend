@@ -45,14 +45,14 @@ export class GetJobsUseCase {
 
         if(quarterExists.length == 0 && actualMonth == month) {
             
-            const activeJobs = await prisma.jobs.findMany({
+            const activeJobss = await prisma.jobs.findMany({
                 where: {
                     status: 'ACTIVE',
                     
                 }
             });
 
-            await activeJobs.reduce(async (memo: any, job: any) => {
+            await activeJobss.reduce(async (memo: any, job: any) => {
                 await memo;
                 arr = [];
                 let last_value = await prisma.quarters.findFirst({

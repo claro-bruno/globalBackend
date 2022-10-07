@@ -244,8 +244,6 @@ export class GetPaymentsUseCase {
             result.push(obj);
         });
 
-        // console.log(payments);
-        // return payments;
         return {payments:result, total:[{total},{total_1quarter:total_1},{total_2quarter:total_2}]};
         ;
     }
