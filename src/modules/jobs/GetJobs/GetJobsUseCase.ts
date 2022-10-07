@@ -34,9 +34,9 @@ export class GetJobsUseCase {
         let arr: any = [];
         const quarterExists = await prisma.quarters.findMany({
             where: {
-                jobs: {
-                    status: 'ACTIVE',
-                },
+                // jobs: {
+                //     status: 'ACTIVE',
+                // },
                 month: month,
                 year: +year,
                 order: +order
@@ -46,10 +46,10 @@ export class GetJobsUseCase {
         if(quarterExists.length == 0 && actualMonth == month) {
             
             const activeJobss = await prisma.jobs.findMany({
-                where: {
-                    status: 'ACTIVE',
+                // where: {
+                //     status: 'ACTIVE',
                     
-                }
+                // }
             });
 
             await activeJobss.reduce(async (memo: any, job: any) => {
@@ -115,9 +115,9 @@ export class GetJobsUseCase {
             orderBy: [{
                 id: 'asc'
             }],
-            where: {
-                status: 'ACTIVE',
-            },
+            // where: {
+            //     status: 'ACTIVE',
+            // },
             select: {
                 id: true,
                 client: {
