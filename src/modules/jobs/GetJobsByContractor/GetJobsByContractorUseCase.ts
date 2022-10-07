@@ -169,14 +169,66 @@ export class GetJobsByContractorUseCase {
 
 
         });
+        if(activeQuarters.length > 0) {
+            const quartersGrouped = groupBy(activeQuarters, (quarter: any) => quarter.fk_id_job);
         
-        const quartersGrouped = groupBy(activeQuarters, (quarter: any) => quarter.fk_id_job);
+            activeJobs.forEach((job: any) => {
+                let quarter_info = quartersGrouped.get(job.id);
+                job.quarter = quarter_info;
 
-        activeJobs.forEach((job: any) => {
-            let quarter_info = quartersGrouped.get(job.id);
-            job.quarter = quarter_info;
+            });
 
-        });
+            let total = 0;
+        
+            let total_horas = 0;
+            let total_horas_1 = 0;
+            let total_horas_2 = 0;
+            
+            let total_1quarter = 0;
+            let total_2quarter = 0;
+            activeJobs.forEach((job: any)=>{
+                let total_hours = 0;
+                job.quarter.forEach((quarter: any)=>{
+                    
+                    
+                    // total_horas_1 = 0;
+                    // total_horas_2 = 0;
+
+                    // quarter.appointment.forEach((appointment: any)=>{
+                    //     total_hours += appointment.value;
+                    // });
+                let total_hours = quarter.appointment.reduce((acc: number, curr: any) => acc  += curr.value, 0);
+                quarter.total_hours = total_hours;
+                quarter.total = total_hours * quarter.value_hour;
+                if(quarter.order === 1) {
+                        // const valor_hora = quarter.appointment.reduce((acc: number, curr: any) => acc  += curr.value
+
+                        // , 0);
+                    total_horas_1 += total_hours;
+                    total_1quarter += total_hours * quarter.value_hour;
+                }
+                    
+                if(quarter.order === 2) {
+                        // const valor_hora = quarter.appointment.reduce((acc: number, curr: any) => acc  += curr.value
+
+                        // , 0);
+                    total_horas_2 += total_hours;
+                    total_2quarter += total_hours * quarter.value_hour;
+                } 
+                        
+                total += total_hours * quarter.value_hour;
+                total_horas += total_hours;
+                    // total_horas = 0;
+                total_hours = 0;
+            });
+            });
+            return {contractor_jobs:activeJobs, totals:[{ total, total_hours: total_horas },{ total_1hours: total_horas_1, total_1quarter },{ total_2hours: total_horas_2 ,total_2quarter }]};
+
+        } else {
+            return {contractor_jobs:[], totals:[{ total: 0, total_hours: 0 },{ total_1hours: 0, total_1quarter: 0 },{ total_2hours: 0 ,total_2quarter: 0 }]};
+
+        }
+        
 
         // let jobs =  await prisma.jobs.findMany({
         //     where: {
@@ -239,53 +291,9 @@ export class GetJobsByContractorUseCase {
         //     job.quarter = result;
         // });
         
-        let total = 0;
         
-        let total_horas = 0;
-        let total_horas_1 = 0;
-        let total_horas_2 = 0;
-        
-        let total_1quarter = 0;
-        let total_2quarter = 0;
-        activeJobs.forEach((job: any)=>{
-            let total_hours = 0;
-            job.quarter.forEach((quarter: any)=>{
-                
-                
-                // total_horas_1 = 0;
-                // total_horas_2 = 0;
-
-                // quarter.appointment.forEach((appointment: any)=>{
-                //     total_hours += appointment.value;
-                // });
-                let total_hours = quarter.appointment.reduce((acc: number, curr: any) => acc  += curr.value, 0);
-                quarter.total_hours = total_hours;
-                quarter.total = total_hours * quarter.value_hour;
-                if(quarter.order === 1) {
-                    // const valor_hora = quarter.appointment.reduce((acc: number, curr: any) => acc  += curr.value
-
-                    // , 0);
-                    total_horas_1 = total_hours;
-                    total_1quarter += total_hours * quarter.value_hour;
-                }
-                    
-                if(quarter.order === 2) {
-                    // const valor_hora = quarter.appointment.reduce((acc: number, curr: any) => acc  += curr.value
-
-                    // , 0);
-                    total_horas_2 = total_hours;
-                    total_2quarter += total_hours * quarter.value_hour;
-                } 
-                    
-                total += total_hours * quarter.value_hour;
-                total_horas += total_hours;
-                // total_horas = 0;
-                total_hours = 0;
-            });
-        });
 
 
-        return {contractor_jobs:activeJobs, totals:[{ total, total_hours: total_horas },{ total_1hours: total_horas_1, total_1quarter },{ total_2hours: total_horas_2 ,total_2quarter }]};
 
     }
 }

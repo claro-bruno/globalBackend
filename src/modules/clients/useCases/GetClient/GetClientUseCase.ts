@@ -10,7 +10,7 @@ export class GetClientUseCase {
             where: {
                 id,
                 status: 'ACTIVE'
-            }
+            },
         });
 
         if(!client) {

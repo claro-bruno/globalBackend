@@ -170,15 +170,40 @@ export class GetJobsUseCase {
         });
         
         const quartersGrouped = groupBy(activeQuarters, (quarter: any) => quarter.fk_id_job);
+        if(activeQuarters.length > 0) {
+            activeJobs.forEach((job: any) => {
+                let quarter_info = quartersGrouped.get(job.id);
+                job.quarter = quarter_info;
+    
+            });
 
-        activeJobs.forEach((job: any) => {
-            let quarter_info = quartersGrouped.get(job.id);
-            job.quarter = quarter_info;
+            let total = 0;
+            let total_1quarter = 0;
+            let total_2quarter = 0;
+            activeJobs.forEach((job: any)=>{
+                job.quarter.forEach((quarter: any)=>{
+                    let total_hours = quarter.appointment.reduce((acc: number, curr: any) => acc  += curr.value, 0);
+                    quarter.total_hours = total_hours;
+                    quarter.total = total_hours * quarter.value_hour;
+                    if(quarter.order === 1) {
+                        total_1quarter += total_hours * quarter.value_hour;
+                    }
+                        
+                    if(quarter.order === 2) {
+                        total_2quarter += total_hours * quarter.value_hour;
+                    } 
+                        
+                    total += total_hours * quarter.value_hour;
+                });
+            });
+            return activeJobs;
+        } else {
+            return [];
+        }
+        
 
-        });
-
-
-        // let jobs =  await prisma.jobs.findMany({
+        
+        // const jobsTeste =  await prisma.jobs.findMany({
             
         //     select: {
         //         id: true,
@@ -199,6 +224,10 @@ export class GetJobsUseCase {
         //              }
         //         },
         //         quarter: {
+        //             where: {
+        //                     month,
+        //                     year: +year,            
+        //             },          
         //             select: {
         //                 order: true,
         //                 month: true,
@@ -218,21 +247,10 @@ export class GetJobsUseCase {
         //     },
         //     where: {
 
-        //             status: 'ACTIVE',
-        //             quarter: {
-        //                 some: { 
-        //                     month: 
-        //                     {
-        //                         equals: month,
-        //                     },
-        //                    year: 
-        //                     {
-        //                         equals: +year,
-        //                     }
-        //                 }                              
-        //             },                
+        //         status: 'ACTIVE',      
         //     },
         // });
+        
 
         // jobs.forEach((job: any) => {
         //     let result = job.quarter.filter((quarter: any) => {
@@ -240,33 +258,16 @@ export class GetJobsUseCase {
         //     });
         //     job.quarter = result;
         // });
-    
-        let total = 0;
-        let total_1quarter = 0;
-        let total_2quarter = 0;
-        activeJobs.forEach((job: any)=>{
-            job.quarter.forEach((quarter: any)=>{
-                let total_hours = quarter.appointment.reduce((acc: number, curr: any) => acc  += curr.value, 0);
-                quarter.total_hours = total_hours;
-                quarter.total = total_hours * quarter.value_hour;
-                if(quarter.order === 1) {
-                    total_1quarter += total_hours * quarter.value_hour;
-                }
-                    
-                if(quarter.order === 2) {
-                    total_2quarter += total_hours * quarter.value_hour;
-                } 
-                    
-                total += total_hours * quarter.value_hour;
-            });
-        });
+        
+
+        
 
         
     
 
         
 
-        return activeJobs;
+        
     }
 }
 
