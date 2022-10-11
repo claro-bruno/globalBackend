@@ -1,5 +1,6 @@
 
 import { removeAllListeners } from "process";
+import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
 import { prisma } from "../../../../database/prismaClient";
 import { AppError } from "../../../../middlewares/AppError";
 
@@ -220,29 +221,30 @@ export class GetPaymentsUseCase {
             
 
             let map_info = grouped.get(info.fk_id_contractor);
-
             map_info.forEach((job: any) => {
-
-                job.quarter.forEach((quarter: any)=>{
+                if(job.quarter != undefined) {
+                    job.quarter.forEach((quarter: any)=>{
                       
-                    let total_hours = quarter.appointment.reduce((acc: number, curr: any) => acc  += curr.value, 0);
-                    if(quarter.order === 1) {
-                        total_1quarter += total_hours * quarter.value_hour;
-                        total_1 += total_hours * quarter.value_hour;
-                        total_taxes_1 += quarter.taxes;
-                        total_shirts_1 += quarter.shirts;
-                    }
-                        
-                    if(quarter.order === 2) {
-                        total_2quarter += total_hours * quarter.value_hour;
-                        total_2 += total_hours * quarter.value_hour;
-                        total_taxes_2 += quarter.taxes;
-                        total_shirts_2 += quarter.shirts;
-                    }
-                    total_taxes += quarter.taxes;
-                    total_shirts += quarter.shirts;
-                    total += total_hours * quarter.value_hour;
-                });
+                        let total_hours = quarter.appointment.reduce((acc: number, curr: any) => acc  += curr.value, 0);
+                        if(quarter.order === 1) {
+                            total_1quarter += total_hours * quarter.value_hour;
+                            total_1 += total_hours * quarter.value_hour;
+                            total_taxes_1 += quarter.taxes;
+                            total_shirts_1 += quarter.shirts;
+                        }
+                            
+                        if(quarter.order === 2) {
+                            total_2quarter += total_hours * quarter.value_hour;
+                            total_2 += total_hours * quarter.value_hour;
+                            total_taxes_2 += quarter.taxes;
+                            total_shirts_2 += quarter.shirts;
+                        }
+                        total_taxes += quarter.taxes;
+                        total_shirts += quarter.shirts;
+                        total += total_hours * quarter.value_hour;
+                    });
+                }
+                
                 // obj.total = total_1quarter + total_2quarter;
                 // obj.total_1quarter = total_1quarter;
                 // obj.total_2quarter = total_2quarter;
@@ -252,8 +254,8 @@ export class GetPaymentsUseCase {
             pays.value = total_1quarter;
             pays.identifier = info.identification_1;
             pays.method = info.method_1;
-            pays.taxes = total_taxes_1;
-            pays.shirts = total_shirts_1;
+            pays.taxes_job = total_taxes_1;
+            pays.shirts_job = total_shirts_1;
             pays.quarter = 1;
 
             payy.push(pays);
@@ -263,8 +265,8 @@ export class GetPaymentsUseCase {
             pays.identifier = info.identification_2;
             pays.method = info.method_2;
             pays.quarter = 2;
-            pays.taxes = total_taxes_2;
-            pays.shirts = total_shirts_2;
+            pays.taxes_job = total_taxes_2;
+            pays.shirts_job = total_shirts_2;
             payy.push(pays);
             obj.taxes =  total_taxes;
             obj.shirts = total_shirts;

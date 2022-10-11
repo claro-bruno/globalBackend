@@ -156,6 +156,9 @@ export class GetJobsUseCase {
                 month: true,
                 year: true,
                 value_hour: true,
+                status: true,
+                taxes: true,
+                shirts: true,
                 appointment: 
                 {
                     select: 
@@ -183,6 +186,10 @@ export class GetJobsUseCase {
             activeJobs.forEach((job: any)=>{
                 job.quarter.forEach((quarter: any)=>{
                     let total_hours = quarter.appointment.reduce((acc: number, curr: any) => acc  += curr.value, 0);
+                    quarter.status = quarter.status;
+                    quarter.taxes = quarter.taxes;
+                    quarter.shirts = quarter.shirts;
+
                     quarter.total_hours = total_hours;
                     quarter.total = total_hours * quarter.value_hour;
                     if(quarter.order === 1) {

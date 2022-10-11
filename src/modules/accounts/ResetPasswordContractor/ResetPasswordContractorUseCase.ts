@@ -34,8 +34,13 @@ export class ResetPasswordContractorUseCase {
         if(contractorAccountExist) {
 
             const birthday = contractorExist.dob;
+            
             // const username = contractorExist.first_name[0].toLowerCase() + contractorExist.last_name + birthday.getFullYear().toString();
-            const password = contractorExist.first_name[0].toLowerCase().split(" ")[0].toString() + ("0" + (birthday.getMonth() + 1)).slice(-2).toString() + ("0" + (birthday.getDate())).slice(-2).toString();
+            const password = contractorExist.first_name.toString() + ("0" + (birthday.getMonth() + 1)).slice(-2).toString() + ("0" + (birthday.getDate()+1)).slice(-2).toString();
+
+            // const firstName = contractorExist.first_name.split(" ").toString();
+            // console.log(firstName.split(",").toString());
+            // const password = contractorExist.first_name[0].toLowerCase().split(" ")[0].toString() + ("0" + (birthday.getMonth() + 1)).slice(-2).toString() + ("0" + (birthday.getDate())).slice(-2).toString();
 
             //criptografar a senha
             const hashPassword = await hash(password, 10);
@@ -100,7 +105,7 @@ export class ResetPasswordContractorUseCase {
             // headers: { 'x-myheader': 'test header' }
             // });
             
-        return 'Ok';
+        return 'Your username and password has been sent to your email';
     }
 
 }
