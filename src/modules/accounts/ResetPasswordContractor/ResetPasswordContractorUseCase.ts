@@ -56,8 +56,8 @@ export class ResetPasswordContractorUseCase {
             });
 
             const hostname = 'smtp.gmail.com';
-            const username = 'globaljanitorialcontato@gmail.com';
-            const pass = 'tmzawmjxfudnmbpf';
+            const username = 'globaljanitorialcontact@gmail.com';
+            const pass = 'oekrrjxmemlnipke';
 
             // const hostname = 'smtp.office365.com';
             // const username = 'bruno@xqg3c.onmicrosoft.com';
