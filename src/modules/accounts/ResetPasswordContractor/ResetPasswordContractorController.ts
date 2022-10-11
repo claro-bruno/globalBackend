@@ -9,7 +9,7 @@ export class ResetPasswordContractorController {
         const result = await resetPasswordContractorUseCase.execute({
             email
         });
-        return response.json(result);
+        return response.json({ message: result });
 
     }
 
