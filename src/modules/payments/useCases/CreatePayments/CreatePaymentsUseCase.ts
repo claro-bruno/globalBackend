@@ -22,7 +22,7 @@ export class CreatePaymentsUseCase {
              throw new AppError('Contractor does not exists', 400)
          }
 
-         const { type, identifier, value, quarter } = payments[0];
+         const { method, identifier, value, quarter } = payments[0];
 
          if(identifier != null) {
             const paymentExist_1 = await prisma.payments.findFirst({
@@ -41,7 +41,7 @@ export class CreatePaymentsUseCase {
                     },
                     data: {
                         value: +value,
-                        method: type,
+                        method,
                         year: +year,
                         month,
                         quarter: 1,
@@ -53,7 +53,7 @@ export class CreatePaymentsUseCase {
                 await prisma.payments.create({
                     data: {
                         value: +value,
-                        method: type,
+                        method,
                         year: +year,
                         month,
                         quarter: +quarter,
@@ -70,7 +70,7 @@ export class CreatePaymentsUseCase {
          
  
 
-        const { type: type_2, identifier: identifier_2, value: value_2, quarter: quarter_2 } = payments[1];
+        const { method: method_2, identifier: identifier_2, value: value_2, quarter: quarter_2 } = payments[1];
 
         if(identifier_2 != null) {
             const paymentExist_2 = await prisma.payments.findFirst({
@@ -90,7 +90,7 @@ export class CreatePaymentsUseCase {
                     },
                     data: {
                         value: +value_2,
-                        method: type_2,
+                        method: method_2,
                         year: +year,
                         month,
                         quarter: +quarter_2,
@@ -102,7 +102,7 @@ export class CreatePaymentsUseCase {
                 await prisma.payments.create({
                     data: {
                         value: +value_2,
-                        method: type_2,
+                        method: method_2,
                         year: +year,
                         month,
                         quarter: 2,
