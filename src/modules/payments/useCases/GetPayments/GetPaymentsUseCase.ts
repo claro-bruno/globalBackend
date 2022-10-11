@@ -41,6 +41,7 @@ export class GetPaymentsUseCase {
             where: {
                 month,
                 year: +year,
+                status: 'REVISED'
                 // jobs: {
                 //     status: 'ACTIVE'
                 // }
@@ -51,6 +52,8 @@ export class GetPaymentsUseCase {
                 month: true,
                 year: true,
                 value_hour: true,
+                taxes: true,
+                shirts: true,
                 appointment: 
                 {
                     select: 
@@ -189,6 +192,12 @@ export class GetPaymentsUseCase {
         let total_1 = 0;
         let total_2 = 0;
         let total_hours = 0;
+        let total_taxes = 0;
+        let total_shirts = 0;
+        let total_taxes_1 = 0;
+        let total_shirts_1 = 0;
+        let total_taxes_2 = 0;
+        let total_shirts_2 = 0;
         let obj: any = {};
         payments.forEach((info: any) => {
             obj = {};
@@ -200,24 +209,38 @@ export class GetPaymentsUseCase {
             obj.year = info.year;
             obj.month = info.month;
             obj.name = info.name;
+            total_taxes_1 = 0;
+            total_shirts_1 = 0;
+            total_taxes_2 = 0;
+            total_shirts_2 = 0;
+            total_taxes = 0;
+            total_shirts = 0;
+
             
             
 
             let map_info = grouped.get(info.fk_id_contractor);
 
             map_info.forEach((job: any) => {
+
                 job.quarter.forEach((quarter: any)=>{
+                      
                     let total_hours = quarter.appointment.reduce((acc: number, curr: any) => acc  += curr.value, 0);
                     if(quarter.order === 1) {
                         total_1quarter += total_hours * quarter.value_hour;
                         total_1 += total_hours * quarter.value_hour;
+                        total_taxes_1 += quarter.taxes;
+                        total_shirts_1 += quarter.shirts;
                     }
                         
                     if(quarter.order === 2) {
                         total_2quarter += total_hours * quarter.value_hour;
                         total_2 += total_hours * quarter.value_hour;
+                        total_taxes_2 += quarter.taxes;
+                        total_shirts_2 += quarter.shirts;
                     }
-                    
+                    total_taxes += quarter.taxes;
+                    total_shirts += quarter.shirts;
                     total += total_hours * quarter.value_hour;
                 });
                 // obj.total = total_1quarter + total_2quarter;
@@ -229,6 +252,8 @@ export class GetPaymentsUseCase {
             pays.value = total_1quarter;
             pays.identifier = info.identification_1;
             pays.method = info.method_1;
+            pays.taxes = total_taxes_1;
+            pays.shirts = total_shirts_1;
             pays.quarter = 1;
 
             payy.push(pays);
@@ -238,7 +263,11 @@ export class GetPaymentsUseCase {
             pays.identifier = info.identification_2;
             pays.method = info.method_2;
             pays.quarter = 2;
+            pays.taxes = total_taxes_2;
+            pays.shirts = total_shirts_2;
             payy.push(pays);
+            obj.taxes =  total_taxes;
+            obj.shirts = total_shirts;
             obj.payments = payy;
 
             result.push(obj);

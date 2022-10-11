@@ -11,6 +11,7 @@ import {
 import { ValidateAuthenticationController } from "../modules/accounts/ValidateAuthentication/ValidateAuthenticationController";
 import { GetJobsController } from "../modules/jobs/GetJobs/GetJobsController";
 import { GetJobsByContractorController } from "../modules/jobs/GetJobsByContractor/GetJobsByContractorController";
+import { ResetPasswordContractorController } from "../modules/accounts/ResetPasswordContractor/ResetPasswordContractorController";
 
 const accountsRoutes = Router();
 
@@ -21,8 +22,10 @@ const updateAccountContractorController = new UpdateAccountContractorController(
 const validateAuthentication = new ValidateAuthenticationController();
 const getJobsController = new GetJobsController();
 const getJobsByContractorController = new GetJobsByContractorController();
+const resetPasswordContractorController =  new ResetPasswordContractorController();
 
 accountsRoutes.post("/contractor", use(authenticateContractorController.handle));
+accountsRoutes.post("/contractor/reset", use(resetPasswordContractorController.handle));
 accountsRoutes.post("/authentication", use(ensureAuthenticate), use(validateAuthentication.handle));
 accountsRoutes.get("/", use(ensureAuthenticate), use(getJobsController.handle));
 accountsRoutes.get("/contractor/:id", use(ensureAuthenticate), use(getJobsByContractorController.handle));

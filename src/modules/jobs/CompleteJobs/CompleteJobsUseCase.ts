@@ -8,7 +8,10 @@ interface IServiceComplete {
     year: number;
     valueHour: number;
     quarter: number;
+    taxes: number;
+    shirts: number;
     status: string;
+    status_payment: string;
     workedDaysInfos: { dateValue: string }[];
 }
 
@@ -36,7 +39,7 @@ function toMonthName(monthNumber: number) {
   }
 
 export class CompleteJobsUseCase {
-    async execute({id, month, year, valueHour, quarter, status, workedDaysInfos}: IServiceComplete ) {
+    async execute({id, month, year, valueHour, quarter, status, status_payment,taxes, shirts, workedDaysInfos}: IServiceComplete ) {
         const arr = [] as any;
 
         const jobExist = await prisma.jobs.findFirst({
@@ -84,7 +87,10 @@ export class CompleteJobsUseCase {
                     id: quarterResult.id
                 },
                 data: {
-                    value_hour: +valueHour
+                    status: status_payment as any,
+                    value_hour: +valueHour,
+                    taxes: +taxes,
+                    shirts: +shirts
                 }
             });
         }

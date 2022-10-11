@@ -4,7 +4,7 @@ import {UpdateAccountContractorUseCase} from "./UpdateAccountContractorUseCase";
 export class UpdateAccountContractorController {
     async handle(request: Request, response: Response, next: NextFunction): Promise<Response> {
         const { id } = request.params;
-        const { status } = request.params;
+        const { status } = request.body;
 
         const updateAccountContractorUseCase = new UpdateAccountContractorUseCase();
         const result = await updateAccountContractorUseCase.execute({
