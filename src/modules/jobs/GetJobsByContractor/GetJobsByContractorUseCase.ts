@@ -45,7 +45,8 @@ export class GetJobsByContractorUseCase {
         });
 
         if(quarterExists.length == 0 && actualMonth == month) {
-            
+        // if(quarterExists.length == 0) {
+    
             const activeJobss = await prisma.jobs.findMany({
                 where: {
                     status: 'ACTIVE',

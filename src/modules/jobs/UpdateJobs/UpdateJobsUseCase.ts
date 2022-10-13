@@ -1,4 +1,5 @@
 
+import e from "express";
 import { prisma } from "../../../database/prismaClient";
 import { AppError } from "../../../middlewares/AppError";
 
@@ -11,22 +12,12 @@ interface IService {
     id: number;
     id_contractor: number;
     id_client: number;
-    // sunday: boolean;
-    // monday: boolean;
-    // tuesday: boolean;
-    // wednesday: boolean;
-    // thursday: boolean;
-    // friday: boolean;
-    // saturday: boolean;
-    // value: number;
-    value_hour: number;
 }
+
 
 export class UpdateJobsUseCase {
     // async execute({ id, id_contractor, id_client, sunday, monday, tuesday, wednesday, thursday, friday, saturday, value, value_hour }: IService) {
-    async execute({ id, id_contractor, id_client, value_hour }: IService) {
-        const arrDays = [] as any;
-        const arr = [] as any;
+    async execute({ id, id_contractor, id_client }: IService) {
         const existJob = await prisma.jobs.findFirst({
             where: {
                 id
@@ -37,59 +28,71 @@ export class UpdateJobsUseCase {
             throw new AppError("Job does not exist");
         }
 
-        const job = await prisma.jobs.update({
+        const alreadyExistsJobs = await prisma.jobs.findFirst({
             where: {
-                id
-            },
-            data: {
                 fk_id_contractor: id_contractor,
                 fk_id_client: id_client,
-                // sunday,
-                // monday,
-                // tuesday,
-                // wednesday,
-                // thursday,
-                // friday,
-                // saturday
+                status: 'ACTIVE'
             }
         });
-
-
-        const date = new Date(Date.now());
-        const month = date.getMonth();
-        const year = date.getFullYear();
-        const quarter_option = new Date(Date.now()).getDay() > 15 ? 2 : 1;
-        const last_date = new Date(year, month, 0);
-
-        let quarterExist = await prisma.quarters.findFirst({
-            where: {
-                month,
-                year,
-                order: quarter_option,
-                fk_id_job: id
-            }
-        });
-
-        if(quarterExist) {
-            quarterExist = await prisma.quarters.update({
+        
+        if(alreadyExistsJobs)
+        {
+            throw new AppError("Job already exists");
+        }
+        else {
+            await prisma.jobs.update({
                 where: {
-                    id: quarterExist.id
+                    id
                 },
                 data: {
-                    value_hour
+                    fk_id_contractor: id_contractor,
+                    fk_id_client: id_client,
                 }
             });
-        } else {
-            quarterExist = await prisma.quarters.create({
-                data: {
-                    fk_id_job: job.id,
-                    value_hour,
-                    year,
-                    month,
-                    order: quarter_option,
-                }
-            });
+            return 'Ok';
+            
         }
+
+        
+
+
+        // const date = new Date(Date.now());
+        // const month = date.getMonth();
+        // const actualMonth = toMonthName(new Date(Date.now()).getMonth());
+        // const year = date.getFullYear();
+        // const quarter_option = new Date(Date.now()).getDay() > 15 ? 2 : 1;
+        // const last_date = new Date(year, month, 0);
+
+        // let quarterExist = await prisma.quarters.findFirst({
+        //     where: {
+        //         month: actualMonth,
+        //         year,
+        //         order: quarter_option,
+        //         fk_id_job: id
+        //     }
+        // });
+
+        // if(quarterExist) {
+        //     quarterExist = await prisma.quarters.update({
+        //         where: {
+        //             id: quarterExist.id
+        //         },
+        //         data: {
+        //             value_hour
+        //         }
+        //     });
+        // } else {
+        //     quarterExist = await prisma.quarters.create({
+        //         data: {
+        //             fk_id_job: job.id,
+        //             value_hour,
+        //             year,
+        //             month: actualMonth,
+        //             order: quarter_option,
+        //         }
+        //     });
+        // }
 
 
         // if(sunday) arrDays.push('Sunday');
@@ -139,6 +142,6 @@ export class UpdateJobsUseCase {
 
 
 
-        return 'Ok';
+        // return 'Ok';
     }
 }
