@@ -22,48 +22,69 @@ export class CreatePaymentsUseCase {
              throw new AppError('Contractor does not exists', 400)
          }
 
+         
+
          const { method, identifier, value, quarter } = payments[0];
 
-         if(identifier != null) {
-            const paymentExist_1 = await prisma.payments.findFirst({
-                where: {
-                    month: month as any,
-                    year: +year,
-                    quarter: 1,
-                    identification: identifier,
-                    fk_id_contractor: +contractor_id
-                }
-             });
-             if(paymentExist_1) {
-                await prisma.payments.update({
+         let paymentAlreadExists = await prisma.payments.findFirst({
+            where: {
+                identification: identifier,
+                fk_id_contractor: +contractor_id
+            }
+         });
+
+            if(identifier != null) {
+                const paymentExist_1 = await prisma.payments.findFirst({
                     where: {
-                        id: paymentExist_1.id
-                    },
-                    data: {
-                        value: +value,
-                        method,
+                        month: month as any,
                         year: +year,
-                        month,
                         quarter: 1,
                         identification: identifier,
                         fk_id_contractor: +contractor_id
                     }
-                });
-            } else {
-                await prisma.payments.create({
-                    data: {
-                        value: +value,
-                        method,
-                        year: +year,
-                        month,
-                        quarter: +quarter,
-                        identification: identifier,
-                        description: 'descricao',
-                        fk_id_contractor: +contractor_id
-                    }
-                });
-            }
-         }
+                 });
+                 if(paymentExist_1) {
+                    await prisma.payments.update({
+                        where: {
+                            id: paymentExist_1.id
+                        },
+                        data: {
+                            value: +value,
+                            method,
+                            year: +year,
+                            month,
+                            quarter: 1,
+                            identification: identifier,
+                            fk_id_contractor: +contractor_id
+                        }
+                    });
+                } else {
+
+                    const paymentAlreadExists = await prisma.payments.findFirst({
+                        where: {
+                            identification: identifier
+                        }
+                     });
+                     if(paymentAlreadExists) {
+                        throw new AppError('Payment already exists');
+                     }
+
+                    await prisma.payments.create({
+                        data: {
+                            value: +value,
+                            method,
+                            year: +year,
+                            month,
+                            quarter: +quarter,
+                            identification: identifier,
+                            description: 'descricao',
+                            fk_id_contractor: +contractor_id
+                        }
+                    });
+                }
+             }
+           
+         
          
 
 
@@ -99,6 +120,16 @@ export class CreatePaymentsUseCase {
                     }
                 });
             } else {
+
+                const paymentAlreadExists = await prisma.payments.findFirst({
+                    where: {
+                        identification: identifier_2
+                    }
+                 });
+                 if(paymentAlreadExists) {
+                    throw new AppError('Payment already exists');
+                 }
+
                 await prisma.payments.create({
                     data: {
                         value: +value_2,
@@ -123,6 +154,6 @@ export class CreatePaymentsUseCase {
        
 
 
-        return '';
+        return 'Ok';
     }
 }
