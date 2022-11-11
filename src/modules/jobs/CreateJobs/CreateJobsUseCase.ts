@@ -115,10 +115,11 @@ export class CreateJobsUseCase {
     
             }, undefined);
         }
-        const last_date = new Date(year, month, 0);
 
 
-        
+        const last_date = new Date(year, month+1, 0);
+
+
 
 
         const quarter_2 = await prisma.quarters.create({
@@ -132,6 +133,8 @@ export class CreateJobsUseCase {
         });
 
         arr = [];
+
+
         for(let i=16; i<= last_date.getDate(); i += 1) {
             let dataValue = new Date(year, month, i);
             if(arrDays.includes(dataValue.toLocaleString('default', {weekday: 'long'}))) {

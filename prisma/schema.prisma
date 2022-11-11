@@ -3,26 +3,37 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model Payments {
   id    Int     @id @default(autoincrement())
   value Float
-  method String
+  method Method
   year Int
   month String
-  quarter Int
-  identification String
+  date_at DateTime @default(now())
+  type Type
+  pay_des_for String?
+  quarter Int?
+  identification String @default("")
   contractor  Contractors?  @relation(fields: [fk_id_contractor], references: [id])
   fk_id_contractor Int?
-  description String?
-  created_at DateTime @default(now())
+  client  Clients?  @relation(fields: [fk_id_client], references: [id])
+  fk_id_client Int?
+  status Status?
 
   @@map("payments")
 }
 
+model Balances {
+    id    Int     @id @default(autoincrement())
+    year Int
+    month String
+    value Float
+    @@map("balances")
+}
 
 model Contractors {
   id    Int     @id @default(autoincrement())
@@ -68,6 +79,7 @@ model Clients {
   sunday Boolean
   jobs Jobs[]
   status Status @default(ACTIVE)
+  payments Payments[]
   @@map("clients")
 }
 
@@ -157,6 +169,7 @@ enum Role {
 enum Status {
   REVISED
   ACTIVE
+  OK
   INACTIVE
   PENDING
 }
@@ -164,5 +177,25 @@ enum Status {
 enum Method {
   CHECK
   TRANSFER
+  RECEIPT
   VENMO
 }
+enum Type {
+  INPUT
+  LABOUR_PAYROOL
+  VAN_FUEL_OIL
+  FUEL_OIL
+  EQUIPMENT
+  ADVERTISEMENT
+  UNIFORM
+  REPAIRS_MAINTENANCE
+  OFFICE_EXPENSES
+  MEALS
+  CONTRACTOR
+  CONTRACTOR_WORKERS
+  CHEMICAL_CONSUMABLES
+  INSURANCE_TAX
+  EXTRAS
+  GLOBAL
+}
+

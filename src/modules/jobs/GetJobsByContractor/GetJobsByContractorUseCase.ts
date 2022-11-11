@@ -2,421 +2,153 @@
 import { prisma } from "../../../database/prismaClient";
 import { AppError } from "../../../middlewares/AppError";
 
-function getMonthFromString(mon: string){
-
-    var d = Date.parse(mon + "1, 2022");
-    if(!isNaN(d)){
-        return new Date(d).getMonth() + 1;
-    }
-    return -1;
-}
-
-function toMonthName(monthNumber: number) {
-    const date = new Date();
-    date.setMonth(monthNumber);
-  
-    return date.toLocaleString('en-US', {
-      month: 'long',
-    });
-  }
-
-
-interface IAppointment {
-    date: any;
-    value: number;
-}
-
 export class GetJobsByContractorUseCase {
     async execute(id: number, year: number, month: string) {
-        let activeJobs: any = [];
-        let activeQuarters: any = [];
-        let order = new Date(Date.now()).getDay() <= 15 ? 1 : 2;
-        const actualMonth = toMonthName(new Date(Date.now()).getMonth());
-        let arr: any = [];
-        const quarterExists = await prisma.quarters.findMany({
-            where: {
-                // jobs: {
-                //     status: 'ACTIVE',
-                // },
-                month: month,
-                year: +year,
-                order: +order
-            },
-        });
+        
+        
+        let quarter: any = [];
+        
+        const jobs: any = await prisma.$queryRaw`
+            SELECT 
+            j.id,
+            j.status,
+            CONCAT(c.first_name,' ',c.middle_name,' ',c.last_name) AS contractor_name,
+            CONCAT(cl.name) AS client_name
+            FROM jobs j
+            INNER JOIN quarters q ON q.fk_id_job = j.id
+            INNER JOIN contractors c ON c.id = j.fk_id_contractor
+            INNER JOIN clients cl ON cl.id = j.fk_id_client
+            WHERE  q.year = ${year} AND q.month = ${month} AND j.fk_id_contractor = ${id} AND j.status = 'ACTIVE'
+            GROUP BY j.id,contractor_name,client_name,j.status
+            ORDER BY j.id ASC
+            ;`
+        const result: any = await prisma.$queryRaw`
+            SELECT 
+            j.id, 
+            j.status, 
+            co.first_name, 
+            co.middle_name, 
+            co.last_name, 
+            co.id as contractor_id,
+            q.id as quarter_id,
+            cl.name, 
+            q.order, 
+            q.month, 
+            q.year, 
+            q.value_hour, 
+            q.status, 
+            q.taxes, 
+            q.shirts,
+            ap.date,
+            ap.value
+            FROM appointments AS ap
+            INNER JOIN quarters AS q ON ap.fk_id_quarter = q.id
+            INNER JOIN jobs AS j ON j.id = q.fk_id_job
+            INNER JOIN contractors AS co ON co.id = j.fk_id_contractor
+            INNER JOIN clients AS cl ON cl.id = j.fk_id_client
+            WHERE q.year = ${year} AND q.month = ${month} AND j.fk_id_contractor = ${id} AND j.status = 'ACTIVE'
+            ORDER BY q.fk_id_job, q.id
+            ;`
+        
+        const result_totals: any = await prisma.$queryRaw`
+            SELECT 
+            q.fk_id_job as id,
+            j.status,
+			q.id AS quarter_id,
+			q.order,
+            CONCAT(c.first_name,' ',c.middle_name,' ',c.last_name) AS contractor_name,
+            CONCAT(cl.name) AS client_name,
+            sum(ap.value*q.value_hour) total,
+            sum(ap.value) total_hours
+            FROM jobs j
+            INNER JOIN quarters q ON q.fk_id_job = j.id
+            INNER JOIN appointments ap ON ap.fk_id_quarter = q.id
+            INNER JOIN contractors c ON c.id = j.fk_id_contractor
+            INNER JOIN clients cl ON cl.id = j.fk_id_client
+            WHERE  q.year = ${year} AND q.month = ${month} AND j.fk_id_contractor = ${id} AND j.status = 'ACTIVE'
+            GROUP BY q.id,contractor_name,client_name,j.status
+            ORDER BY q.id ASC
+            ;`
 
-        if(quarterExists.length == 0 && actualMonth == month) {
-        // if(quarterExists.length == 0) {
-    
-            const activeJobss = await prisma.jobs.findMany({
-                where: {
-                    status: 'ACTIVE',
-                    
-                }
-            });
+            const results_total: any = await prisma.$queryRaw`
+            SELECT 
+            sum(ap.value*q.value_hour) total,
+            sum(ap.value) total_hours,
+            sum(case when q.order = 1 then ap.value*q.value_hour end) total_1,
+            sum(case when q.order = 1 then ap.value end) total_hours_1,
+            sum(case when q.order = 2 then ap.value*q.value_hour end) total_2,
+            sum(case when q.order = 2 then ap.value end) total_hours_2
+            FROM jobs j
+            INNER JOIN quarters q ON q.fk_id_job = j.id
+            INNER JOIN appointments ap ON ap.fk_id_quarter = q.id
+            INNER JOIN contractors c ON c.id = j.fk_id_contractor
+            WHERE q.year = ${year} AND q.month = ${month} AND j.fk_id_contractor = ${id} AND j.status = 'ACTIVE'
+            ;`
+            
+            const { total, total_hours, total_1, total_2, total_hours_1, total_hours_2 } = results_total[0];
 
-            await activeJobss.reduce(async (memo: any, job: any) => {
-                await memo;
-                arr = [];
-                let last_value = await prisma.quarters.findFirst({
-                    orderBy: [{
-                        order: 'desc'
-                    }],
-                    where: {
-                        fk_id_job: +job.id,
-                    },
-                    select: {
-                        value_hour: true
-                    }
-                });
+        const resultGrouped = groupBy(result, (job: any) => job.id);
+        
+        if(jobs.length > 0) {
+            jobs.forEach((job: any) => {
+                quarter = [];
+                let job_info = resultGrouped.get(job.id);
+                let quarterGrouped = groupBy(job_info, (quarter: any) => quarter.order);
                 
-                if(last_value?.value_hour != undefined) {
-                    let quarterCreated = await prisma.quarters.create({
-                        data: {
-                            fk_id_job: +job.id,
-                            value_hour: +last_value?.value_hour,
-                            year,
-                            month,
-                            order
-                        }
-                    });
-
-                    const last_date = new Date(year, +getMonthFromString(month), 0);
-                    const inicio = order === 1 ? 1 : 16;
-                    const fim = order === 1 ? 15 : last_date.getDate();
-
-                    for(let i=inicio; i<= fim; i += 1) {
-                        let dataValue = new Date(year, +getMonthFromString(month), i);
-                        arr.push({ date: dataValue, value: 0 });
-                    }
-
-                    await arr.reduce(async (memo: any, { date, value }: IAppointment) => {
-                        await memo;
-                        await prisma.appointments.create({
-                            data: {
-                                fk_id_quarter: +quarterCreated.id,
-                                value: +value,
-                                date: date
-                            }
-                        });
-            
-                    }, undefined);
-                    
+                let first_quarter_info = quarterGrouped.get(1);
+                if(first_quarter_info) {
+                    const results = result_totals.find( (info: any) => info.quarter_id === first_quarter_info[0].quarter_id );
+                    const first = {
+                        total: results.total,
+                        total_hours: results.total_hours,
+                        order: first_quarter_info[0].order,
+                        month: first_quarter_info[0].month,
+                        year: first_quarter_info[0].year,
+                        fk_id_quarter: first_quarter_info[0].quarter_id,
+                        value_hour: first_quarter_info[0].value_hour,
+                        status: first_quarter_info[0].status,
+                        taxes: first_quarter_info[0].taxes,
+                        shirts: first_quarter_info[0].shirts,
+                        appointment: first_quarter_info
+                    };
+                    quarter.push(first);
                 }
-
-
-                
-
-                
-    
-            }, undefined);
-            
-            activeJobs = await prisma.jobs.findMany({
-                orderBy: [{
-                    id: 'asc'
-                }],
-                where: {
-                    // status: 'ACTIVE',
-                    fk_id_contractor: +id,
-                },
-                select: {
-                    id: true,
-        
-                    client: {
-                        select: 
-                        {
-                            name: true,
-                            id: true, 
-                        }
-                    },
-                    status: true,
-                    contractor: {
-                        select: {
-                            first_name: true,
-                            middle_name: true,
-                            last_name: true,
-                            id: true,
-                         }
-                    },
+                let second_quarter_info = quarterGrouped.get(2);
+                if(second_quarter_info) {
+                    const results = result_totals.find( (info: any) => info.quarter_id === second_quarter_info[0].quarter_id );
+                    const second = { 
+                        total: results.total,
+                        total_hours: results.total_hours,
+                        order: second_quarter_info[0].order,
+                        month: second_quarter_info[0].month,
+                        year: second_quarter_info[0].year,
+                        fk_id_job: second_quarter_info.id,
+                        value_hour: second_quarter_info[0].value_hour,
+                        status: second_quarter_info[0].status,
+                        taxes: second_quarter_info[0].taxes,
+                        shirts: second_quarter_info[0].shirts,
+                        appointment: second_quarter_info
+                    };
+                    quarter.push(second);
                 }
-            });
-    
-            activeQuarters = await prisma.quarters.findMany({
-                orderBy: [{
-                    fk_id_job: 'asc'
-                }],
-                where: {
-                    month,
-                    year: +year,
-                    jobs: {
-                        // status: 'ACTIVE',
-                        fk_id_contractor: +id,
-                    }
-                },
-                select: {
-                    fk_id_job: true,
-                    order: true,
-                    month: true,
-                    year: true,
-                    value_hour: true,
-                    appointment: 
-                    {
-                        select: 
-                        {
-                            date: true,
-                            value: true,
-                        }
-                    }
-                }
-    
-    
-            });
-            
-        } else {
-            activeJobs = await prisma.jobs.findMany({
-                orderBy: [{
-                    id: 'asc'
-                }],
-                where: {
-                    status: 'ACTIVE',
-                    fk_id_contractor: +id,
-                },
-                select: {
-                    id: true,
-        
-                    client: {
-                        select: 
-                        {
-                            name: true,
-                            id: true, 
-                        }
-                    },
-                    status: true,
-                    contractor: {
-                        select: {
-                            first_name: true,
-                            middle_name: true,
-                            last_name: true,
-                            id: true,
-                         }
-                    },
-                }
-            });
-    
-            activeQuarters = await prisma.quarters.findMany({
-                orderBy: [{
-                    fk_id_job: 'asc'
-                }],
-                where: {
-                    month,
-                    year: +year,
-                    jobs: {
-                        status: 'ACTIVE',
-                        fk_id_contractor: +id,
-                    }
-                },
-                select: {
-                    fk_id_job: true,
-                    order: true,
-                    month: true,
-                    year: true,
-                    value_hour: true,
-                    appointment: 
-                    {
-                        select: 
-                        {
-                            date: true,
-                            value: true,
-                        }
-                    }
-                }
-    
-    
-            });
-        }
-
-        // const activeJobs = await prisma.jobs.findMany({
-        //     orderBy: [{
-        //         id: 'asc'
-        //     }],
-        //     where: {
-        //         // status: 'ACTIVE',
-        //         fk_id_contractor: +id,
-        //     },
-        //     select: {
-        //         id: true,
-    
-        //         client: {
-        //             select: 
-        //             {
-        //                 name: true,
-        //                 id: true, 
-        //             }
-        //         },
-        //         status: true,
-        //         contractor: {
-        //             select: {
-        //                 first_name: true,
-        //                 middle_name: true,
-        //                 last_name: true,
-        //                 id: true,
-        //              }
-        //         },
-        //     }
-        // });
-
-        // const activeQuarters = await prisma.quarters.findMany({
-        //     orderBy: [{
-        //         fk_id_job: 'asc'
-        //     }],
-        //     where: {
-        //         month,
-        //         year: +year,
-        //         jobs: {
-        //             // status: 'ACTIVE',
-        //             fk_id_contractor: +id,
-        //         }
-        //     },
-        //     select: {
-        //         fk_id_job: true,
-        //         order: true,
-        //         month: true,
-        //         year: true,
-        //         value_hour: true,
-        //         appointment: 
-        //         {
-        //             select: 
-        //             {
-        //                 date: true,
-        //                 value: true,
-        //             }
-        //         }
-        //     }
-
-
-        // });
-        if(activeQuarters.length > 0) {
-            const quartersGrouped = groupBy(activeQuarters, (quarter: any) => quarter.fk_id_job);
-        
-            activeJobs.forEach((job: any) => {
-                let quarter_info = quartersGrouped.get(job.id);
-                job.quarter = quarter_info;
-
+                job.quarter = quarter;
             });
 
-            let total = 0;
-        
-            let total_horas = 0;
-            let total_horas_1 = 0;
-            let total_horas_2 = 0;
-            
-            let total_1quarter = 0;
-            let total_2quarter = 0;
-            activeJobs.forEach((job: any)=>{
-                let total_hours = 0;
-                job.quarter.forEach((quarter: any)=>{
-                    
-                    
-                    // total_horas_1 = 0;
-                    // total_horas_2 = 0;
-
-                    // quarter.appointment.forEach((appointment: any)=>{
-                    //     total_hours += appointment.value;
-                    // });
-                let total_hours = quarter.appointment.reduce((acc: number, curr: any) => acc  += curr.value, 0);
-                quarter.total_hours = total_hours;
-                quarter.total = total_hours * quarter.value_hour;
-                if(quarter.order === 1) {
-                        // const valor_hora = quarter.appointment.reduce((acc: number, curr: any) => acc  += curr.value
-
-                        // , 0);
-                    total_horas_1 += total_hours;
-                    total_1quarter += total_hours * quarter.value_hour;
-                }
-                    
-                if(quarter.order === 2) {
-                        // const valor_hora = quarter.appointment.reduce((acc: number, curr: any) => acc  += curr.value
-
-                        // , 0);
-                    total_horas_2 += total_hours;
-                    total_2quarter += total_hours * quarter.value_hour;
-                } 
-                        
-                total += total_hours * quarter.value_hour;
-                total_horas += total_hours;
-                    // total_horas = 0;
-                total_hours = 0;
-            });
-            });
-            return {contractor_jobs:activeJobs, totals:[{ total, total_hours: total_horas },{ total_1hours: total_horas_1, total_1quarter },{ total_2hours: total_horas_2 ,total_2quarter }]};
+            return {contractor_jobs: jobs, totals:[{ total: total, total_hours: total_hours },{ total_1hours: total_hours_1, total_1quarter: total_1 },{ total_2hours: total_hours_2 ,total_2quarter: total_2 }]};
 
         } else {
             return {contractor_jobs:[], totals:[{ total: 0, total_hours: 0 },{ total_1hours: 0, total_1quarter: 0 },{ total_2hours: 0 ,total_2quarter: 0 }]};
 
         }
         
-
-        // let jobs =  await prisma.jobs.findMany({
-        //     where: {
-        //         status: 'ACTIVE',
-        //         fk_id_contractor: +id,
-        //         quarter: {
-        //             some: { 
-        //                 year: {
-        //                     equals: year,
-        //                 },
-        //                 month: {
-        //                     equals: month,
-        //                 }
-        //             }    
-        //         }
-        //     },
-        //     select: {
-        //         id: true,
-        //         client: {
-                    
-        //             select: 
-        //             {
-        //                 name: true,
-        //                 id: true, 
-        //             }
-        //         },
-        //         status: true,
-        //         contractor: {
-        //             select: {
-        //                 first_name: true,
-        //                 middle_name: true,
-        //                 last_name: true,
-        //                 id: true,
-        //              }
-        //         },
-        //         quarter: {
-        //             select: {
-        //                 order: true,
-        //                 month: true,
-        //                 year: true,
-        //                 value_hour: true,
-        //                 appointment: 
-        //                 {
-        //                     select: 
-        //                     {
-        //                         date: true,
-        //                         value: true,
-        //                     }
-        //                 }
-        //             },
-                    
-        //         }
-        //     }
-        // });
-
-        // jobs.forEach((job: any) => {
-        //     let result = job.quarter.filter((quarter: any) => {
-        //         return quarter.month == month && quarter.year == year;
-        //     });
-        //     job.quarter = result;
-        // });
         
+
         
+       
+        
+
+        
+
 
 
 
