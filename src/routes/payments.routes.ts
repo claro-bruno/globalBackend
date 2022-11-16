@@ -13,9 +13,9 @@ const createPaymentsController = new CreatePaymentsController();
 const getPaymentsController = new GetPaymentsController();
 
 
-paymentsRoutes.post("/", use(ensureAuthenticate), use(createPaymentsController.handle));
+paymentsRoutes.post("/contractor", use(ensureAuthenticate), use(createPaymentsController.handle));
 // accountsRoutes.post("/authentication", use(ensureAuthenticate), use(validateAuthentication.handle));
-paymentsRoutes.get("/", use(ensureAuthenticate), use(getPaymentsController.handle));
+paymentsRoutes.get("/contractor", use(ensureAuthenticate), use(getPaymentsController.handle));
 // accountsRoutes.get("/contractor/:id", use(ensureAuthenticate), use(getJobsByContractorController.handle));
 // accountsRoutes.put("/contractor/access/:id", use(ensureAuthenticate), use(updateAccountContractorController.handle));
 // accountsRoutes.put("/contractor/password/:id", use(ensureAuthenticate), use(updatePasswordAccountContractorController.handle));

@@ -31,7 +31,7 @@ export class CreateContractorUseCase {
         { address, city, zipcode, state } : ICreateContractorAddress,
         { address2 = "", city2 = "", zipcode2 = "", state2 = "" } : ICreateContractorAddress | any
     ): Promise<any>{
-        //validar se o contractor existe
+        // validar se o contractor existe
         const contractorExist = await prisma.contractors.findUnique({
            where: {
                email: email.toLowerCase(),
@@ -42,10 +42,13 @@ export class CreateContractorUseCase {
             throw new AppError('Email already exists', 400)
         }
 
-        const birthday = new Date(dob);
-        const username = firstName[0].toLowerCase() + lastName + birthday.getFullYear().toString();
-        const password = firstName.split(" ")[0].toString() + ("0" + (birthday.getMonth() + 1)).slice(-2).toString() + ("0" + (birthday.getDate())).slice(-2).toString();
+        
 
+        const birthday = new Date(dob);
+
+        const username = firstName[0].toLowerCase() + lastName + birthday.getFullYear().toString();
+        const password = firstName.split(" ")[0].toString() + ("0" + (birthday.getMonth() + 1)).slice(-2).toString() + ("0" + (birthday.getDate() + 1)).slice(-2).toString();
+        
         //criptografar a senha
         const hashPassword = await hash(password, 10);
         //salvar a contractor account

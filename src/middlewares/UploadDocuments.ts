@@ -5,7 +5,7 @@ import mime from "mime-types";
 import { Request } from "express-serve-static-core";
 
 export class UploadDocuments implements  multer.Options{
-    private URL: string = path.basename("upload");
+    private URL: string = path.basename("uploads");
 
     public storage = multer.diskStorage({
         //Criar o destino do arquivo
