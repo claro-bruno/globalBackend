@@ -1,13 +1,13 @@
 import { Router } from "express";
-import {ensureAuthenticate} from "../middlewares/ensureAuthenticate";
-import {CreateJobsController} from "../modules/jobs/CreateJobs/CreateJobsController";
-import {use} from "../middlewares/use";
-import {GetJobsController} from "../modules/jobs/GetJobs/GetJobsController";
-import {GetJobsByClientController} from "../modules/jobs/GetServicesByClient/GetJobsByClientController";
-import {GetJobsByContractorController} from "../modules/jobs/GetJobsByContractor/GetJobsByContractorController";
-import {CompleteJobsController} from "../modules/jobs/CompleteJobs/CompleteJobsController";
+import { ensureAuthenticate } from "../middlewares/ensureAuthenticate";
+import { CreateJobsController } from "../modules/jobs/CreateJobs/CreateJobsController";
+import { use } from "../middlewares/use";
+import { GetJobsController } from "../modules/jobs/GetJobs/GetJobsController";
+import { GetJobsByClientController } from "../modules/jobs/GetServicesByClient/GetJobsByClientController";
+import { GetJobsByContractorController } from "../modules/jobs/GetJobsByContractor/GetJobsByContractorController";
+import { CompleteJobsController } from "../modules/jobs/CompleteJobs/CompleteJobsController";
 import { UpdateJobsController } from "../modules/jobs/UpdateJobs/UpdateJobsController";
-
+import { CreateJobsByQuartersController } from "../modules/jobs/CreateJobsByQuarters/CreateJobsByQuartersController";
 
 const jobsRoutes = Router();
 
@@ -17,15 +17,35 @@ const getJobsByClientController = new GetJobsByClientController();
 const getJobsByContractorController = new GetJobsByContractorController();
 const completeJobsController = new CompleteJobsController();
 const updateJobsController = new UpdateJobsController();
+const createJobsByQuartersController = new CreateJobsByQuartersController();
 
-jobsRoutes.post("/", use(ensureAuthenticate), use(createServicesController.handle));
-jobsRoutes.put("/:id", use(ensureAuthenticate), use(completeJobsController.handle));
-jobsRoutes.patch("/:id", use(ensureAuthenticate), use(updateJobsController.handle));
-jobsRoutes.get("/contractor/:id", use(ensureAuthenticate), use(getJobsByContractorController.handle));
-jobsRoutes.get("/client/:id", use(ensureAuthenticate), use(getJobsByClientController.handle));
+jobsRoutes.post(
+  "/",
+  use(ensureAuthenticate),
+  use(createServicesController.handle)
+);
+jobsRoutes.put(
+  "/:id",
+  use(ensureAuthenticate),
+  use(completeJobsController.handle)
+);
+jobsRoutes.patch(
+  "/:id",
+  use(ensureAuthenticate),
+  use(updateJobsController.handle)
+);
+jobsRoutes.get(
+  "/contractor/:id",
+  use(ensureAuthenticate),
+  use(getJobsByContractorController.handle)
+);
+jobsRoutes.get(
+  "/client/:id",
+  use(ensureAuthenticate),
+  use(getJobsByClientController.handle)
+);
 jobsRoutes.get("/", use(ensureAuthenticate), use(getJobsController.handle));
+jobsRoutes.post("/crom", use(createJobsByQuartersController.handle));
 // jobsRoutes.get("/", use(getJobsController.handle));
-
-
 
 export { jobsRoutes };

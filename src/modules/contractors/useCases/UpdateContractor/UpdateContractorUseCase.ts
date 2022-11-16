@@ -1,22 +1,24 @@
 import { prisma } from "../../../../database/prismaClient";
-import { hash } from "bcrypt";
 import { AppError} from "../../../../middlewares/AppError";
 
-interface ICreateContractor {
+interface IUpdateContractor {
     id: number;
-    firstName: string;
-    middleName: string;
-    lastName: string;
+    first_name: string;
+    middle_name: string;
+    last_name: string;
     email: string;
     identification: string;
-    ein?: string;
     dob: Date;
     telephone: string;
-    acceptTerms: boolean;
     urlPrimaryResidencyProof: string,
     urlSecondaryResidencyProof: string,
     urlDocumentProof: string,
     urlProfile: string;
+    ein?: string;
+    address: string;
+    city: string;
+    zipcode: string;
+    state: string;
 }
 
 interface ICreateContractorAddress {
@@ -29,9 +31,9 @@ interface ICreateContractorAddress {
 
 export class UpdateContractorUseCase {
     async execute(
-        { id, firstName, middleName, lastName, email, identification, ein, dob, telephone, acceptTerms, urlPrimaryResidencyProof, urlSecondaryResidencyProof, urlDocumentProof, urlProfile } : ICreateContractor,
-        { address, city, zipcode, state } : ICreateContractorAddress,
-        { address2 = "", city2 = "", zipcode2 = "", state2 = "" } : ICreateContractorAddress | any
+        { id, first_name, middle_name, last_name, email, identification, ein, dob, telephone, urlPrimaryResidencyProof, urlSecondaryResidencyProof, urlDocumentProof, urlProfile, address, city, state, zipcode } : IUpdateContractor,
+   //     { address, city, zipcode, state } : ICreateContractorAddress,
+   //     { address2 = "", city2 = "", zipcode2 = "", state2 = "" } : ICreateContractorAddress | any
     ): Promise<any>{
         //validar se o client existe
         const contractorExist = await prisma.contractors.findUnique({
@@ -50,19 +52,17 @@ export class UpdateContractorUseCase {
                 id
             },
             data: {
-                first_name: firstName,
-                middle_name: middleName,
-                last_name: lastName,
+                first_name,
+                middle_name,
+                last_name,
                 email,
-                acceptTerms,
                 ein,
-                status: "PENDING",
                 urlProfile,
                 urlDocumentProof,
                 urlPrimaryResidencyProof,
                 urlSecondaryResidencyProof,
                 identification,
-                dob,
+                dob: new Date(dob),
                 telephone,
             }
         });
@@ -74,7 +74,7 @@ export class UpdateContractorUseCase {
             }
         });
 
-        const addr1 = await prisma.adresseses.create({
+        await prisma.adresseses.create({
             data: {
                 address,
                 city,
@@ -84,15 +84,15 @@ export class UpdateContractorUseCase {
             }
         });
 
-        const addr2 = (address2 != "") ? await prisma.adresseses.create({
-            data: {
-                address: address2,
-                city: city2,
-                zipcode: zipcode2,
-                state: state2,
-                fk_id_contractor: contractor.id
-            }
-        }) : undefined;
+        // const addr2 = (address2 != "") ? await prisma.adresseses.create({
+        //     data: {
+        //         address: address2,
+        //         city: city2,
+        //         zipcode: zipcode2,
+        //         state: state2,
+        //         fk_id_contractor: contractor.id
+        //     }
+        // }) : undefined;
 
 
         return contractor;

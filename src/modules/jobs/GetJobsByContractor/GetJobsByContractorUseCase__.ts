@@ -26,7 +26,7 @@ interface IAppointment {
     value: number;
 }
 
-export class GetJobsByContractorUseCase_ {
+export class GetJobsByContractorUseCase {
     async execute(id: number, year: number, month: string) {
         let activeJobs: any = [];
         let activeQuarters: any = [];

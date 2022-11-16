@@ -8,150 +8,156 @@ datasource db {
 }
 
 model Payments {
-  id    Int     @id @default(autoincrement())
-  value Float
-  method Method
-  year Int
-  month String
-  date_at DateTime @default(now())
-  type Type
-  pay_des_for String?
-  quarter Int?
-  identification String @default("")
-  contractor  Contractors?  @relation(fields: [fk_id_contractor], references: [id])
+  id               Int          @id @default(autoincrement())
+  value            Float
+  method           Method
+  year             Int
+  month            String
+  date_at          DateTime     @default(now())
+  type             Type
+  pay_des_for      String?
+  quarter          Int?
+  identification   String       @default("")
+  contractor       Contractors? @relation(fields: [fk_id_contractor], references: [id])
   fk_id_contractor Int?
-  client  Clients?  @relation(fields: [fk_id_client], references: [id])
-  fk_id_client Int?
-  status Status?
+  client           Clients?     @relation(fields: [fk_id_client], references: [id])
+  fk_id_client     Int?
+  status           Status?
 
   @@map("payments")
 }
 
 model Balances {
-    id    Int     @id @default(autoincrement())
-    year Int
-    month String
-    value Float
-    @@map("balances")
+  id    Int    @id @default(autoincrement())
+  year  Int
+  month String
+  value Float
+
+  @@map("balances")
 }
 
 model Contractors {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  first_name  String
-  middle_name String?
-  last_name  String
-  urlProfile String?
-  urlDocumentProof String?
-  urlPrimaryResidencyProof String?
+  id                         Int       @id @default(autoincrement())
+  email                      String    @unique
+  first_name                 String
+  middle_name                String?
+  last_name                  String
+  urlProfile                 String?
+  urlDocumentProof           String?
+  urlPrimaryResidencyProof   String?
   urlSecondaryResidencyProof String?
-  status Status @default(ACTIVE)
-  ein String?
-  acceptTerms Boolean
-  identification String
-  dob DateTime
-  telephone String
-  created_at   DateTime @default(now())
-  account   Accounts?  @relation(fields: [fk_id_account], references: [id])
-  fk_id_account Int? @unique
+  status                     Status    @default(ACTIVE)
+  ein                        String?
+  acceptTerms                Boolean
+  identification             String
+  dob                        DateTime
+  telephone                  String
+  created_at                 DateTime  @default(now())
+  account                    Accounts? @relation(fields: [fk_id_account], references: [id])
+  fk_id_account              Int?      @unique
 
   payments Payments[]
-  address     Adresseses[]
+  address  Adresseses[]
   jobs     Jobs[]
+
   @@map("contractors")
 }
 
-
 model Clients {
-  id    Int     @id @default(autoincrement())
-  name  String
-  created_at   DateTime @default(now())
-  account   Accounts?  @relation(fields: [fk_id_account], references: [id])
-  fk_id_account Int? @unique
-  start String
-  end String
-  monday Boolean
-  tuesday Boolean
-  wednesday Boolean
-  thursday Boolean
-  friday Boolean
-  saturday Boolean
-  sunday Boolean
-  jobs Jobs[]
-  status Status @default(ACTIVE)
-  payments Payments[]
+  id            Int        @id @default(autoincrement())
+  name          String
+  created_at    DateTime   @default(now())
+  account       Accounts?  @relation(fields: [fk_id_account], references: [id])
+  fk_id_account Int?       @unique
+  start         String
+  end           String
+  monday        Boolean
+  tuesday       Boolean
+  wednesday     Boolean
+  thursday      Boolean
+  friday        Boolean
+  saturday      Boolean
+  sunday        Boolean
+  jobs          Jobs[]
+  status        Status     @default(ACTIVE)
+  payments      Payments[]
+
   @@map("clients")
 }
 
 model Adresseses {
-      id    Int     @id @default(autoincrement())
-      address  String
-      city String
-      zipcode String
-      state String
-      contractor   Contractors  @relation(fields: [fk_id_contractor], references: [id])
-      fk_id_contractor Int
-      created_at   DateTime @default(now())
-      @@map("addresses")
+  id               Int         @id @default(autoincrement())
+  address          String
+  city             String
+  zipcode          String
+  state            String
+  contractor       Contractors @relation(fields: [fk_id_contractor], references: [id])
+  fk_id_contractor Int
+  created_at       DateTime    @default(now())
+
+  @@map("addresses")
 }
 
 model Accounts {
-      id    Int     @id @default(autoincrement())
-      access Access
-      username String
-      password String
-      resetPassword Boolean @default(false)
-      status Status @default(INACTIVE)
-      created_at   DateTime @default(now())
-      contractor  Contractors?
-      client  Clients?
-      @@map("accounts")
+  id            Int          @id @default(autoincrement())
+  access        Access
+  username      String
+  password      String
+  resetPassword Boolean      @default(false)
+  status        Status       @default(INACTIVE)
+  created_at    DateTime     @default(now())
+  contractor    Contractors?
+  client        Clients?
+
+  @@map("accounts")
 }
 
-
 model Jobs {
-  id    Int     @id @default(autoincrement())
-  contractor       Contractors  @relation(fields: [fk_id_contractor], references: [id])
+  id               Int         @id @default(autoincrement())
+  contractor       Contractors @relation(fields: [fk_id_contractor], references: [id])
   fk_id_contractor Int
-  client       Clients  @relation(fields: [fk_id_client], references: [id])
-  fk_id_client Int
-  created_at   DateTime @default(now())
-  monday Boolean
-  tuesday Boolean
-  wednesday Boolean
-  thursday Boolean
-  friday Boolean
-  saturday Boolean
-  sunday Boolean
-  status Status @default(ACTIVE)
+  client           Clients     @relation(fields: [fk_id_client], references: [id])
+  fk_id_client     Int
+  created_at       DateTime    @default(now())
+  monday           Boolean
+  tuesday          Boolean
+  wednesday        Boolean
+  thursday         Boolean
+  friday           Boolean
+  saturday         Boolean
+  sunday           Boolean
+  status           Status      @default(ACTIVE)
 
   quarter Quarters[]
+
   @@map("jobs")
 }
 
 model Quarters {
-  id Int  @id @default(autoincrement())
-  jobs Jobs  @relation(fields: [fk_id_job], references: [id])
-  fk_id_job Int
-  value_hour Float
-  year Int
-  month String
-  order Int
-  status Status @default(PENDING)
-  taxes Float @default(0)
-  shirts Float @default(0)
-  appointment   Appointments[]
+  id          Int            @id @default(autoincrement())
+  jobs        Jobs           @relation(fields: [fk_id_job], references: [id])
+  fk_id_job   Int
+  value_hour  Float
+  year        Int
+  month       String
+  order       Int
+  status      Status         @default(PENDING)
+  taxes       Float          @default(0)
+  shirts      Float          @default(0)
+  appointment Appointments[]
+
   @@map("quarters")
 }
 
 model Appointments {
-    id    BigInt     @id @default(autoincrement())
-    value Float
-    date DateTime
-    quarter   Quarters  @relation(fields: [fk_id_quarter], references: [id])
-    created_at   DateTime @default(now())
-    fk_id_quarter Int
-    @@map("appointments")
+  id            BigInt   @id @default(autoincrement())
+  value         Float
+  date          DateTime
+  quarter       Quarters @relation(fields: [fk_id_quarter], references: [id])
+  created_at    DateTime @default(now())
+  fk_id_quarter Int
+
+  @@map("appointments")
 }
 
 enum Access {
@@ -180,6 +186,7 @@ enum Method {
   RECEIPT
   VENMO
 }
+
 enum Type {
   INPUT
   LABOUR_PAYROOL
@@ -198,4 +205,3 @@ enum Type {
   EXTRAS
   GLOBAL
 }
-

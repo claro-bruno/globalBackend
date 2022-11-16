@@ -7,7 +7,7 @@ import "dotenv/config";
 
 const app = express();
 app.use(express.json());
-app.use('/images', express.static(path.resolve(__dirname, '../uploads')));
+app.use('/images', express.static(path.resolve(__dirname, '../../uploads')));
 app.use(cors());
 app.use(express.urlencoded( { extended: true }));
 app.use(router);

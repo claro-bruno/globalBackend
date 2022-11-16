@@ -8,6 +8,9 @@ export class GetContractorsUseCase {
         // Receber userName, password
         // Verificar se o userName cadastrado
         const contractors = await prisma.contractors.findMany({
+            orderBy: [{
+                id: 'asc'
+            }],
             include: {
                 address: true,
             }

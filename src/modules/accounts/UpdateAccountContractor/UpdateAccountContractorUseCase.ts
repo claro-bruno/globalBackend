@@ -27,31 +27,37 @@ export class UpdateAccountContractorUseCase {
             throw new AppError('Contractor does not exists', 401)
         }
 
-        const contractorAccountExist = await prisma.accounts.findFirst({
-            where: {
-                id: contractorExist.fk_id_account
-            }
-        });
+        if(contractorExist) {
+            const contractorAccountExist = await prisma.accounts.findFirst({
+                where: {
+                    id: contractorExist.fk_id_account
+                }
+            });
+    
+            const contractor = await prisma.contractors.update({
+                where: {
+                    id
+                },
+                data: {
+                    status
+                }
+            });
+    
+            await prisma.accounts.update({
+                where: {
+                    id: contractorAccountExist.id
+                },
+                data: {
+                    status,
+                    resetPassword: true
+                }
+            });
+            return contractor;
+            
+        }
 
-        const contractor = await prisma.contractors.update({
-            where: {
-                id
-            },
-            data: {
-                status
-            }
-        });
 
-        await prisma.accounts.update({
-            where: {
-                id: contractorAccountExist.id
-            },
-            data: {
-                status,
-                resetPassword: true
-            }
-        });
-        return contractor;
+       
     }
 
 }

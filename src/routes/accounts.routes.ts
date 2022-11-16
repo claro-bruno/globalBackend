@@ -29,7 +29,7 @@ accountsRoutes.post("/contractor/reset", use(resetPasswordContractorController.h
 accountsRoutes.post("/authentication", use(ensureAuthenticate), use(validateAuthentication.handle));
 accountsRoutes.get("/", use(ensureAuthenticate), use(getJobsController.handle));
 accountsRoutes.get("/contractor/:id", use(ensureAuthenticate), use(getJobsByContractorController.handle));
-accountsRoutes.put("/contractor/access/:id", use(ensureAuthenticate), use(updateAccountContractorController.handle));
+accountsRoutes.patch("/contractor/access/:id", use(ensureAuthenticate), use(updateAccountContractorController.handle));
 accountsRoutes.put("/contractor/password/:id", use(ensureAuthenticate), use(updatePasswordAccountContractorController.handle));
 
 export { accountsRoutes };

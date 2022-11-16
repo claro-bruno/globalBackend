@@ -6,9 +6,9 @@ dotenv.config();
 declare module 'express-serve-static-core' {
     interface Request {
         files?: {
-            primaryResidencyProof?: any;
-            secondaryResidencyProof?: any;
-            documentProof?: any;
+            primaryResidencyProf?: any;
+            secondaryResidencyProf?: any;
+            documentProf?: any;
             profile?: any;
         }
     }
@@ -23,11 +23,11 @@ export class CreateContractorController {
         let urlProfile = "";
 
         if (request.files) {
-            const { primaryResidencyProof, secondaryResidencyProof, documentProof, profile } = request.files;
-            urlPrimaryResidencyProof = primaryResidencyProof ? `${request.protocol}://${request.hostname}:${process.env.PORT}/src/${primaryResidencyProof[0].path}` : "";
-            urlSecondaryResidencyProof = secondaryResidencyProof ? `${request.protocol}://${request.hostname}:${process.env.PORT}/src/${secondaryResidencyProof[0].path}` : "";
-            urlDocumentProof = documentProof ? `${request.protocol}://${request.hostname}:${process.env.PORT}/src/${documentProof[0].path}` : "";
-            urlProfile = profile ? `${request.protocol}://${request.hostname}:${process.env.PORT}/src/${profile[0].path}` : "";
+            const { primaryResidencyProf, secondaryResidencyProf, documentProf, profile } = request.files;
+            urlPrimaryResidencyProof = primaryResidencyProf ? `${request.protocol}://${request.hostname}:${process.env.PORT}/images/${primaryResidencyProf[0].filename}` : "";
+            urlSecondaryResidencyProof = secondaryResidencyProf ?  `${request.protocol}://${request.hostname}:${process.env.PORT}/images/${secondaryResidencyProf[0].filename}` : "";
+            urlDocumentProof = documentProf ? `${request.protocol}://${request.hostname}:${process.env.PORT}/images/${documentProf[0].filename}` : "";
+            urlProfile = profile ? `${request.protocol}://${request.hostname}:${process.env.PORT}/images/${profile[0].filename}` : "";
         }
         let adr2 = { address: "", city: "", zipcode: "", state: "" };
         const infoResult = JSON.parse(request.body.body);

@@ -7,26 +7,36 @@ export class GetPaymentsUseCase {
         
         const result: any = await prisma.$queryRaw`
             SELECT 
-            j.fk_id_contractor,
+            DISTINCT c.id as fk_id_contractor,
             CONCAT(c.first_name,' ',c.middle_name,' ',c.last_name) AS name,
             q.year,
             q.month,
-            sum(case when q.order = 1 then ap.value*q.value_hour end) value_1,
-            sum(case when q.order = 2 then ap.value*q.value_hour end) value_2,
-            concat(case when p.quarter = 1 then p.identification end) identification_1,
-            concat(case when p.quarter = 2 then p.identification end) identification_2,
-            concat(case when p.quarter = 1 then p.method end) method_1,
-            concat(case when p.quarter = 2 then p.method end) method_2,
-            case when q.order = 1 then q.shirts+q.taxes end taxes_1, 
-            case when q.order = 2 then q.shirts+q.taxes end taxes_2
+            sum(case when p.quarter = 1 then p.value else ap.value*q.value_hour end) AS value_1,
+            sum(case when p.quarter = 2 then p.value else ap.value*q.value_hour end) value_2,
+            CONCAT(case when p.quarter = 1 then p.identification end) identification_1,
+            CONCAT(case when p.quarter = 2 then p.identification end) identification_2,
+            CONCAT(case when p.quarter = 1 then p.method end) method_1,
+            CONCAT(case when p.quarter = 2 then p.method end) method_2,
+            (
+				SELECT
+				SUM(quarters.shirts+quarters.taxes) FROM jobs
+				INNER JOIN quarters ON quarters.fk_id_job = jobs.id
+				WHERE quarters.order = 1 AND jobs.fk_id_contractor = c.id
+			) AS  taxes_1,
+			(
+				SELECT
+				SUM(quarters.shirts+quarters.taxes) FROM jobs
+				INNER JOIN quarters ON quarters.fk_id_job = jobs.id
+				WHERE quarters.order = 2 AND jobs.fk_id_contractor = c.id
+			) AS  taxes_2
             FROM jobs AS j
             INNER JOIN quarters AS q ON q.fk_id_job = j.id
             INNER JOIN appointments AS ap ON ap.fk_id_quarter = q.id
             INNER JOIN contractors AS c ON c.id = j.fk_id_contractor
             LEFT JOIN payments AS p ON p.fk_id_contractor = j.fk_id_contractor
             WHERE q.year = ${year} AND q.month = ${month} AND q.status = 'REVISED'
-            GROUP BY j.fk_id_contractor,name,q.year,q.month,p.quarter,p.identification,p.method,q.order,ap.fk_id_quarter,q.id
-            ORDER BY j.fk_id_contractor ASC
+            GROUP BY c.id,q.year,q.month,name,q.status,p.quarter,p.identification,p.method
+            ORDER BY c.id ASC
             ;`
         
         const result_totals: any = await prisma.$queryRaw`
