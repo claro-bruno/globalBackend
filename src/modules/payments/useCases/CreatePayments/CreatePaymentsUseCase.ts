@@ -37,7 +37,7 @@ export class CreatePaymentsUseCase {
       throw new AppError("Contractor does not exists", 400);
     }
 
-    const { method = "", identifier = "", value, quarter, taxes } = payments[0];
+    const { method, identifier, value, quarter, taxes } = payments[0];
 
     let paymentAlreadExists = await prisma.payments.findFirst({
       where: {
@@ -46,7 +46,7 @@ export class CreatePaymentsUseCase {
       }
     });
 
-    if (identifier == "" || method == "") {
+    if (identifier != "" || method != "") {
       const paymentExist_1 = await prisma.payments.findFirst({
         where: {
           month: month as any,
