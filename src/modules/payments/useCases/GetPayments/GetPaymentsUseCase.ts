@@ -5,32 +5,12 @@ export class GetPaymentsUseCase {
   async execute(year: number, month: string) {
     const result: any = await prisma.$queryRaw`
             SELECT
-            c.id as fk_id_contractor,
+            DISTINCT c.id as fk_id_contractor,
             CONCAT(c.first_name,' ',c.middle_name,' ',c.last_name) AS name,
             q.year,
             q.month,
-            sum(case when p.quarter = 1 then ap.value*q.value_hour end) AS value_1,
-            sum(case when p.quarter = 2 then ap.value*q.value_hour end) value_2,
-			(
-				SELECT
-				pa.identification FROM payments AS pa
-				WHERE pa.quarter = 1 AND pa.fk_id_contractor = c.id
-			) AS  identification_1,
-			(
-				SELECT
-				pa.identification FROM payments AS pa
-				WHERE pa.quarter = 2 AND pa.fk_id_contractor = c.id
-			) AS  identification_2,
-			(
-				SELECT
-				pa.method FROM payments AS pa
-				WHERE pa.quarter = 1 AND pa.fk_id_contractor = c.id
-			) AS  method_1,
-			(
-				SELECT
-				pa.method FROM payments AS pa
-				WHERE pa.quarter = 2 AND pa.fk_id_contractor = c.id
-			) AS  method_2,
+           sum(case when q.order = 1 then ap.value*q.value_hour end) AS value_1,
+           sum(case when q.order = 2 then ap.value*q.value_hour end) AS value_2,
             (
 				SELECT
 				SUM(quarters.shirts+quarters.taxes) FROM jobs
@@ -47,11 +27,63 @@ export class GetPaymentsUseCase {
             INNER JOIN quarters AS q ON q.fk_id_job = j.id
             INNER JOIN appointments AS ap ON ap.fk_id_quarter = q.id
             INNER JOIN contractors AS c ON c.id = j.fk_id_contractor
-            LEFT JOIN payments AS p ON p.fk_id_contractor = j.fk_id_contractor
             WHERE q.year = ${year} AND q.month = ${month} AND q.status = 'REVISED'
             GROUP BY c.id,q.year,q.month,name,q.status
             ORDER BY c.id ASC
             ;`;
+
+    const payments: any = await prisma.$queryRaw`
+    SELECT 
+            DISTINCT jobs.fk_id_contractor,
+            (
+				SELECT value AS value_1
+                FROM payments as pa
+                where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS'
+            ) AS value_1,
+            (
+				SELECT identification 
+                FROM payments as pa
+                where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS'
+            ) AS identification_1,
+            (
+				SELECT method 
+                FROM payments as pa
+                where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS'
+            ) AS method_1,
+            (
+				SELECT value 
+                FROM payments as pa
+                where pa.fk_id_contractor = c.id AND pa.quarter = 2 AND pa.type = 'CONTRACTOR_WORKERS'
+            ) AS value_2,
+            (
+				SELECT identification 
+                FROM payments as pa
+                where pa.fk_id_contractor = c.id AND pa.quarter = 2 AND pa.type = 'CONTRACTOR_WORKERS'
+            ) AS identification_2,
+            (
+				SELECT method 
+                FROM payments as pa
+                where pa.fk_id_contractor = c.id AND pa.quarter = 2 AND pa.type = 'CONTRACTOR_WORKERS'
+             ) AS method_2
+            FROM jobs
+            INNER JOIN quarters ON quarters.fk_id_job = jobs.id
+            INNER JOIN contractors AS c ON jobs.fk_id_contractor = c.id
+			WHERE quarters.month = 'November' AND quarters.year = 2022
+            order by jobs.fk_id_contractor ASC
+    ;`;
+
+    result.forEach((payment: any, index: number) => {
+      const pay = payments.find(
+        (info: any) => info.fk_id_contractor === payment.fk_id_contractor
+      );
+      console.log(pay);
+      if (pay) {
+        payment.identification_1 = pay.identification_1;
+        payment.identification_2 = pay.identification_2;
+        payment.method_1 = pay.method_1;
+        payment.method_2 = pay.method_2;
+      }
+    });
 
     const result_totals: any = await prisma.$queryRaw`
             SELECT 

@@ -46,7 +46,7 @@ export class CreatePaymentsUseCase {
       }
     });
 
-    if (identifier != "" || method != "") {
+    if (identifier != "" && method != "") {
       const paymentExist_1 = await prisma.payments.findFirst({
         where: {
           month: month as any,
@@ -62,13 +62,8 @@ export class CreatePaymentsUseCase {
             id: paymentExist_1.id
           },
           data: {
-            value: +value - taxes,
-            method,
-            year: +year,
-            month,
-            quarter: 1,
-            identification: identifier,
-            fk_id_contractor: +contractor_id
+            value,
+            identification: identifier
           }
         });
 
@@ -139,7 +134,7 @@ export class CreatePaymentsUseCase {
 
         await prisma.payments.create({
           data: {
-            value: +value - taxes,
+            value,
             method,
             year: +year,
             month,
@@ -168,6 +163,8 @@ export class CreatePaymentsUseCase {
         //     });
         // }
       }
+    } else {
+      throw new AppError("Identifier and method are required!", 401);
     }
 
     const {
@@ -178,7 +175,7 @@ export class CreatePaymentsUseCase {
       taxes: taxes_2
     } = payments[1];
 
-    if (identifier_2 != "" || method_2 != "") {
+    if (identifier_2 != "" && method_2 != "") {
       const paymentExist_2 = await prisma.payments.findFirst({
         where: {
           month: month as string,
@@ -195,13 +192,8 @@ export class CreatePaymentsUseCase {
             id: paymentExist_2.id
           },
           data: {
-            value: +value_2 - taxes_2,
             method: method_2,
-            year: +year,
-            month,
-            quarter: +quarter_2,
-            identification: identifier_2,
-            fk_id_contractor: +contractor_id
+            identification: identifier_2
           }
         });
 
@@ -272,7 +264,7 @@ export class CreatePaymentsUseCase {
 
         await prisma.payments.create({
           data: {
-            value: +value_2 - taxes_2,
+            value: +value_2,
             method: method_2,
             year: +year,
             month,
@@ -301,6 +293,8 @@ export class CreatePaymentsUseCase {
         //         });
         //     }
       }
+    } else {
+      throw new AppError("Identifier and method are required!", 401);
     }
 
     return "Ok";
