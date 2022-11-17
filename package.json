@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "ts-node-dev --inspect --exit-child --transpile-only --ignore-watch node_modules src/api/server.ts",
-    "start": "npx prisma migrate dev --name new migrate && ts-node-dev --inspect --exit-child --transpile-only --ignore-watch node_modules src/api/server.ts"
+    "start": "ts-node-dev --inspect --exit-child --transpile-only --ignore-watch node_modules src/api/server.ts"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
