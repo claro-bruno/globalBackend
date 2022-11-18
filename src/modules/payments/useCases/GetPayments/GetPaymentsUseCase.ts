@@ -76,7 +76,6 @@ export class GetPaymentsUseCase {
       const pay = payments.find(
         (info: any) => info.fk_id_contractor === payment.fk_id_contractor
       );
-      console.log(pay);
       if (pay) {
         payment.identification_1 = pay.identification_1;
         payment.identification_2 = pay.identification_2;
