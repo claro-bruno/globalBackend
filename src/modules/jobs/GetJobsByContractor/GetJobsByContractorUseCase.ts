@@ -98,11 +98,23 @@ export class GetJobsByContractorUseCase {
             sum(ap.value) total_hours,
             sum(case when q.order = 1 then ap.value*q.value_hour end) total_1,
             sum(case when q.order = 1 then ap.value end) total_hours_1,
-            sum(case when q.order = 1 then q.others end) total_taxes_1,
-            sum(then q.others end) total_taxes,
+			( 
+				SELECT sum(quarters.others) FROM jobs
+				INNER JOIN quarters ON quarters.fk_id_job = jobs.id
+				WHERE quarters.order = 1
+			) AS total_others_1,
+				( 
+				SELECT sum(quarters.others) FROM jobs
+				INNER JOIN quarters ON quarters.fk_id_job = jobs.id
+				WHERE quarters.order = 2
+			) AS total_others_2,
+				( 
+				SELECT sum(quarters.others) FROM jobs
+				INNER JOIN quarters ON quarters.fk_id_job = jobs.id
+			) AS total_others,
             sum(case when q.order = 2 then ap.value*q.value_hour end) total_2,
-            sum(case when q.order = 2 then ap.value end) total_hours_2,
-            sum(case when q.order = 2 then q.others end) total_taxes_2,
+            sum(case when q.order = 2 then ap.value end) total_hours_2
+
             FROM jobs j
             INNER JOIN quarters q ON q.fk_id_job = j.id
             INNER JOIN appointments ap ON ap.fk_id_quarter = q.id
@@ -117,9 +129,9 @@ export class GetJobsByContractorUseCase {
       total_2,
       total_hours_1,
       total_hours_2,
-      total_taxes,
-      total_taxes_1,
-      total_taxes_2
+      total_others,
+      total_others_1,
+      total_others_2
     } = results_total[0];
 
     // const jobsGrouped = groupBy(jobs_quarters, (quarter: any) => quarter.fk_id_job);
@@ -158,15 +170,15 @@ export class GetJobsByContractorUseCase {
         totals: {
           total: total, 
           total_hours: total_hours, 
-          total_with_taxes: total - total_taxes,
-          total_1hours: total_hours_1,
-          total_1quarter: total_1,
-          total_taxes1quarter: total_taxes_1,
-          total_1: total_1 - total_taxes_1,
-          total_2hours: total_hours_2,
-          total_2quarter: total_2,
-          total_taxes2quarter: total_taxes_2,
-          total_2: total_2 - total_taxes_1
+          total_payment: total - total_others,
+          total_1_hours: total_hours_1,
+          total_1_quarter: total_1,
+          total_1_others: total_others_1,
+          total_1_payment: total_1 - total_others_1,
+          total_2_hours: total_hours_2,
+          total_2_quarter: total_2,
+          total_2_others: total_others_2,
+          total_2_payment: total_2 - total_others_1
         }
 
         
