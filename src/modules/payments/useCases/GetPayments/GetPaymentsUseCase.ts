@@ -146,8 +146,8 @@ export class GetPaymentsUseCase {
         total_1_quarter: total_1,
         total_2_quarter: total_2,
         total: total_1 + total_2,
-        total_taxes_1: total_others_1,
-        total_taxes_2: total_others_2,
+        total_others_1: total_others_1,
+        total_others_2: total_others_2,
         total_1_payment: total_1 - total_others_1,
         total_2_payment: total_2 - total_others_2,
         total_month_payment: (total_1 - total_others_1) + (total_2 - total_others_2)
