@@ -105,19 +105,16 @@ export class GetPaymentsUseCase {
         payment.others_2 = pay.others_2 == null ? payment.others_2 :  pay.others_2;
         payment.method_1 = pay.method_1;
         payment.method_2 = pay.method_2;
-        payment.total_1 = payment.value_1 - payment.others_1;
-        payment.total_2 = payment.value_2 - payment.others_2;
-        payment.total_month = payment.total_1 + payment.total_2;
+        payment.total_1_payment = payment.value_1 - payment.others_1;
+        payment.total_2_payment = payment.value_2 - payment.others_2;
+        payment.total_month = payment.total_1_payment + payment.total_2_payment;
       }
     });
 
     const result_totals: any = await prisma.$queryRaw`
             SELECT 
             sum(case when q.order = 1 then ap.value*q.value_hour end) total_1,
-            sum(case when q.order = 1 then q.others end) total_others_1,
-            sum(case when q.order = 2 then ap.value*q.value_hour end) total_2,
-            sum(case when q.order = 2 then q.others end) total_others_2,
-            sum(ap.value*q.value_hour) total
+            sum(case when q.order = 2 then ap.value*q.value_hour end) total_2
 
             FROM jobs j
             INNER JOIN quarters q ON q.fk_id_job = j.id
@@ -125,25 +122,34 @@ export class GetPaymentsUseCase {
             INNER JOIN contractors c ON c.id = j.fk_id_contractor
             WHERE q.year = ${year} AND q.month = ${month} AND q.status = 'REVISED'
             ;`;
+    
+    const result_totals_others: any = await prisma.$queryRaw`
+            SELECT 
+            sum(case when q.order = 1 then q.others end) total_others_1,
+			      sum(case when q.order = 2 then q.others end) total_others_2
 
-    let { total_1, total_taxes_1, total_2, total_taxes_2, total } =
-      result_totals[0];
-    total = total != null ? total : 0;
+            FROM jobs j
+            INNER JOIN quarters q ON q.fk_id_job = j.id
+            WHERE q.year = ${year} AND q.month = ${month} AND q.status = 'REVISED'
+            ;`;
+
+    let { total_1, total_2 } = result_totals[0];
+    let { total_others_1, total_others_2 } = result_totals_others[0];
     total_1 = total_1 != null ? total_1 : 0;
-    total_taxes_1 = total_taxes_1 != null ? total_taxes_1 : 0;
+    total_others_1 = total_others_1 != null ? total_others_1 : 0;
     total_2 = total_2 != null ? total_2 : 0;
-    total_taxes_2 = total_taxes_2 != null ? total_taxes_2 : 0;
+    total_others_2 = total_others_2 != null ? total_others_2 : 0;
 
     return {
       payments: result,
       total: {
-        total,
-        total_1: total_1 - total_taxes_1,
-        total_2: total_2 - total_taxes_2,
-        total_1quarter: total_1,
-        total_2quarter: total_2,
-        total_taxes_1quarter: total_taxes_1,
-        total_taxes_2quarter: total_taxes_2,
+        total_1: total_1,
+        total_2: total_2,
+        total: total_1 + total_2,
+        total_taxes_1: total_others_1,
+        total_taxes_2: total_others_2,
+        total_1_payment: total_1 - total_others_1,
+        total_2_payment: total_2 - total_others_2,
         total_with_taxes: total_1 + total_2
       } 
     };
