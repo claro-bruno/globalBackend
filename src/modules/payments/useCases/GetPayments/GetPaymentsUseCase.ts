@@ -114,8 +114,17 @@ export class GetPaymentsUseCase {
     const result_totals: any = await prisma.$queryRaw`
             SELECT 
             sum(case when q.order = 1 then ap.value*q.value_hour end) total_1,
-            sum(case when q.order = 2 then ap.value*q.value_hour end) total_2
-
+            sum(case when q.order = 2 then ap.value*q.value_hour end) total_2,
+            ( 
+              SELECT sum(quarters.others) FROM jobs
+              INNER JOIN quarters ON quarters.fk_id_job = jobs.id
+              WHERE quarters.order = 1
+            ) AS total_others_1,
+              ( 
+              SELECT sum(quarters.others) FROM jobs
+              INNER JOIN quarters ON quarters.fk_id_job = jobs.id
+              WHERE quarters.order = 2
+            ) AS total_others_2
             FROM jobs j
             INNER JOIN quarters q ON q.fk_id_job = j.id
             INNER JOIN appointments ap ON ap.fk_id_quarter = q.id
@@ -123,18 +132,18 @@ export class GetPaymentsUseCase {
             WHERE q.year = ${year} AND q.month = ${month} AND q.status = 'REVISED'
             ;`;
     
-    const result_totals_others: any = await prisma.$queryRaw`
-            SELECT 
-            sum(case when q.order = 1 then q.others end) total_others_1,
-			      sum(case when q.order = 2 then q.others end) total_others_2
+    // const result_totals_others: any = await prisma.$queryRaw`
+    //         SELECT 
+    //         sum(case when q.order = 1 then q.others end) total_others_1,
+		// 	      sum(case when q.order = 2 then q.others end) total_others_2
 
-            FROM jobs j
-            INNER JOIN quarters q ON q.fk_id_job = j.id
-            WHERE q.year = ${year} AND q.month = ${month} AND q.status = 'REVISED'
-            ;`;
+    //         FROM jobs j
+    //         INNER JOIN quarters q ON q.fk_id_job = j.id
+    //         WHERE q.year = ${year} AND q.month = ${month} AND q.status = 'REVISED'
+    //         ;`;
 
-    let { total_1, total_2 } = result_totals[0];
-    let { total_others_1, total_others_2 } = result_totals_others[0];
+    let { total_1, total_2, total_others_1, total_others_2 } = result_totals[0];
+    // let { total_others_1, total_others_2 } = result_totals_others[0];
     total_1 = total_1 != null ? total_1 : 0;
     total_others_1 = total_others_1 != null ? total_others_1 : 0;
     total_2 = total_2 != null ? total_2 : 0;
