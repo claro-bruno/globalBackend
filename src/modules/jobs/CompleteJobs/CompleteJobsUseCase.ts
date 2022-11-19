@@ -48,7 +48,7 @@ export class CompleteJobsUseCase {
     workedDaysInfos
   }: IServiceComplete) {
     const arr = [] as any;
-
+    
     const jobExist = await prisma.jobs.findFirst({
       where: {
         id
@@ -96,7 +96,7 @@ export class CompleteJobsUseCase {
         data: {
           status: status_payment as any,
           value_hour: +valueHour,
-          othes: +others
+          others: +others
         }
       });
     }

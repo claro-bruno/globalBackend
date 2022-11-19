@@ -88,7 +88,7 @@ export class GetPaymentsUseCase {
             FROM jobs
             INNER JOIN quarters ON quarters.fk_id_job = jobs.id
             INNER JOIN contractors AS c ON jobs.fk_id_contractor = c.id
-			WHERE quarters.month = 'November' AND quarters.year = 2022
+			WHERE quarters.month = ${month} AND quarters.year = ${year}
             order by jobs.fk_id_contractor ASC
     ;`;
 
@@ -101,8 +101,8 @@ export class GetPaymentsUseCase {
         payment.identification_2 = pay.identification_2;
         payment.description_1 = pay.description_1;
         payment.description_2 = pay.description_2;
-        payment.others_1 = pay.others_1 != 0 ? pay.others_1 : payment.others_1;
-        payment.others_2 = pay.others_2 != 0 ? pay.others_2 : payment.others_2;
+        payment.others_1 = pay.others_1 == null ? payment.others_1 :  pay.others_1;
+        payment.others_2 = pay.others_2 == null ? payment.others_2 :  pay.others_2;
         payment.method_1 = pay.method_1;
         payment.method_2 = pay.method_2;
         payment.total_1 = payment.value_1 - payment.others_1;

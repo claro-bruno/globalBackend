@@ -45,6 +45,7 @@ export class CreatePaymentsUseCase {
       othersValue: value_tax,
       othersDescription: description
     } = payments[0];
+    
 
     let paymentAlreadExists = await prisma.payments.findFirst({
       where: {

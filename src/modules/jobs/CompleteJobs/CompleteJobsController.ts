@@ -14,6 +14,7 @@ export class CompleteJobsController {
       status_payment,
       others
     } = request.body;
+    console.log(request.params, id);
     const completeJobsUseCase = new CompleteJobsUseCase();
     const result = await completeJobsUseCase.execute({
       id: +id,
