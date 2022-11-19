@@ -136,16 +136,16 @@ export class GetPaymentsUseCase {
 
     return {
       payments: result,
-      total: [
-        { total },
-        { total_1quarter: total_1 },
-        { total_2quarter: total_2 },
-        { total_1: total_1 - total_taxes_1 },
-        { total_2: total_2 - total_taxes_2 },
-        { total_taxes_1quarter: total_taxes_1 },
-        { total_taxes_2quarter: total_taxes_2 },
-        { total_taxes: total_1 + total_2 }
-      ]
+      total: {
+        total,
+        total_1: total_1 - total_taxes_1,
+        total_2: total_2 - total_taxes_2,
+        total_1quarter: total_1,
+        total_2quarter: total_2,
+        total_taxes_1quarter: total_taxes_1,
+        total_taxes_2quarter: total_taxes_2,
+        total_with_taxes: total_1 + total_2
+      } 
     };
   }
 }

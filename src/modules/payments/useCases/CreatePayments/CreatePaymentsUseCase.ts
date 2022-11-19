@@ -42,7 +42,8 @@ export class CreatePaymentsUseCase {
       identifier,
       value,
       quarter,
-      taxes: { value: value_tax, description }
+      othersValue: value_tax,
+      othersDescription: description
     } = payments[0];
 
     let paymentAlreadExists = await prisma.payments.findFirst({
@@ -182,7 +183,8 @@ export class CreatePaymentsUseCase {
       identifier: identifier_2,
       value: value_2,
       quarter: quarter_2,
-      taxes: { value: value_tax_2, description: description_2 }
+      othersValue: value_tax_2,
+      othersDescription: description_2
     } = payments[1];
 
     if (identifier_2 != "" && method_2 != "") {
