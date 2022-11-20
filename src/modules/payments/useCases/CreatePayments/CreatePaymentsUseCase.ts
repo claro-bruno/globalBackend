@@ -37,7 +37,15 @@ export class CreatePaymentsUseCase {
       throw new AppError("Contractor does not exists", 400);
     }
 
-    const { method, identifier, value, quarter, taxes } = payments[0];
+    const {
+      method,
+      identifier,
+      value,
+      quarter,
+      othersValue: value_tax,
+      othersDescription: description
+    } = payments[0];
+    
 
     let paymentAlreadExists = await prisma.payments.findFirst({
       where: {
@@ -63,7 +71,9 @@ export class CreatePaymentsUseCase {
           },
           data: {
             value,
-            identification: identifier
+            identification: identifier,
+            others: +value_tax,
+            description
           }
         });
 
@@ -141,7 +151,9 @@ export class CreatePaymentsUseCase {
             quarter: +quarter,
             identification: identifier,
             fk_id_contractor: +contractor_id,
-            type: "CONTRACTOR_WORKERS"
+            type: "CONTRACTOR_WORKERS",
+            others: +value_tax,
+            description
           }
         });
 
@@ -172,7 +184,8 @@ export class CreatePaymentsUseCase {
       identifier: identifier_2,
       value: value_2,
       quarter: quarter_2,
-      taxes: taxes_2
+      othersValue: value_tax_2,
+      othersDescription: description_2
     } = payments[1];
 
     if (identifier_2 != "" && method_2 != "") {
@@ -193,7 +206,9 @@ export class CreatePaymentsUseCase {
           },
           data: {
             method: method_2,
-            identification: identifier_2
+            identification: identifier_2,
+            others: +value_tax_2,
+            description: description_2
           }
         });
 
@@ -271,7 +286,9 @@ export class CreatePaymentsUseCase {
             quarter: 2,
             identification: identifier_2,
             fk_id_contractor: +contractor_id,
-            type: "CONTRACTOR_WORKERS"
+            type: "CONTRACTOR_WORKERS",
+            others: +value_tax_2,
+            description: description_2
           }
         });
 

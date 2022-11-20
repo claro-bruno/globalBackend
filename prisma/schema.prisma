@@ -9,14 +9,16 @@ datasource db {
 }
 
 model Payments {
-  id               Int          @id @default(autoincrement())
-  value            Float
-  method           Method
-  year             Int
-  month            String
-  date_at          DateTime     @default(now())
-  type             Type
-  pay_des_for      String?
+  id          Int      @id @default(autoincrement())
+  value       Float
+  others      Float?
+  method      Method
+  year        Int
+  month       String
+  date_at     DateTime @default(now())
+  type        Type
+  description String?
+
   quarter          Int?
   identification   String       @default("")
   contractor       Contractors? @relation(fields: [fk_id_contractor], references: [id])
@@ -143,8 +145,7 @@ model Quarters {
   month       String
   order       Int
   status      Status         @default(PENDING)
-  taxes       Float          @default(0)
-  shirts      Float          @default(0)
+  others      Float          @default(0)
   appointment Appointments[]
 
   @@map("quarters")
