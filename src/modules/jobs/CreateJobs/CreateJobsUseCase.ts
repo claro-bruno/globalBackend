@@ -69,6 +69,7 @@ export class CreateJobsUseCase {
     }
 
 
+    console.log(id_contractor, id_client, value, value_hour);
     const job = await prisma.jobs.create({
       data: {
         fk_id_contractor: id_contractor,
@@ -98,7 +99,7 @@ export class CreateJobsUseCase {
       const quarter_1 = await prisma.quarters.create({
         data: {
           fk_id_job: job.id,
-          value_hour,
+          value_hour: +value_hour,
           year,
           month: toMonthName(month),
           order: 1
@@ -123,7 +124,7 @@ export class CreateJobsUseCase {
         await prisma.appointments.create({
           data: {
             fk_id_quarter: quarter_1.id,
-            value,
+            value: +value,
             date: date
           }
         });
