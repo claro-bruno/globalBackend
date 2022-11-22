@@ -25,8 +25,97 @@ function toMonthName(monthNumber: number) {
   });
 }
 
+
+
 export class CreatePaymentsUseCase {
   async execute({ contractor_id, month, year, payments }: ICreatePayments) {
+
+    // // Verificar o balance do mes atual
+    // const balanceMonthExist = await prisma.balances.findFirst({
+    //     where: {
+    //         month: month,
+    //         year: year
+    //     }
+    // });
+
+    // // Se não existir, seta do mes anterior
+    // if(!balanceMonthExist) {
+    //   const lastMonth = month == 'January' ? 'December' : toMonthName(getMonthFromString(month, year));
+    //   const lastYear = month == 'January' ? year - 1 : year;
+
+    //   const balanceLastMonthExist = await prisma.balances.findFirst({
+    //     where: {
+    //       month: lastMonth,
+    //       year: lastYear
+    //     }
+    //   });
+
+    //   //setando o balance do mes anterior para o mes atual
+    //   if(balanceLastMonthExist) {
+    //     await prisma.balances.create({
+    //       data: {
+    //         month, 
+    //         year,
+    //         value: +balanceLastMonthExist?.value
+    //       }
+    //     });
+    //   }
+      
+
+    //   // const sumOutput = await prisma.payments.aggregate({
+    //   //   _sum: {
+    //   //     value: true
+    //   //   },
+    //   //   where: {
+    //   //     month,
+    //   //     year,
+    //   //     NOT: {
+    //   //       type: {
+    //   //         equals: 'INPUT' as any
+    //   //       }
+    //   //     }
+    //   //   }
+    //   // });
+      
+    //   // const sumInput = await prisma.payments.aggregate({
+    //   //   _sum: {
+    //   //   value: true
+    //   //   },
+    //   //   where: {
+    //   //     month,
+    //   //     year,
+    //   //     type: 'INPUT' as any
+    //   //   }
+    //   // });
+
+    // }
+    
+    
+    
+
+        
+
+        
+
+        
+
+        // const balanceExist = await prisma.balances.findFirst({
+        //     where: {
+        //         month: month as any,
+        //         year
+        //     }
+        // });
+
+        // if(balanceExist && balanceLastMonthExist && sumInput._sum.value && sumOutput._sum.value) {
+        //     await prisma.balances.update({
+        //         where: {
+        //             id: balanceExist.id
+        //         },
+        //         data: {
+        //             value: balanceLastMonthExist.value +  sumInput._sum.value - sumOutput._sum.value
+        //         }
+        //     });
+        //    
     const contractorExist = await prisma.contractors.findUnique({
       where: {
         id: +contractor_id as number
@@ -38,6 +127,7 @@ export class CreatePaymentsUseCase {
     }
 
     const {
+      id,
       method,
       identifier,
       value,
@@ -77,9 +167,12 @@ export class CreatePaymentsUseCase {
           }
         });
 
+
+        // Verificar o balance do mes atual
+
         // const lastMonth = month == 'January' ? 'December' : toMonthName(getMonthFromString(month, year));
         // const lastYear = month == 'January' ? year - 1 : year;
-
+        
         // const balanceLastMonthExist = await prisma.balances.findFirst({
         //     where: {
         //         month: lastMonth,
@@ -181,6 +274,7 @@ export class CreatePaymentsUseCase {
 
     const {
       method: method_2,
+      id: id_2,
       identifier: identifier_2,
       value: value_2,
       quarter: quarter_2,
