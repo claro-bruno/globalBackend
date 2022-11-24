@@ -9,10 +9,18 @@ export class GetContractorsUseCase {
             orderBy: [{
                 id: 'asc'
             }],
-            include: {
+            select: {
                 address: true,
-                account: true
-            },
+                account: {
+                    select: {
+                        access: true,
+                    }
+                }
+            }
+            // include: {
+            //     address: true,
+            //     account: true
+            // },
         });
     }
 }
