@@ -112,7 +112,7 @@ export class GetClientsProfitUseCase {
                         info.profit = labour_info.total != null &&  invoice_info._sum.value != null ? info.amount - info.expensive_value - info.total : 0;
                     }
                 }
-
+                
                 info.name = client.name;
                 info.fk_id_client = client.fk_id_client;
                 result.push(info);
