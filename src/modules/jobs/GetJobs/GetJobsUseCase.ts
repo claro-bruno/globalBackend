@@ -5,6 +5,8 @@ export class GetJobsUseCase {
   async execute(year: number, month: string) {
     const result: any = [];
 
+
+
     const jobs_quarters = await prisma.quarters.findMany({
       orderBy: [
         {
@@ -96,8 +98,11 @@ export class GetJobsUseCase {
         // job_info.client_name = name;
         // job_info.client_id = client_id;
         job_info.status = status;
-
+        
         job.forEach((quarter: any) => {
+          quarter.appointment.sort(function(a:any, b:any) { 
+            return a.date.getTime() - b.date.getTime() 
+        });
           const totals = result_totals.find(
             (info: any) => info.quarter_id === quarter.id
           );
