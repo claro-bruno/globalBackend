@@ -10,6 +10,19 @@ export class GetContractorsUseCase {
                 id: 'asc'
             }],
             select: {
+                email: true,
+                first_name: true,
+                middle_name: true,
+                last_name: true,
+                urlProfile: true,
+                urlDocumentProof: true,
+                urlPrimaryResidencyProof:true,
+                urlSecondaryResidencyProof: true,
+                status: true,
+                ein: true,
+                identification: true,
+                dob: true,
+                telephone: true,
                 address: true,
                 account: {
                     select: {
