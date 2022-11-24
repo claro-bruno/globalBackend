@@ -2,33 +2,55 @@ import { prisma } from "../../../../database/prismaClient";
 import { AppError } from "../../../../middlewares/AppError";
 
 interface IGetExpensives {
-    month: string;
     year: number;
 }
 
-function getMonthFromString(mon: string, year: number) {
-    const d = Date.parse(mon + "1, " + year);
-    if (!isNaN(d)) {
-      return new Date(d).getMonth() - 1;
-    }
-    return -1;
-  }
-  
-  function toMonthName(monthNumber: number) {
-    const date = new Date();
-    date.setMonth(monthNumber);
-  
-    return date.toLocaleString("en-US", {
-      month: "long"
-    });
-  }
-
 export class GetExpensivesByMonthUseCase {
-    async execute({ year, month }:IGetExpensives) {
+    async execute({ year }:IGetExpensives) {
+        let result: any = [];
 
-        const result = await prisma.payments.findMany({
+        const result_balance = await prisma.balances.groupBy({
+            by: ['month'],
+            _sum: {
+                value: true
+            },
             where: {
-                month,
+                year
+            }
+        });
+
+        const res = await prisma.payments.groupBy({
+            by: ['month'],
+            _sum: {
+                value: true
+            },
+            where: {
+                year
+            }
+        });
+        let retorno: any = {};
+        if(res.length > 0) {
+            res.forEach(async (item: any) => {
+                retorno = await prisma.payments.groupBy({
+                    by: ['type'],
+                    _sum: {
+                        value: true
+                    },
+                    where: {
+                        year,
+                        month: item.month
+                    }
+                });
+                result.push(retorno);
+            });
+        }
+
+        const result_totals = await prisma.payments.groupBy({
+            by: ['type'],
+            _sum: {
+                value: true
+            },
+            where: {
                 year
             }
         });
@@ -39,7 +61,6 @@ export class GetExpensivesByMonthUseCase {
             },
 
             where: {
-                month,
                 year,
                 NOT: {
                     type: {
@@ -55,7 +76,6 @@ export class GetExpensivesByMonthUseCase {
             },
 
             where: {
-                month,
                 year,
                 type: 'CONTRACTOR_WORKERS'
             }
@@ -67,26 +87,8 @@ export class GetExpensivesByMonthUseCase {
             },
 
             where: {
-                month,
                 year,
                 type: 'INPUT' as any
-            }
-        });
-
-      const lastMonth = month == 'January' ? 'December' : toMonthName(getMonthFromString(month, year));
-      const lastYear = month == 'January' ? year - 1 : year;
-
-      const balanceLastMonthExist = await prisma.balances.findFirst({
-            where: {
-                month: lastMonth,
-                year: lastYear
-            }
-        });
-
-        const balanceExist = await prisma.balances.findFirst({
-            where: {
-                month: month,
-                year: year
             }
         });
 
@@ -94,12 +96,12 @@ export class GetExpensivesByMonthUseCase {
         const total_output = sumOutput._sum.value == null ? 0 : sumOutput._sum.value;
         const total_contractor = sumContractorsWorkers._sum.value == null ? 0 : sumContractorsWorkers._sum.value;
         return {
-            payments: result,
+            payments_by_month: result,
+            payments_totals_by_type: result_totals,
+            balances_by_month: result_balance,
             total_input,
             total_output,
-            total_contractor,
-            balanceLastMonth: balanceLastMonthExist?.value,
-            balanceMonth: balanceExist?.value
+            total_contractor
         };
 
 

@@ -31,16 +31,15 @@ export class GetPaymentsUseCase {
             GROUP BY c.id,q.year,q.month,name,q.status
             ORDER BY c.id ASC
             ;`;
-
     const payments: any = await prisma.$queryRaw`
     SELECT 
             DISTINCT jobs.fk_id_contractor,
-            -- (
-            --   SELECT id AS id_1
-            --     FROM payments as pa
-            --     where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS'
+            (
+              SELECT id AS id_1
+                FROM payments as pa
+                where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS'
              
-            -- )AS id_1,
+            )AS id_1,
             (
         
 				SELECT value AS value_1
@@ -67,11 +66,11 @@ export class GetPaymentsUseCase {
                 FROM payments as pa
                 where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS'
             ) AS method_1,
-            -- (
-            --   SELECT id AS id_2
-            --     FROM payments as pa
-            --     where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS'
-            -- )AS id_2,
+            (
+              SELECT id AS id_2
+                FROM payments as pa
+                where pa.fk_id_contractor = c.id AND pa.quarter = 2 AND pa.type = 'CONTRACTOR_WORKERS'
+            )AS id_2,
             (
 				SELECT value 
                 FROM payments as pa
@@ -109,8 +108,8 @@ export class GetPaymentsUseCase {
         (info: any) => info.fk_id_contractor === payment.fk_id_contractor
       );
       if (pay) {
-        // payment.id_1 = pay.id_1 != null ? pay.id_1 : '';
-        // payment.id_2 = pay.id_1 != null ? pay.id_2 : '';
+        payment.id_1 = pay.id_1 != null ? pay.id_1 : '';
+        payment.id_2 = pay.id_1 != null ? pay.id_2 : '';
         payment.identification_1 = pay.identification_1;
         payment.identification_2 = pay.identification_2;
         payment.description_1 = pay.description_1;

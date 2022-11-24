@@ -2,13 +2,13 @@
 import { prisma } from "../../../../database/prismaClient";
 import { AppError } from "../../../../middlewares/AppError";
 
-interface ICreatePayments {
+interface ICreateExpensive {
     date_invoice: Date;
     value: number;
     payed_for: string;
-    identification?: string;
-    method: string;
+    identification: string;
     fk_id_client: number;
+    description?: string;
 }
 
 function getMonthFromString(mon: string){
@@ -30,55 +30,32 @@ function toMonthName(monthNumber: number) {
 }
 
 export class CreateInvoicesUseCase {
-    async execute({ date_invoice, payed_for, value, method, identification, fk_id_client  }: ICreatePayments) {
+    async execute({ description, date_invoice, payed_for, value, identification, fk_id_client  }: ICreateExpensive) {
 
-        // const contractorExist = await prisma.contractors.findUnique({
-        //     where: {
-        //         id: +contractor_id as number,
-        //     }
-        //  });
+        const invoiceExist = await prisma.invoices.findFirst({
+            where: {
+                identification,
+            }
+         });
  
-        //  if(!contractorExist) {
-        //      throw new AppError('Contractor does not exists', 400)
-        //  }
+         if(invoiceExist) {
+             throw new AppError('Invoice already exists', 400)
+         }
 
         const date = new Date(date_invoice);
-        const month = date.getMonth();
-        const year = date.getFullYear();
-         
-
-       
-
-        await prisma.payments.create({
+        await prisma.invoices.create({
             data: {
                 value: +value,
-                method: method as any,
-                year: +year,
-                month: toMonthName(month),
+                payed_for: payed_for,
+                date_at: date,
+                fk_id_client: +fk_id_client,
                 identification,
-                pay_des_for: payed_for,
-                type: 'INVOICE',
-                fk_id_client
+                description
+
                 }
             });
         
-        const balanceExist = await prisma.balances.findFirst({
-            where: {
-                month: month as any,
-                year
-            }
-        });
     
-        if(balanceExist) {
-            await prisma.balances.update({
-                where: {
-                    id: balanceExist.id
-                }, 
-                data: {
-                    value: balanceExist.value + value
-                }
-            });
-        }
 
         return 'Ok';
     }

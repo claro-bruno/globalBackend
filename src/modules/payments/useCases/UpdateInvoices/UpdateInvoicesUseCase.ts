@@ -7,8 +7,9 @@ interface IUpdateInvoice {
     value: number;
     payed_for: string;
     identification?: string;
-    method: string;
+    method?: string;
     fk_id_client: number;
+    description?: string;
     id: number;
 }
 
@@ -31,9 +32,9 @@ function toMonthName(monthNumber: number) {
 }
 
 export class UpdateInvoicesUseCase {
-    async execute({ date_invoice, payed_for, value, method, identification, fk_id_client, id  }: IUpdateInvoice) {
+    async execute({ id, description, date_invoice, payed_for, value, identification, fk_id_client  }: IUpdateInvoice) {
 
-        const invoiceExist = await prisma.contractors.findUnique({
+        const invoiceExist = await prisma.invoices.findFirst({
             where: {
                 id,
             }
@@ -44,27 +45,22 @@ export class UpdateInvoicesUseCase {
          }
 
         const date = new Date(date_invoice);
-        const month = date.getMonth();
-        const year = date.getFullYear();
-         
-
-       
-
-        await prisma.payments.update({
+        await prisma.invoices.update({
             where: {
-                id
+                id,
             },
             data: {
                 value: +value,
-                method: method as any,
-                year: +year,
-                month: toMonthName(month),
+                payed_for: payed_for,
+                date_at: date,
+                fk_id_client: +fk_id_client,
                 identification,
-                pay_des_for: payed_for,
-                type: 'INVOICE',
-                fk_id_client
+                description
+
                 }
             });
+        
+    
 
         return 'Ok';
     }
