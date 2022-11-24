@@ -12,8 +12,6 @@ model Orders {
   id           Int      @id @default(autoincrement())
   start        String
   end          String
-  contact      String
-  phone        String
   description  String
   notes        String?
   client       Clients? @relation(fields: [fk_id_client], references: [id])
