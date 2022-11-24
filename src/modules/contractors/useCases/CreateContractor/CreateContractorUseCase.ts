@@ -17,6 +17,7 @@ interface ICreateContractor {
   urlSecondaryResidencyProof: string;
   urlDocumentProof: string;
   urlProfile: string;
+  access?: string;
 }
 
 interface ICreateContractorAddress {
@@ -41,7 +42,8 @@ export class CreateContractorUseCase {
       urlPrimaryResidencyProof,
       urlSecondaryResidencyProof,
       urlDocumentProof,
-      urlProfile
+      urlProfile,
+      access="CONTRACTOR",
     }: ICreateContractor,
     { address, city, zipcode, state }: ICreateContractorAddress,
     {
@@ -52,7 +54,7 @@ export class CreateContractorUseCase {
     }: ICreateContractorAddress | any
   ): Promise<any> {
     
-
+    const role = access == "" ? "CONTRACTOR" : access;
     // validar se o contractor existe
     const contractorExist = await prisma.contractors.findUnique({
       where: {
@@ -80,8 +82,8 @@ export class CreateContractorUseCase {
       data: {
         username,
         password: hashPassword,
-        access: "CONTRACTOR",
-        status: "ACTIVE"
+        access: role as any,
+        status: "ACTIVE",
       }
     });
 
