@@ -22,14 +22,10 @@ contractorsRoutes.put("/:id",
         multer(new UploadDocuments()).fields(
         [
             {
-                name: 'primaryResidencyProf',
+                name: 'primaryResidencyProof',
             },
             {
-                name: 'secondaryResidencyProf',
-
-            },
-            {
-                name: 'documentProf',
+                name: 'documentProof',
 
             },
             {
@@ -43,14 +39,14 @@ contractorsRoutes.post("/",
     multer(new UploadDocuments()).fields(
         [
             {
-                name: 'primaryResidencyProf',
+                name: 'primaryResidencyProof',
             },
             {
-                name: 'secondaryResidencyProf',
+                name: 'secondaryResidencyProof',
 
             },
             {
-                name: 'documentProf',
+                name: 'documentProof',
 
             },
             {
