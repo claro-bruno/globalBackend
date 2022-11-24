@@ -98,6 +98,9 @@ export class GetJobsUseCase {
         job_info.status = status;
 
         job.forEach((quarter: any) => {
+          quarter.appointment.sort(function(a:any, b:any) { 
+            return a.date.getTime() - b.date.getTime() 
+          });
           const totals = result_totals.find(
             (info: any) => info.quarter_id === quarter.id
           );
