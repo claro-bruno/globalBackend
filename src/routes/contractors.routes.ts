@@ -16,20 +16,15 @@ const updateContractorController = new UpdateContractorController();
 
 contractorsRoutes.get("/:id", use(ensureAuthenticate), use(getContractorController.handle));
 contractorsRoutes.get("/", use(ensureAuthenticate), use(getContractorsController.handle));
-// use(ensureAuthenticate)
 contractorsRoutes.put("/:id",
         use(ensureAuthenticate),
         multer(new UploadDocuments()).fields(
         [
             {
-                name: 'primaryResidencyProf',
+                name: 'primaryResidencyProof',
             },
             {
-                name: 'secondaryResidencyProf',
-
-            },
-            {
-                name: 'documentProf',
+                name: 'documentProof',
 
             },
             {
@@ -43,19 +38,16 @@ contractorsRoutes.post("/",
     multer(new UploadDocuments()).fields(
         [
             {
-                name: 'primaryResidencyProf',
+                name: 'primaryResidencyProof',
             },
             {
-                name: 'secondaryResidencyProf',
-
+                name: 'secondaryResidencyProof',
             },
             {
-                name: 'documentProf',
-
+                name: 'documentProof',
             },
             {
                 name: 'profile',
-
             }
         ]),
     use(createContractorController.handle)
