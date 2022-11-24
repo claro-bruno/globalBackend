@@ -31,13 +31,14 @@ function toMonthName(monthNumber: number) {
 
 export class CreateInvoicesUseCase {
     async execute({ description, date_invoice, payed_for, value, identification, fk_id_client  }: ICreateExpensive) {
-
+        const month = toMonthName(new Date(date_invoice).getMonth());
+        const year  = new Date(date_invoice).getFullYear();
         const invoiceExist = await prisma.invoices.findFirst({
             where: {
                 identification,
             }
          });
- 
+         
          if(invoiceExist) {
              throw new AppError('Invoice already exists', 400)
          }
@@ -50,7 +51,9 @@ export class CreateInvoicesUseCase {
                 date_at: date,
                 fk_id_client: +fk_id_client,
                 identification,
-                description
+                description,
+                month,
+                year
 
                 }
             });

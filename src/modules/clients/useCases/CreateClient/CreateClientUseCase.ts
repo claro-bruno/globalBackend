@@ -13,10 +13,13 @@ interface ICompany {
     saturday: boolean;
     start: string;
     end: string;
+    contact: string;
+    contact_phone: string;
+    address: string;
 }
 
 export class CreateClientUseCase {
-    async execute({ name, monday, sunday, tuesday, wednesday, thursday, friday, saturday, start, end } : ICompany): Promise<any>{
+    async execute({ name, monday, sunday, tuesday, wednesday, thursday, friday, saturday, start, end, contact, contact_phone, address } : ICompany): Promise<any>{
         //validar se o client existe
         const clientExist = await prisma.clients.findFirst({
            where: {
@@ -57,6 +60,9 @@ export class CreateClientUseCase {
                 start,
                 end,
                 fk_id_account: client_account.id,
+                contact,
+                contact_phone,
+                address
             }
         });
         return client;

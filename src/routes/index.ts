@@ -6,7 +6,7 @@ import { contractorsRoutes } from "./contractors.routes";
 import { jobsRoutes } from "./jobs.routes";
 import { paymentsRoutes } from "./payments.routes";
 import { invoicesRoutes } from "./invoices.routes";
-import { expensivesRoutes } from "./expensives.routes";
+import { expensesRoutes } from "./expenses.routes";
 import { ordersRoutes } from "./orders.routes";
 const router = Router();
 
@@ -20,7 +20,7 @@ router.use("/client", clientsRoutes);
 router.use("/job", jobsRoutes);
 router.use("/payment", paymentsRoutes);
 router.use("/invoice", invoicesRoutes);
-router.use("/expensive", expensivesRoutes);
+router.use("/expensive", expensesRoutes);
 router.use("/order", ordersRoutes);
 
 export { router };

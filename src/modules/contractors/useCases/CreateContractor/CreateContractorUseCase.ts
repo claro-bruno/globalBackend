@@ -51,7 +51,7 @@ export class CreateContractorUseCase {
       state2 = ""
     }: ICreateContractorAddress | any
   ): Promise<any> {
-    const birthday = new Date(dob);
+    
 
     // validar se o contractor existe
     const contractorExist = await prisma.contractors.findUnique({
@@ -64,6 +64,7 @@ export class CreateContractorUseCase {
       throw new AppError("Email already exists", 400);
     }
 
+    const birthday = new Date(dob);
     const username =
       firstName[0].toLowerCase() + lastName + birthday.getFullYear().toString();
     const password =

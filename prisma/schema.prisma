@@ -111,6 +111,9 @@ model Clients {
   friday        Boolean
   saturday      Boolean
   sunday        Boolean
+  contact       String?
+  contact_phone String?
+  address       String?
   jobs          Jobs[]
   status        Status     @default(ACTIVE)
   payments      Payments[]

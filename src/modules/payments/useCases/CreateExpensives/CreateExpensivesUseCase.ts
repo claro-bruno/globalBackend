@@ -8,8 +8,6 @@ interface ICreateExpensive {
     identifier?: string;
     type: string;
     method: string;
-    month: string;
-    year: number;
     status: string;
 }
 

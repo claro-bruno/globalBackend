@@ -33,7 +33,8 @@ function toMonthName(monthNumber: number) {
 
 export class UpdateInvoicesUseCase {
     async execute({ id, description, date_invoice, payed_for, value, identification, fk_id_client  }: IUpdateInvoice) {
-
+        const month = toMonthName(new Date(date_invoice).getMonth());
+        const year  = new Date(date_invoice).getFullYear();
         const invoiceExist = await prisma.invoices.findFirst({
             where: {
                 id,
@@ -55,8 +56,8 @@ export class UpdateInvoicesUseCase {
                 date_at: date,
                 fk_id_client: +fk_id_client,
                 identification,
-                description
-
+                description,
+                year
                 }
             });
         

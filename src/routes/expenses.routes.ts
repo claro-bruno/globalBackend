@@ -8,7 +8,7 @@ import { GetExpensivesByYearController } from "../modules/payments/useCases/GetE
 import { UpdateExpensivesController } from "../modules/payments/useCases/UpdateExpensives/UpdateExpensivesController";
 import { GetExpensiveController } from "../modules/payments/useCases/GetExpensive/GetExpensiveController";
 
-const expensivesRoutes = Router();
+const expensesRoutes = Router();
 
 
 const createExpensivesController = new CreateExpensivesController();
@@ -17,10 +17,10 @@ const getExpensivesByYearController = new GetExpensivesByYearController();
 const updateExpensivesController = new UpdateExpensivesController();
 const getExpensiveController = new GetExpensiveController();
 
-expensivesRoutes.post("/", use(ensureAuthenticate), use(createExpensivesController.handle));
-expensivesRoutes.get("/:id", use(ensureAuthenticate), use(getExpensiveController.handle));
-expensivesRoutes.get("/annual/:year", use(ensureAuthenticate), use(getExpensivesByYearController.handle));
-expensivesRoutes.get("/", use(ensureAuthenticate), use(getExpensivesByMonthController.handle));
-expensivesRoutes.put("/:id", use(ensureAuthenticate), use(updateExpensivesController.handle));
+expensesRoutes.post("/", use(ensureAuthenticate), use(createExpensivesController.handle));
+expensesRoutes.get("/:id", use(ensureAuthenticate), use(getExpensiveController.handle));
+expensesRoutes.get("/annual/:year", use(ensureAuthenticate), use(getExpensivesByYearController.handle));
+expensesRoutes.get("/", use(ensureAuthenticate), use(getExpensivesByMonthController.handle));
+expensesRoutes.put("/:id", use(ensureAuthenticate), use(updateExpensivesController.handle));
 
-export { expensivesRoutes };
+export { expensesRoutes };

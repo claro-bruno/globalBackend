@@ -3,12 +3,12 @@ import { CreateExpensivesUseCase } from "./CreateExpensivesUseCase";
 
 export class CreateExpensivesController {
     async handle(request: Request, response: Response, next: NextFunction)  {
-        const { month, year, date_expensive, payed_for, value, method, identifier, type, status } = request.body;
+        const { date_expensive, payed_for, value, method, identifier, type, status } = request.body;
         const createExpensivesUseCase = new CreateExpensivesUseCase();
 
         if(date_expensive && payed_for && value && method && method && type) {
             const result = await createExpensivesUseCase.execute(
-{ month, year, date_expensive, payed_for, value, method, identifier, type, status });
+{ date_expensive, payed_for, value, method, identifier, type, status });
             return response.json(result);
         }
 
