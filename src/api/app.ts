@@ -10,6 +10,8 @@ app.use(express.json());
 app.use("/images", express.static(path.resolve(__dirname, "../../uploads")));
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
+//rodar aqui o crom
+app.use();
 app.use(router);
 app.use(errorHandler);
 

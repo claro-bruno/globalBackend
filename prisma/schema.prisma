@@ -213,6 +213,7 @@ enum Status {
   REVISED
   ACTIVE
   OK
+  UNKNOWN
   INACTIVE
   PENDING
 }
