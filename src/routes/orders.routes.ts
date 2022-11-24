@@ -2,18 +2,24 @@ import { Router } from "express";
 import {use} from "../middlewares/use";
 
 import {ensureAuthenticate} from "../middlewares/ensureAuthenticate";
-// import { CreatePaymentsController } from "../modules/payments/useCases/CreatePayments/CreatePaymentsController";
-// import { GetPaymentsController } from "../modules/payments/useCases/GetPayments/GetPaymentsController";
+import { CreateOrderController } from "../modules/orders/useCases/CreateOrder/CreateOrderController";
+import { UpdateOrderController } from "../modules/orders/useCases/UpdateOrder/UpdateOrderController";
+import { GetOrderController } from "../modules/orders/useCases/GetOrder/GetOrderController";
+import { GetOrdersController } from "../modules/orders/useCases/GetOrders/GetOrdersController";
+
 
 
 const ordersRoutes = Router();
 
 
-// const createPaymentsController = new CreatePaymentsController();
-// const getPaymentsController = new GetPaymentsController();
+const createOrderController = new CreateOrderController();
+const updateOrderController = new UpdateOrderController();
+const getOrderController =  new GetOrderController();
+const getOrdersController = new GetOrdersController();
 
-
-// invoicesRoutes.post("/contractor", use(ensureAuthenticate), use(createPaymentsController.handle));
-// invoicesRoutes.get("/contractor", use(ensureAuthenticate), use(getPaymentsController.handle));
+ordersRoutes.post("/", use(ensureAuthenticate), use(createOrderController.handle));
+ordersRoutes.put("/", use(ensureAuthenticate), use(updateOrderController.handle));
+ordersRoutes.get("/:id", use(ensureAuthenticate), use(getOrderController.handle));
+ordersRoutes.get("/", use(ensureAuthenticate), use(getOrdersController.handle));
 
 export { ordersRoutes };

@@ -9,6 +9,7 @@ import {UpdateClientController} from "../modules/clients/useCases/UpdateClient/U
 import {
     UpdateStatusClientController
 } from "../modules/clients/useCases/UpdateStatusClient/UpdateStatusClientController";
+import { GetClientsProfitController } from "../modules/clients/useCases/GetClientsProfit/GetClientsProfitController";
 
 
 
@@ -18,11 +19,13 @@ const getClientsController = new GetClientsController();
 const getClientController = new GetClientController();
 const updateClientController = new UpdateClientController();
 const updateStatusClientController = new UpdateStatusClientController();
+const getClientsProfitController = new GetClientsProfitController();
 
 clientsRoutes.post("/", use(ensureAuthenticate), use(createClientController.handle));
 clientsRoutes.put("/status/:id", use(ensureAuthenticate), use(updateStatusClientController.handle));
 clientsRoutes.put("/:id", use(ensureAuthenticate), use(updateClientController.handle));
 clientsRoutes.get("/:id", use(ensureAuthenticate), use(getClientController.handle));
 clientsRoutes.get("/", use(ensureAuthenticate), use(getClientsController.handle));
+clientsRoutes.get("/profit", use(ensureAuthenticate), use(getClientsProfitController.handle));
 
 export { clientsRoutes };
