@@ -7,7 +7,6 @@ interface IUpdateInvoice {
     value: number;
     payed_for: string;
     identification?: string;
-    method?: string;
     fk_id_client: number;
     description?: string;
     id: number;
