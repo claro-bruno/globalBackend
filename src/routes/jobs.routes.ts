@@ -45,7 +45,7 @@ jobsRoutes.get(
   use(getJobsByClientController.handle)
 );
 jobsRoutes.get("/", use(ensureAuthenticate), use(getJobsController.handle));
-jobsRoutes.post("/crom", use(createJobsByQuartersController.handle));
-// jobsRoutes.get("/", use(getJobsController.handle));
+// jobsRoutes.post("/crom", use(createJobsByQuartersController.handle));
+
 
 export { jobsRoutes };
