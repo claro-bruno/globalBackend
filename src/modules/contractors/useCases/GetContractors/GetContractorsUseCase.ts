@@ -10,8 +10,6 @@ export class GetContractorsUseCase {
         const contractors = await prisma.contractors.findMany({
             orderBy: [{
                 first_name: 'asc',
-                middle_name: 'asc',
-                last_name: 'asc'
             }],
             include: {
                 address: true,
