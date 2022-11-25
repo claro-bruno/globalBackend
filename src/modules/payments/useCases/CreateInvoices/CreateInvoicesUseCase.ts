@@ -32,11 +32,13 @@ export class CreateInvoicesUseCase {
     async execute({ date_invoice, value, identification, fk_id_client, description  }: ICreateExpensive) {
         const month = toMonthName(new Date(date_invoice).getMonth()+1);
         const year  = new Date(date_invoice).getFullYear();
+        
+
         const invoiceExist = await prisma.invoices.findFirst({
             where: {
-                identification,
+                identification: identification
             }
-         });
+          });
          
          if(invoiceExist) {
              throw new AppError('Invoice already exists', 400)

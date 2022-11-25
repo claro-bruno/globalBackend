@@ -7,7 +7,7 @@ export class GetContractorsUseCase {
     async execute() {
         return prisma.contractors.findMany({
             orderBy: [{
-                id: 'asc'
+                first_name: 'asc'
             }],
             select: {
                 email: true,
