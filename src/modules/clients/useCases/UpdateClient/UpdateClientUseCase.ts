@@ -45,7 +45,7 @@ export class UpdateClientUseCase {
                 saturday,
                 start,
                 end,
-                status
+                status: status as any
             }
         });
         return client;
