@@ -29,8 +29,9 @@ function toMonthName(monthNumber: number) {
 }
 
 export class CreateInvoicesUseCase {
-    async execute({ description, date_invoice, value, identification, fk_id_client  }: ICreateExpensive) {
+    async execute({ date_invoice, value, identification = "", fk_id_client, description  }: ICreateExpensive) {
         const month = toMonthName(new Date(date_invoice).getMonth());
+        
         const year  = new Date(date_invoice).getFullYear();
         const invoiceExist = await prisma.invoices.findFirst({
             where: {

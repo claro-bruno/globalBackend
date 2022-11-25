@@ -20,7 +20,7 @@ router.use("/client", clientsRoutes);
 router.use("/job", jobsRoutes);
 router.use("/payment", paymentsRoutes);
 router.use("/invoice", invoicesRoutes);
-router.use("/expensive", expensesRoutes);
+router.use("/expense", expensesRoutes);
 router.use("/order", ordersRoutes);
 
 export { router };

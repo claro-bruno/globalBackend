@@ -25,7 +25,7 @@ export async function ensureAuthenticate(request: Request, response: Response, n
     if(!authHeader) {
         throw new AppError("Token missing");
     }
-
+    
     //Bearer asdjasdhjasdhjasdhaskdj
     //[0] Bearer
     //[1] asdjasdhjasdhjasdhaskdj

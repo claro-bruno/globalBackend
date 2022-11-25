@@ -31,6 +31,7 @@ export async function runGenerateQuarterJobs(request: Request, response: Respons
     const month = toMonthName(new Date(Date.now()).getMonth());    
     const year = new Date(Date.now()).getFullYear();
     
+    
     let arr: any = [];
     const quartersExists = await prisma.quarters.findMany({
         where: {

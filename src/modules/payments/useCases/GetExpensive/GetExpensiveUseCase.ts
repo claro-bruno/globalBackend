@@ -8,14 +8,14 @@ interface IGetExpensive {
 export class GetExpensiveUseCase {
     async execute({ id } : IGetExpensive): Promise<any>{
         //validar se o client existe
-        const orderExist = await prisma.orders.findFirst({
+        const orderExist = await prisma.payments.findFirst({
            where: {
                id,
            }
         });
 
         if(!orderExist) {
-            throw new AppError('Invoice does not exists', 401)
+            throw new AppError('Expense does not exists', 401)
         }
 
       
