@@ -8,17 +8,47 @@ datasource db {
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
-model Payments {
-  id          Int      @id @default(autoincrement())
-  value       Float
-  others      Float?
-  method      Method
-  year        Int
-  month       String
-  date_at     DateTime @default(now())
-  type        Type
-  description String?
+model Orders {
+  id           Int      @id @default(autoincrement())
+  start        String
+  end          String
+  description  String
+  notes        String?
+  client       Clients? @relation(fields: [fk_id_client], references: [id])
+  fk_id_client Int?
+  created_at   DateTime @default(now())
+  status       Status   @default(PENDING)
 
+  @@map("orders")
+}
+
+model Invoices {
+  id             Int      @id @default(autoincrement())
+  date_at        DateTime @default(now())
+  value          Float
+  payed_for      String?
+  identification String
+  description    String?
+  month          String
+  year           Int
+
+  client       Clients? @relation(fields: [fk_id_client], references: [id])
+  fk_id_client Int?
+
+  @@map("invoices")
+}
+
+model Payments {
+  id               Int          @id @default(autoincrement())
+  value            Float
+  others           Float?
+  method           Method
+  year             Int
+  month            String
+  date_at          DateTime     @default(now())
+  type             Type
+  description      String?
+  payed_for        String?
   quarter          Int?
   identification   String       @default("")
   contractor       Contractors? @relation(fields: [fk_id_contractor], references: [id])
@@ -81,9 +111,14 @@ model Clients {
   friday        Boolean
   saturday      Boolean
   sunday        Boolean
+  contact       String?
+  contact_phone String?
+  address       String?
   jobs          Jobs[]
   status        Status     @default(ACTIVE)
   payments      Payments[]
+  Invoices      Invoices[]
+  Orders        Orders[]
 
   @@map("clients")
 }
@@ -107,7 +142,7 @@ model Accounts {
   username      String
   password      String
   resetPassword Boolean      @default(false)
-  status        Status       @default(INACTIVE)
+  status        Status       @default(ACTIVE)
   created_at    DateTime     @default(now())
   contractor    Contractors?
   client        Clients?
@@ -165,19 +200,21 @@ model Appointments {
 enum Access {
   CONTRACTOR
   CLIENT
-  GLOBAL
+  OFFICE
   ADMIN
 }
 
 enum Role {
   CONTRACTOR
   CLIENT
+  OFFICE
 }
 
 enum Status {
   REVISED
   ACTIVE
   OK
+  UNKNOWN
   INACTIVE
   PENDING
 }
