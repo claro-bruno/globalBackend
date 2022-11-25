@@ -32,7 +32,7 @@ export class CreateExpensivesUseCase {
     async execute({ date_expensive, payed_for, value, method, identifier, type, status  }: ICreateExpensive) {
         let balanceLastMonthExist: any = {};
     
-        const month = toMonthName(new Date(date_expensive).getMonth());
+        const month = toMonthName(new Date(date_expensive).getMonth()+1);
         const year  = new Date(date_expensive).getFullYear();
         
         // Verificar o balance do mes atual

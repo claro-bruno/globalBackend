@@ -8,17 +8,17 @@ interface IGetInvoice {
 export class GetInvoiceUseCase {
     async execute({ id } : IGetInvoice): Promise<any>{
         //validar se o client existe
-        const orderExist = await prisma.orders.findFirst({
+        const invoiceExist = await prisma.invoices.findFirst({
            where: {
                id,
            }
         });
 
-        if(!orderExist) {
+        if(!invoiceExist) {
             throw new AppError('Invoice does not exists', 401)
         }
 
       
-        return orderExist;
+        return invoiceExist;
     }
 }

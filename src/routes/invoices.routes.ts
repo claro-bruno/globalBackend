@@ -18,9 +18,9 @@ const getInvoiceController = new GetInvoiceController();
 
 
 invoicesRoutes.post("/", use(ensureAuthenticate), use(createInvoicesController.handle));
-// invoicesRoutes.get("/:id", use(ensureAuthenticate), use(getInvoiceController.handle));
-// invoicesRoutes.get("/annual/:year", use(ensureAuthenticate), use(getInvoicesByYearController.handle));
-// invoicesRoutes.get("/", use(ensureAuthenticate), use(getInvoicesByMonthController.handle));
-// invoicesRoutes.put("/:id", use(ensureAuthenticate), use(updateInvoicesController.handle));
+invoicesRoutes.get("/:id", use(ensureAuthenticate), use(getInvoiceController.handle));
+invoicesRoutes.get("/annual/:year", use(ensureAuthenticate), use(getInvoicesByYearController.handle));
+invoicesRoutes.get("/", use(ensureAuthenticate), use(getInvoicesByMonthController.handle));
+invoicesRoutes.put("/:id", use(ensureAuthenticate), use(updateInvoicesController.handle));
 
 export { invoicesRoutes };
