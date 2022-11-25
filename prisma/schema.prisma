@@ -207,6 +207,7 @@ enum Access {
 enum Role {
   CONTRACTOR
   CLIENT
+  OFFICE
 }
 
 enum Status {
