@@ -80,7 +80,7 @@ export class CreateContractorUseCase {
         username,
         password: hashPassword,
         access: "CONTRACTOR",
-        status: "INACTIVE"
+        status: "ACTIVE"
       }
     });
 
@@ -92,7 +92,7 @@ export class CreateContractorUseCase {
         email,
         acceptTerms,
         ein,
-        status: "PENDING",
+        status: "ACTIVE",
         urlProfile,
         urlDocumentProof,
         urlPrimaryResidencyProof,
@@ -149,7 +149,7 @@ export class CreateContractorUseCase {
       to: email,
       subject: "Welcome to Global Janitorial Services",
       plain: "Registration Account",
-      html: `<strong>Your account has been created with sucess!<br> Your account will be revised and soon will be aproved. <br> Your login information: <br> Login: ${username} <br> Password: ${password}</strong>`,
+      html: `<strong>Your account has been created with sucess!<br> Your login information: <br> Login: ${username} <br> Password: ${password}</strong>`,
       headers: { "x-myheader": "test header" }
     };
     transporter.sendMail(message, (err: any, info: any) => {
