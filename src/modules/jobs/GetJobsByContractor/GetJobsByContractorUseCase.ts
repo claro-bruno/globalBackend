@@ -96,26 +96,26 @@ export class GetJobsByContractorUseCase {
             SELECT 
             sum(ap.value*q.value_hour) total,
             sum(ap.value) total_hours,
-            ( 
-				SELECT sum(appointments.value*quarters.value_hour) FROM appointments
-				INNER JOIN quarters ON quarters.id = appointments.fk_id_quarter
-				WHERE quarters.order = 1
-			) AS total_1,
-      ( 
-				SELECT sum(appointments.value*quarters.value_hour) FROM appointments
-				INNER JOIN quarters ON quarters.id = appointments.fk_id_quarter
-				WHERE quarters.order = 2
-			) AS total_2,
-      ( 
-				SELECT sum(appointments.value) FROM appointments
-				INNER JOIN quarters ON quarters.id = appointments.fk_id_quarter
-				WHERE quarters.order = 1
-			) AS total_hours_1,
-      ( 
-				SELECT sum(appointments.value) FROM appointments
-				INNER JOIN quarters ON quarters.id = appointments.fk_id_quarter
-				WHERE quarters.order = 2
-			) AS total_hours_2,
+      --       ( 
+			-- 	SELECT sum(appointments.value*quarters.value_hour) FROM appointments
+			-- 	INNER JOIN quarters ON quarters.id = appointments.fk_id_quarter
+			-- 	WHERE quarters.order = 1
+			-- ) AS total_1,
+      -- ( 
+			-- 	SELECT sum(appointments.value*quarters.value_hour) FROM appointments
+			-- 	INNER JOIN quarters ON quarters.id = appointments.fk_id_quarter
+			-- 	WHERE quarters.order = 2
+			-- ) AS total_2,
+      -- ( 
+			-- 	SELECT sum(appointments.value) FROM appointments
+			-- 	INNER JOIN quarters ON quarters.id = appointments.fk_id_quarter
+			-- 	WHERE quarters.order = 1
+			-- ) AS total_hours_1,
+      -- ( 
+			-- 	SELECT sum(appointments.value) FROM appointments
+			-- 	INNER JOIN quarters ON quarters.id = appointments.fk_id_quarter
+			-- 	WHERE quarters.order = 2
+			-- ) AS total_hours_2,
             -- sum(case when q.order = 1 then ap.value*q.value_hour end) total_1,
             -- sum(case when q.order = 1 then ap.value end) total_hours_1,
 			( 
@@ -141,14 +141,23 @@ export class GetJobsByContractorUseCase {
             INNER JOIN contractors c ON c.id = j.fk_id_contractor
             WHERE q.year = ${year} AND q.month = ${month} AND j.fk_id_contractor = ${id} AND j.status = 'ACTIVE'
             ;`;
+          const results_total_quarter: any = await prisma.$queryRaw`
+          SELECT
+            sum(ap.value*q.value_hour) as total,
+            sum(ap.value) as total_hours
 
+          FROM jobs j
+          INNER JOIN quarters q ON q.fk_id_job = j.id
+          INNER JOIN appointments ap ON ap.fk_id_quarter = q.id
+          WHERE q.year = ${year} AND q.month = ${month} AND j.fk_id_contractor = ${id} AND j.status = 'ACTIVE'
+          GROUP BY q.order
+    ;`;
+
+    const { total: total_1, total_hours: total_hours_1 } =  results_total_quarter[0];     
+    const { total: total_2, total_hours: total_hours_2 } =  results_total_quarter[1];  
     const {
       total,
       total_hours,
-      total_1,
-      total_2,
-      total_hours_1,
-      total_hours_2,
       total_others,
       total_others_1,
       total_others_2
@@ -198,7 +207,7 @@ export class GetJobsByContractorUseCase {
           total_2_hours: total_hours_2,
           total_2_quarter: total_2,
           total_2_others: total_others_2,
-          total_2_payment: total_2 - total_others_1
+          total_2_payment: total_2 - total_others_2
         }
 
         
