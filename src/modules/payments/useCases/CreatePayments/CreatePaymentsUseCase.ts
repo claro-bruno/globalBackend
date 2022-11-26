@@ -88,30 +88,30 @@ export class CreatePaymentsUseCase {
     } = payments[0];
   let valor = value == null ? 0 : value;
   if(valor > 0 && identifier != "" && method != "") {
-    if (id != null) {
+    if (id != '') {
       const pay_1 = await prisma.payments.update({
           where: {
             id
           },
           data: {
-            value,
+            value: valor - +value_others,
             identification: identifier,
             others: +value_others,
             description
           }
         });
-
-        await prisma.payments.update({
-          where: {
-            id: pay_1.quarter as number,
-          },
-          data: {
-            value: +value_others,
-            year: +year,
-            month,
-            type: "INPUT",
-          }
-        });
+          await prisma.payments.update({
+            where: {
+              pay_id: id,
+            },
+            data: {
+              value: +value_others,
+              year: +year,
+              month,
+              type: "INPUT",
+            }
+          });
+        
       } 
       else 
       {
@@ -130,17 +130,16 @@ export class CreatePaymentsUseCase {
             description
           }
         });
+          await prisma.payments.create({
+            data: {
+              value: +value_others,
+              year: +year,
+              month,
+              pay_id: +pay_1.id,
+              type: "INPUT",
 
-        await prisma.payments.create({
-          data: {
-            value: +value_others,
-            year: +year,
-            month,
-            quarter: +pay_1.id,
-            type: "INPUT",
-
-          }
-        });
+            }
+          });
       }
 
         const sumOutput = await prisma.payments.aggregate({
@@ -207,39 +206,38 @@ export class CreatePaymentsUseCase {
       othersValue: value_others_2,
       othersDescription: description_2
     } = payments[1];
-
-    valor = value_2 == null ? 0 : value;
+    
+    valor = value_2 == null ? 0 : value_2;
     if(valor > 0 && identifier_2 != "" && method_2 != "") {
       if (id_2 != "") {
-        const pay_2 = await prisma.payments.update({
+          await prisma.payments.update({
             where: {
               id: +id_2
             },
             data: {
-              value,
+              value: valor - +value_others_2,
               identification: identifier_2,
               others: +value_others_2,
               description: description_2
             }
           });
-
-          await prisma.payments.update({
-            where: {
-              id: pay_2.quarter as number,
-            },
-            data: {
-              value: +value_others,
-              year: +year,
-              month,
-              type: "INPUT",
-            }
-          });
+            await prisma.payments.update({
+              where: {
+                pay_id: id_2,
+              },
+              data: {
+                value: +value_others,
+                year: +year,
+                month,
+                type: "INPUT",
+              }
+            });
         } 
         else 
         {
           const pay_2 = await prisma.payments.create({
             data: {
-              value: +value_2 - +value_others_2,
+              value: valor - +value_others_2,
               method,
               year: +year,
               month,
@@ -251,17 +249,16 @@ export class CreatePaymentsUseCase {
               description: description_2
             }
           });
-
-          await prisma.payments.create({
-            data: {
-              value: +value_others_2,
-              year: +year,
-              month,
-              quarter: +pay_2.id,
-              type: "INPUT"
-            }
-          });
-        }
+            await prisma.payments.create({
+              data: {
+                value: +value_others_2,
+                year: +year,
+                month,
+                pay_id: +pay_2.id,
+                type: "INPUT"
+              }
+            });
+      }
   
           const sumOutput = await prisma.payments.aggregate({
                 _sum: {
@@ -312,8 +309,8 @@ export class CreatePaymentsUseCase {
             });
         }
         
-      } else if(valor> 0){
-          if(identifier_2 == "" || method_2 == "") {
+      } else if(valor > 0){
+          if(!identifier_2 || !method_2) {
             throw new AppError("Identifier and method are required!", 401);
           }
       }

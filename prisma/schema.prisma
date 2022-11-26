@@ -50,6 +50,7 @@ model Payments {
   description      String?
   payed_for        String?
   quarter          Int?
+  pay_id           Int?         @unique
   identification   String       @default("")
   contractor       Contractors? @relation(fields: [fk_id_contractor], references: [id])
   fk_id_contractor Int?
