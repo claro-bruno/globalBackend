@@ -14,23 +14,24 @@ interface IUpdateExpensives {
     status: string;
 }
 
-function getMonthFromString(mon: string){
 
-    var d = Date.parse(mon + "1, 2022");
-    if(!isNaN(d)){
-        return new Date(d).getMonth();
+function getMonthFromString(mon: string, year: number) {
+    const d = Date.parse(mon + "1, " + year);
+    if (!isNaN(d)) {
+      return new Date(d).getMonth() - 1;
     }
     return -1;
-}
-
-function toMonthName(monthNumber: number) {
-    const date = new Date();
-    date.setMonth(monthNumber - 1);
+  }
   
-    return date.toLocaleString('en-US', {
-      month: 'long',
+  function toMonthName(monthNumber: number) {
+    const date = new Date();
+    date.setMonth(monthNumber);
+  
+    return date.toLocaleString("en-US", {
+      month: "long"
     });
-}
+  }
+  
 
 export class UpdateExpensivesUseCase {
     async execute({ date_expensive, payed_for, value, method, identification, status, type, id  }: IUpdateExpensives) {
@@ -41,10 +42,13 @@ export class UpdateExpensivesUseCase {
         const year  = new Date(date_expensive).getFullYear();
         
         // Verificar o balance do mes atual
-        const balanceMonthExist = await prisma.balances.findFirst({
+        const lastMonth = month == 'January' ? 'December' : toMonthName(getMonthFromString(month, year));
+        const lastYear = month == 'January' ? year - 1 : year;
+
+        balanceLastMonthExist = await prisma.balances.findFirst({
             where: {
-                month: month,
-                year: year
+            month: lastMonth,
+            year: lastYear
             }
         });
         
@@ -64,7 +68,8 @@ export class UpdateExpensivesUseCase {
                   month,
                   identification,
                   date_at: new Date(date_expensive),
-                  payed_for
+                  payed_for,
+                  status: status as any
                 }
               });
             

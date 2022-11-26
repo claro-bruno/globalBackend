@@ -23,8 +23,31 @@ function getMonthFromString(mon: string, year: number) {
     });
   }
 
+
+
 export class GetExpensivesByMonthUseCase {
+    
     async execute({ year, month }:IGetExpensives) {
+
+        const arrTypes: any = [
+            "INPUT",
+            "LABOUR_PAYROOL",
+            "VAN_FUEL_OIL",
+            "FUEL_OIL",
+            "EQUIPMENT",
+            "ADVERTISEMENT",
+            "UNIFORM",
+            "REPAIRS_MAINTENANCE",
+            "OFFICE_EXPENSES",
+            "MEALS",
+            "CONTRACTOR",
+            "CONTRACTOR_WORKERS",
+            "CHEMICAL_CONSUMABLES",
+            "INSURANCE_TAX",
+            "EXTRAS",
+            "GLOBAL"
+        ];
+
 
         const result = await prisma.payments.findMany({
             where: {
@@ -90,16 +113,41 @@ export class GetExpensivesByMonthUseCase {
             }
         });
 
+        const resTypes = await prisma.payments.groupBy({
+            by: ['type'],
+            _sum: {
+                value: true
+            },
+            where: {
+                year,
+                month
+            }
+        });
+
+        const resultt: any = {};
+        arrTypes.forEach((type: string) => {
+            const payments_type = resTypes.find(
+                (info: any) => info.type === type
+              );
+              resultt[`${type}`] = typeof payments_type === 'undefined' || payments_type === null ? 0 : payments_type._sum.value as any;
+
+        });
+
+        
         const total_input = sumInput._sum.value == null ? 0 : sumInput._sum.value;
         const total_output = sumOutput._sum.value == null ? 0 : sumOutput._sum.value;
         const total_contractor = sumContractorsWorkers._sum.value == null ? 0 : sumContractorsWorkers._sum.value;
+        const balanceLastMonth = balanceLastMonthExist?.value == null ? 0 : balanceLastMonthExist?.value;
+        const balanceMonth = balanceExist?.value == null ? 0 : balanceExist?.value;
+
         return {
-            payments: result,
+            total: resultt,
+            monthReports: result,
             total_input,
             total_output,
             total_contractor,
-            balanceLastMonth: balanceLastMonthExist?.value,
-            balanceMonth: balanceExist?.value
+            balanceLastMonth,
+            balanceMonth
         };
 
 
