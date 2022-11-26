@@ -42,7 +42,7 @@ model Payments {
   id               Int          @id @default(autoincrement())
   value            Float
   others           Float?
-  method           Method
+  method           Method?
   year             Int
   month            String
   date_at          DateTime     @default(now())

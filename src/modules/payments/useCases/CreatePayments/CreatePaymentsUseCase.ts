@@ -89,7 +89,7 @@ export class CreatePaymentsUseCase {
   let valor = value == null ? 0 : value;
   if(valor > 0 && identifier != "" && method != "") {
     if (id != null) {
-      await prisma.payments.update({
+      const pay_1 = await prisma.payments.update({
           where: {
             id
           },
@@ -100,13 +100,25 @@ export class CreatePaymentsUseCase {
             description
           }
         });
+
+        await prisma.payments.update({
+          where: {
+            id: pay_1.quarter as number,
+          },
+          data: {
+            value: +value_others,
+            year: +year,
+            month,
+            type: "INPUT",
+          }
+        });
       } 
       else 
       {
 
-        await prisma.payments.create({
+        const pay_1 = await prisma.payments.create({
           data: {
-            value,
+            value: +value - +value_others,
             method,
             year: +year,
             month,
@@ -116,6 +128,17 @@ export class CreatePaymentsUseCase {
             type: "CONTRACTOR_WORKERS",
             others: +value_others,
             description
+          }
+        });
+
+        await prisma.payments.create({
+          data: {
+            value: +value_others,
+            year: +year,
+            month,
+            quarter: +pay_1.id,
+            type: "INPUT",
+
           }
         });
       }
@@ -188,7 +211,7 @@ export class CreatePaymentsUseCase {
     valor = value_2 == null ? 0 : value;
     if(valor > 0 && identifier_2 != "" && method_2 != "") {
       if (id_2 != "") {
-        await prisma.payments.update({
+        const pay_2 = await prisma.payments.update({
             where: {
               id: +id_2
             },
@@ -199,12 +222,24 @@ export class CreatePaymentsUseCase {
               description: description_2
             }
           });
+
+          await prisma.payments.update({
+            where: {
+              id: pay_2.quarter as number,
+            },
+            data: {
+              value: +value_others,
+              year: +year,
+              month,
+              type: "INPUT",
+            }
+          });
         } 
         else 
         {
-          await prisma.payments.create({
+          const pay_2 = await prisma.payments.create({
             data: {
-              value,
+              value: +value_2 - +value_others_2,
               method,
               year: +year,
               month,
@@ -214,6 +249,16 @@ export class CreatePaymentsUseCase {
               type: "CONTRACTOR_WORKERS",
               others: +value_others_2,
               description: description_2
+            }
+          });
+
+          await prisma.payments.create({
+            data: {
+              value: +value_others_2,
+              year: +year,
+              month,
+              quarter: +pay_2.id,
+              type: "INPUT"
             }
           });
         }
@@ -252,14 +297,17 @@ export class CreatePaymentsUseCase {
                 year
             }
         });
+
+        const total_input = sumInput._sum.value == null ? 0 : sumInput._sum.value;  
+        const total_output = sumOutput._sum.value == null ? 0 : sumOutput._sum.value; 
   
-        if(balanceExist && balanceLastMonthExist && sumInput._sum.value && sumOutput._sum.value) {
+        if(balanceExist && balanceLastMonthExist) {
             await prisma.balances.update({
                 where: {
                     id: balanceExist.id
                 },
                 data: {
-                    value: balanceExist.value - value
+                    value: balanceLastMonthExist.value + total_input - total_output
                 }
             });
         }
