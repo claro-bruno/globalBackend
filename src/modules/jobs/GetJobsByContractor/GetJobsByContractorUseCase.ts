@@ -161,7 +161,6 @@ export class GetJobsByContractorUseCase {
       total_others_2
     } = results_total[0];
 
-
     if (result.length > 0) {
       //     jobsGrouped.forEach((job: any) => {
       //         const job_info: any = {};
