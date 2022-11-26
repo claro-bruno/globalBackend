@@ -132,8 +132,6 @@ export class GetJobsByContractorUseCase {
 				SELECT sum(quarters.others) FROM jobs
 				INNER JOIN quarters ON quarters.fk_id_job = jobs.id
 			) AS total_others
-            -- sum(case when q.order = 2 then ap.value*q.value_hour end) total_2,
-            -- sum(case when q.order = 2 then ap.value end) total_hours_2
 
             FROM jobs j
             INNER JOIN quarters q ON q.fk_id_job = j.id
@@ -163,7 +161,6 @@ export class GetJobsByContractorUseCase {
       total_others_2
     } = results_total[0];
 
-    // const jobsGrouped = groupBy(jobs_quarters, (quarter: any) => quarter.fk_id_job);
 
     if (result.length > 0) {
       //     jobsGrouped.forEach((job: any) => {
