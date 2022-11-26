@@ -161,6 +161,7 @@ export class GetJobsByContractorUseCase {
       total_others_2
     } = results_total[0];
 
+
     if (result.length > 0) {
       //     jobsGrouped.forEach((job: any) => {
       //         const job_info: any = {};
@@ -218,6 +219,10 @@ export class GetJobsByContractorUseCase {
     }
   }
 }
+
+
+
+
 function groupBy(list: any, keyGetter: any) {
   const map = new Map();
   list.forEach((item: any) => {
