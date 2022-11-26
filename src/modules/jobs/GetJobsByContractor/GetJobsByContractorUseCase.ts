@@ -209,8 +209,6 @@ export class GetJobsByContractorUseCase {
           total_2_others: total_others_2,
           total_2_payment: total_2 - total_others_2
         }
-
-        
       };
     } else {
       return {
