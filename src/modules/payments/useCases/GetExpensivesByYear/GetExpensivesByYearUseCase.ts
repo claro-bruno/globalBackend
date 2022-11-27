@@ -28,6 +28,20 @@ export class GetExpensivesByMonthUseCase {
             "GLOBAL"
         ];
 
+        const arrMonths: any = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December"
+        ];
         const result_balance = await prisma.balances.groupBy({
             by: ['month'],
             _sum: {
@@ -38,31 +52,31 @@ export class GetExpensivesByMonthUseCase {
             }
         });
 
-        const res = await prisma.payments.groupBy({
-            by: ['month'],
-            _sum: {
-                value: true
-            },
-            where: {
-                year
-            }
-        });
-        let retorno: any = {};
-        if(res.length > 0) {
-            res.forEach(async (item: any) => {
-                retorno = await prisma.payments.groupBy({
-                    by: ['type', 'month'],
-                    _sum: {
-                        value: true
-                    },
-                    where: {
-                        year,
-                        month: item.month
-                    }
-                });
-                result.push(retorno);
-            });
-        }
+        // const res = await prisma.payments.groupBy({
+        //     by: ['month'],
+        //     _sum: {
+        //         value: true
+        //     },
+        //     where: {
+        //         year
+        //     }
+        // });
+        // let retorno: any = {};
+        // if(res.length > 0) {
+        //     res.forEach(async (item: any) => {
+        //         retorno = await prisma.payments.groupBy({
+        //             by: ['type', 'month'],
+        //             _sum: {
+        //                 value: true
+        //             },
+        //             where: {
+        //                 year,
+        //                 month: item.month
+        //             }
+        //         });
+        //         result.push(retorno);
+        //     });
+        // }
 
         // const result_totals = await prisma.payments.groupBy({
         //     by: ['type'],
@@ -121,6 +135,22 @@ export class GetExpensivesByMonthUseCase {
             }
         });
 
+        const resusltMonthOutput = await prisma.payments.groupBy({
+            by: ['month'],
+            _sum: {
+                value: true
+            },
+            where: {
+                year,
+                NOT: {
+                    type: {
+                        equals: 'INPUT' as any
+                    }
+                }
+            }
+        });
+
+
         const resultt: any = {};
         arrTypes.forEach((type: string) => {
             const payments_type = resTypes.find(
@@ -130,17 +160,112 @@ export class GetExpensivesByMonthUseCase {
 
         });
 
+        const resultt_monts: any = [];
+        await arrMonths.reduce(async (memo: any, infoMonth: string) => {
+            await memo;
+            const result: any = {};
+            const res: any = {};
+            const result_month = resusltMonthOutput.find(
+                (info: any) => info.month === infoMonth
+            );
+
+            
+            const retorno = await prisma.payments.groupBy({
+                by: ['type'],
+                _sum: {
+                    value: true
+                },
+                where: {
+                    year,
+                    month: infoMonth
+                }
+            });
+
+            let month_result: any = [];
+            // let objMonth: any = {};
+            if(retorno.length > 0) {
+                arrTypes.forEach((element: string) => {
+                    const objMonth: any = {};
+                    const result_each_month = retorno.find(
+                        (info: any) => info.type === element
+                    );
+                    objMonth.value = typeof result_each_month === 'undefined' || result_each_month === null ? 0 : result_each_month._sum.value as any;
+                    objMonth.type = element;
+                    month_result.push(objMonth);
+                });
+            } else {
+                month_result = [
+                    {
+                        type: 'INPUT',
+                        value: 0
+                    },
+                    {
+                        type: 'LABOUR_PAYROOL',
+                        value: 0
+                    },
+                    {
+                        type: 'IVAN_FUEL_OILNPUT',
+                        value: 0
+                    },
+                    {
+                        type: 'EQUIPMENT',
+                        value: 0
+                    },
+                    {
+                        type: 'ADVERTISEMENT',
+                        value: 0
+                    },
+                    {
+                        type: 'UNIFORM',
+                        value: 0
+                    },
+                    {
+                        type: 'OFFICE_EXPENSES',
+                        value: 0
+                    },
+                    {
+                        type: 'MEALS',
+                        value: 0
+                    },
+                    {
+                        type: 'CONTRACTOR',
+                        value: 0
+                    },
+                    {
+                        type: 'CONTRACTOR_WORKERS',
+                        value: 0
+                    },
+                    {
+                        type: 'CHEMICAL_CONSUMABLES',
+                        value: 0
+                    },
+                    {
+                        type: 'EXTRAS',
+                        value: 0 
+                    },
+                    {
+                        type: 'GLOBAL',
+                        value: 0
+                    }
+                ];
+            }
+
+            
+            res.month = month_result;
+            res.total = typeof result_month === 'undefined' || result_month === null ? 0 : result_month._sum.value as any;
+
+            result[`${infoMonth}`] = res;
+            resultt_monts.push(result);
+        }, undefined);
+
         const total_input = sumInput._sum.value == null ? 0 : sumInput._sum.value;
         const total_output = sumOutput._sum.value == null ? 0 : sumOutput._sum.value;
         const total_contractor = sumContractorsWorkers._sum.value == null ? 0 : sumContractorsWorkers._sum.value;
         
-        // resultt.payments_by_month = result;
-        // resultt.payments_totals_by_type = result_totals;
-        // resultt.balances_by_month = result_balance;
 
         return {
             total: resultt,
-            monthReports: result,
+            yearReports: resultt_monts,
             total_input,
             total_output,
             total_contractor,

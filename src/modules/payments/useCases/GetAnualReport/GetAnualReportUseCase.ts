@@ -12,7 +12,8 @@ export class GetAnualReportUseCase {
         const contractors = await prisma.contractors.findMany();
         let info: any = {};
         if(contractors.length > 0) {
-            contractors.forEach(async (contractor) => {
+            await contractors.reduce(async (memo: any, contractor: any) => {
+                await memo;
                 const total_payments_by_contractor = await prisma.payments.groupBy({
                     by: ['month'],
                     _sum: {
@@ -42,7 +43,7 @@ export class GetAnualReportUseCase {
                 }
                 
                 
-            });
+            }, undefined);
 
             
         }

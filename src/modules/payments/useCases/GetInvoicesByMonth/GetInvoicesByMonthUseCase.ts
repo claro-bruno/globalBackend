@@ -14,6 +14,22 @@ export class GetInvoicesByMonthUseCase {
             where: {
                 month,
                 year
+            },
+            select: {
+               id: true,
+               date_at: true,
+               value: true,
+               payed_for: true,
+               identification: true,
+               description: true,
+               month: true,
+               year: true,
+               fk_id_client: true,
+               client: {
+                select: {
+                    name: true,
+                }
+               }
             }
         });
 
