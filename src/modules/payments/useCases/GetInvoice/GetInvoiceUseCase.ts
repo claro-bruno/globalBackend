@@ -11,7 +11,23 @@ export class GetInvoiceUseCase {
         const invoiceExist = await prisma.invoices.findFirst({
            where: {
                id,
-           }
+           },
+           select: {
+            id: true,
+            date_at: true,
+            value: true,
+            payed_for: true,
+            identification: true,
+            description: true,
+            month: true,
+            year: true,
+            fk_id_client: true,
+            client: {
+             select: {
+                 name: true,
+             }
+            }
+         }
         });
 
         if(!invoiceExist) {

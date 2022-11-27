@@ -11,7 +11,24 @@ export class GetOrderUseCase {
         const orderExist = await prisma.orders.findFirst({
            where: {
                id,
-           }
+           },
+           select: {
+            id: true,
+            start: true,
+            end: true,
+            description: true,
+            notes: true,
+            created_at: true,
+            fk_id_client: true,
+            client: {
+             select: {
+                 name: true,
+                 address: true,
+                 contact: true,
+                 contact_phone: true,
+             }
+            }
+        }
         });
 
         if(!orderExist) {
