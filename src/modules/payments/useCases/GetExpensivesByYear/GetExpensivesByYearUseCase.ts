@@ -204,7 +204,12 @@ export class GetExpensivesByMonthUseCase {
                         value: 0
                     },
                     {
-                        type: 'IVAN_FUEL_OILNPUT',
+                        type: 'VAN_FUEL_OIL',
+                        value: 0
+                    },
+                    
+                    {
+                        type: 'FUEL_OIL',
                         value: 0
                     },
                     {
@@ -217,6 +222,11 @@ export class GetExpensivesByMonthUseCase {
                     },
                     {
                         type: 'UNIFORM',
+                        value: 0
+                    },
+                    
+                    {
+                        type: 'REPAIRS_MAINTENANCE',
                         value: 0
                     },
                     {
@@ -239,6 +249,12 @@ export class GetExpensivesByMonthUseCase {
                         type: 'CHEMICAL_CONSUMABLES',
                         value: 0
                     },
+                    
+                    {
+                        type: 'INSURANCE_TAX',
+                        value: 0
+                    },
+
                     {
                         type: 'EXTRAS',
                         value: 0 
