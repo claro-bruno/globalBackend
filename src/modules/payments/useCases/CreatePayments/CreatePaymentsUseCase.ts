@@ -11,7 +11,7 @@ interface ICreatePayments {
 function getMonthFromString(mon: string, year: number) {
   const d = Date.parse(mon + "1, " + year);
   if (!isNaN(d)) {
-    return new Date(d).getMonth();
+    return new Date(d).getMonth() - 1;
   }
   return -1;
 }
@@ -29,93 +29,9 @@ function toMonthName(monthNumber: number) {
 
 export class CreatePaymentsUseCase {
   async execute({ contractor_id, month, year, payments }: ICreatePayments) {
-
-    // // Verificar o balance do mes atual
-    // const balanceMonthExist = await prisma.balances.findFirst({
-    //     where: {
-    //         month: month,
-    //         year: year
-    //     }
-    // });
-
-    // // Se não existir, seta do mes anterior
-    // if(!balanceMonthExist) {
-    //   const lastMonth = month == 'January' ? 'December' : toMonthName(getMonthFromString(month, year));
-    //   const lastYear = month == 'January' ? year - 1 : year;
-
-    //   const balanceLastMonthExist = await prisma.balances.findFirst({
-    //     where: {
-    //       month: lastMonth,
-    //       year: lastYear
-    //     }
-    //   });
-
-    //   //setando o balance do mes anterior para o mes atual
-    //   if(balanceLastMonthExist) {
-    //     await prisma.balances.create({
-    //       data: {
-    //         month, 
-    //         year,
-    //         value: +balanceLastMonthExist?.value
-    //       }
-    //     });
-    //   }
-      
-
-    //   // const sumOutput = await prisma.payments.aggregate({
-    //   //   _sum: {
-    //   //     value: true
-    //   //   },
-    //   //   where: {
-    //   //     month,
-    //   //     year,
-    //   //     NOT: {
-    //   //       type: {
-    //   //         equals: 'INPUT' as any
-    //   //       }
-    //   //     }
-    //   //   }
-    //   // });
-      
-    //   // const sumInput = await prisma.payments.aggregate({
-    //   //   _sum: {
-    //   //   value: true
-    //   //   },
-    //   //   where: {
-    //   //     month,
-    //   //     year,
-    //   //     type: 'INPUT' as any
-    //   //   }
-    //   // });
-
-    // }
     
-    
-    
+    let balanceLastMonthExist: any = {};
 
-        
-
-        
-
-        
-
-        // const balanceExist = await prisma.balances.findFirst({
-        //     where: {
-        //         month: month as any,
-        //         year
-        //     }
-        // });
-
-        // if(balanceExist && balanceLastMonthExist && sumInput._sum.value && sumOutput._sum.value) {
-        //     await prisma.balances.update({
-        //         where: {
-        //             id: balanceExist.id
-        //         },
-        //         data: {
-        //             value: balanceLastMonthExist.value +  sumInput._sum.value - sumOutput._sum.value
-        //         }
-        //     });
-        //    
     const contractorExist = await prisma.contractors.findUnique({
       where: {
         id: +contractor_id as number
@@ -126,118 +42,83 @@ export class CreatePaymentsUseCase {
       throw new AppError("Contractor does not exists", 400);
     }
 
+    // Verificar o balance do mes atual
+    const balanceMonthExist = await prisma.balances.findFirst({
+        where: {
+            month: month,
+            year: year
+        }
+    });
+
+    // Se não existir, seta do mes anterior
+    
+
+      const lastMonth = month == 'January' ? 'December' : toMonthName(getMonthFromString(month, year));
+      const lastYear = month == 'January' ? year - 1 : year;
+
+      balanceLastMonthExist = await prisma.balances.findFirst({
+        where: {
+          month: lastMonth,
+          year: lastYear
+        }
+      });
+    
+    if(!balanceMonthExist) {  
+      //setando o balance do mes anterior para o mes atual
+      if(balanceLastMonthExist) {
+        await prisma.balances.create({
+          data: {
+            month, 
+            year,
+            value: +balanceLastMonthExist?.value
+          }
+        });
+      }
+    }
+       
+
     const {
       id,
       method,
       identifier,
       value,
       quarter,
-      othersValue: value_tax,
+      othersValue: value_others,
       othersDescription: description
     } = payments[0];
-    
-
-    let paymentAlreadExists = await prisma.payments.findFirst({
-      where: {
-        identification: identifier,
-        fk_id_contractor: +contractor_id
-      }
-    });
-
-    if (identifier != "" && method != "") {
-      const paymentExist_1 = await prisma.payments.findFirst({
-        where: {
-          month: month as any,
-          year: +year,
-          quarter: 1,
-          identification: identifier,
-          fk_id_contractor: +contractor_id
-        }
-      });
-      if (paymentExist_1) {
-        await prisma.payments.update({
+  let valor = value == null ? 0 : value;
+  if(valor > 0 && identifier != "" && method != "") {
+    if (id != '') {
+      const pay_1 = await prisma.payments.update({
           where: {
-            id: paymentExist_1.id
+            id
           },
           data: {
-            value,
+            value: valor - +value_others,
             identification: identifier,
-            others: +value_tax,
+            others: +value_others,
             description
           }
         });
-
-
-        // Verificar o balance do mes atual
-
-        // const lastMonth = month == 'January' ? 'December' : toMonthName(getMonthFromString(month, year));
-        // const lastYear = month == 'January' ? year - 1 : year;
+          await prisma.payments.update({
+            where: {
+              pay_id: id,
+            },
+            data: {
+              value: +value_others,
+              year: +year,
+              month,
+              type: "INPUT",
+            }
+          });
         
-        // const balanceLastMonthExist = await prisma.balances.findFirst({
-        //     where: {
-        //         month: lastMonth,
-        //         year: lastYear
-        //     }
-        // });
+      } 
+      else 
+      {
 
-        // const sumOutput = await prisma.payments.aggregate({
-        //     _sum: {
-        //         value: true
-        //     },
-
-        //     where: {
-        //         month,
-        //         year,
-        //         NOT: {
-        //             type: {
-        //                 equals: 'INPUT' as any
-        //             }
-        //         }
-        //     }
-        // });
-
-        // const sumInput = await prisma.payments.aggregate({
-        //     _sum: {
-        //         value: true
-        //     },
-
-        //     where: {
-        //         month,
-        //         year,
-        //         type: 'INPUT' as any
-        //     }
-        // });
-
-        // const balanceExist = await prisma.balances.findFirst({
-        //     where: {
-        //         month: month as any,
-        //         year
-        //     }
-        // });
-
-        // if(balanceExist && balanceLastMonthExist && sumInput._sum.value && sumOutput._sum.value) {
-        //     await prisma.balances.update({
-        //         where: {
-        //             id: balanceExist.id
-        //         },
-        //         data: {
-        //             value: balanceLastMonthExist.value +  sumInput._sum.value - sumOutput._sum.value
-        //         }
-        //     });
-        // }
-      } else {
-        const paymentAlreadExists = await prisma.payments.findFirst({
-          where: {
-            identification: identifier
-          }
-        });
-        if (paymentAlreadExists) {
-          throw new AppError("Payment already exists");
-        }
-
-        await prisma.payments.create({
+        const pay_1 = await prisma.payments.create({
           data: {
-            value,
+            value: +value - +value_others,
             method,
             year: +year,
             month,
@@ -245,31 +126,75 @@ export class CreatePaymentsUseCase {
             identification: identifier,
             fk_id_contractor: +contractor_id,
             type: "CONTRACTOR_WORKERS",
-            others: +value_tax,
+            others: +value_others,
             description
           }
         });
+          await prisma.payments.create({
+            data: {
+              value: +value_others,
+              year: +year,
+              month,
+              pay_id: +pay_1.id,
+              type: "INPUT",
 
-        // const balanceExist = await prisma.balances.findFirst({
-        //     where: {
-        //         month: month as any,
-        //         year
-        //     }
-        // });
-
-        // if(balanceExist) {
-        //     await prisma.balances.update({
-        //         where: {
-        //             id: balanceExist.id
-        //         },
-        //         data: {
-        //             value: balanceExist.value - value
-        //         }
-        //     });
-        // }
+            }
+          });
       }
-    } else {
-      throw new AppError("Identifier and method are required!", 401);
+
+        const sumOutput = await prisma.payments.aggregate({
+              _sum: {
+                  value: true
+              },
+
+              where: {
+                  month,
+                  year,
+                  NOT: {
+                      type: {
+                          equals: 'INPUT' as any
+                      }
+                  }
+              }
+          });
+
+          const sumInput = await prisma.payments.aggregate({
+              _sum: {
+                  value: true
+              },
+
+              where: {
+                  month,
+                  year,
+                  type: 'INPUT' as any
+              }
+          });
+
+        const balanceExist = await prisma.balances.findFirst({
+          where: {
+              month: month as any,
+              year
+          }
+      });
+
+      const total_input = sumInput._sum.value == null ? 0 : sumInput._sum.value;  
+      const total_output = sumOutput._sum.value == null ? 0 : sumOutput._sum.value;  
+    
+      if(balanceExist && balanceLastMonthExist) {
+          await prisma.balances.update({
+              where: {
+                  id: balanceExist.id
+              },
+              data: {
+                  value: balanceLastMonthExist.value + total_input - total_output
+              }
+          });
+      }
+      
+    } else if(valor> 0){
+        if(identifier == "" || method == "") {
+          throw new AppError("Identifier and method are required!", 401);
+        }
     }
 
     const {
@@ -278,135 +203,117 @@ export class CreatePaymentsUseCase {
       identifier: identifier_2,
       value: value_2,
       quarter: quarter_2,
-      othersValue: value_tax_2,
+      othersValue: value_others_2,
       othersDescription: description_2
     } = payments[1];
-
-    if (identifier_2 != "" && method_2 != "") {
-      const paymentExist_2 = await prisma.payments.findFirst({
-        where: {
-          month: month as string,
-          year: +year,
-          quarter: +quarter_2,
-          identification: identifier_2,
-          fk_id_contractor: +contractor_id
-        }
-      });
-
-      if (paymentExist_2) {
-        await prisma.payments.update({
-          where: {
-            id: paymentExist_2.id
-          },
-          data: {
-            method: method_2,
-            identification: identifier_2,
-            others: +value_tax_2,
-            description: description_2
-          }
-        });
-
-        // const lastMonth = month == 'January' ? 'December' : toMonthName(getMonthFromString(month, year));
-        // const lastYear = month == 'January' ? year - 1 : year;
-
-        // const balanceLastMonthExist = await prisma.balances.findFirst({
-        //     where: {
-        //         month: lastMonth,
-        //         year: lastYear
-        //     }
-        // });
-
-        // const sumOutput = await prisma.payments.aggregate({
-        //     _sum: {
-        //         value: true
-        //     },
-
-        //     where: {
-        //         month,
-        //         year,
-        //         NOT: {
-        //             type: {
-        //                 equals: 'INPUT' as any
-        //             }
-        //         }
-        //     }
-        // });
-
-        // const sumInput = await prisma.payments.aggregate({
-        //     _sum: {
-        //         value: true
-        //     },
-
-        //     where: {
-        //         month,
-        //         year,
-        //         type: 'INPUT' as any
-        //     }
-        // });
-
-        // const balanceExist = await prisma.balances.findFirst({
-        //     where: {
-        //         month: month as any,
-        //         year
-        //     }
-        // });
-
-        // if(balanceExist && balanceLastMonthExist && sumInput._sum.value && sumOutput._sum.value) {
-        //     await prisma.balances.update({
-        //         where: {
-        //             id: balanceExist.id
-        //         },
-        //         data: {
-        //             value: balanceLastMonthExist.value +  sumInput._sum.value - sumOutput._sum.value
-        //         }
-        //     });
-        // }
-      } else {
-        const paymentAlreadExists = await prisma.payments.findFirst({
-          where: {
-            identification: identifier_2
-          }
-        });
-        if (paymentAlreadExists) {
-          throw new AppError("Payment already exists");
-        }
-
-        await prisma.payments.create({
-          data: {
-            value: +value_2,
-            method: method_2,
-            year: +year,
-            month,
-            quarter: 2,
-            identification: identifier_2,
-            fk_id_contractor: +contractor_id,
-            type: "CONTRACTOR_WORKERS",
-            others: +value_tax_2,
-            description: description_2
-          }
-        });
-
-        //     const balanceExist = await prisma.balances.findFirst({
-        //         where: {
-        //             month: month as any,
-        //             year
-        //         }
-        //     });
-
-        //     if(balanceExist) {
-        //         await prisma.balances.update({
-        //             where: {
-        //                 id: balanceExist.id
-        //             },
-        //             data: {
-        //                 value: balanceExist.value - value_2
-        //             }
-        //         });
-        //     }
+    
+    valor = value_2 == null ? 0 : value_2;
+    if(valor > 0 && identifier_2 != "" && method_2 != "") {
+      if (id_2 != "") {
+          await prisma.payments.update({
+            where: {
+              id: +id_2
+            },
+            data: {
+              value: valor - +value_others_2,
+              identification: identifier_2,
+              others: +value_others_2,
+              description: description_2
+            }
+          });
+            await prisma.payments.update({
+              where: {
+                pay_id: id_2,
+              },
+              data: {
+                value: +value_others,
+                year: +year,
+                month,
+                type: "INPUT",
+              }
+            });
+        } 
+        else 
+        {
+          const pay_2 = await prisma.payments.create({
+            data: {
+              value: valor - +value_others_2,
+              method,
+              year: +year,
+              month,
+              quarter: +quarter_2,
+              identification: identifier_2,
+              fk_id_contractor: +contractor_id,
+              type: "CONTRACTOR_WORKERS",
+              others: +value_others_2,
+              description: description_2
+            }
+          });
+            await prisma.payments.create({
+              data: {
+                value: +value_others_2,
+                year: +year,
+                month,
+                pay_id: +pay_2.id,
+                type: "INPUT"
+              }
+            });
       }
-    } else {
-      throw new AppError("Identifier and method are required!", 401);
-    }
+  
+          const sumOutput = await prisma.payments.aggregate({
+                _sum: {
+                    value: true
+                },
+  
+                where: {
+                    month,
+                    year,
+                    NOT: {
+                        type: {
+                            equals: 'INPUT' as any
+                        }
+                    }
+                }
+            });
+  
+            const sumInput = await prisma.payments.aggregate({
+                _sum: {
+                    value: true
+                },
+  
+                where: {
+                    month,
+                    year,
+                    type: 'INPUT' as any
+                }
+            });
+  
+          const balanceExist = await prisma.balances.findFirst({
+            where: {
+                month: month as any,
+                year
+            }
+        });
+
+        const total_input = sumInput._sum.value == null ? 0 : sumInput._sum.value;  
+        const total_output = sumOutput._sum.value == null ? 0 : sumOutput._sum.value; 
+  
+        if(balanceExist && balanceLastMonthExist) {
+            await prisma.balances.update({
+                where: {
+                    id: balanceExist.id
+                },
+                data: {
+                    value: balanceLastMonthExist.value + total_input - total_output
+                }
+            });
+        }
+        
+      } else if(valor > 0){
+          if(!identifier_2 || !method_2) {
+            throw new AppError("Identifier and method are required!", 401);
+          }
+      }
 
     return "Ok";
   }

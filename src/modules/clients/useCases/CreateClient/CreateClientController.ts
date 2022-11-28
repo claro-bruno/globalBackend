@@ -4,7 +4,7 @@ import {CreateClientUseCase} from "./CreateClientUseCase";
 
 export class CreateClientController {
     async handle(request: Request, response: Response, next: NextFunction): Promise<Response>  {
-        const { name, monday, sunday, tuesday, wednesday, thursday, friday, saturday, start, end  } = request.body;
+        const { name, monday, sunday, tuesday, wednesday, thursday, friday, saturday, start, end, contact, contact_phone, address  } = request.body;
         const createClientUseCase = new CreateClientUseCase();
         const result = await createClientUseCase.execute({
             name,
@@ -16,7 +16,10 @@ export class CreateClientController {
             friday,
             saturday,
             start,
-            end
+            end,
+            contact,
+            contact_phone,
+            address
         });
         return response.json(result);
     }

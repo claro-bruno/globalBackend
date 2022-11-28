@@ -31,7 +31,7 @@ export class CreateContractorController {
         }
         let adr2 = { address: "", city: "", zipcode: "", state: "" };
         const infoResult = JSON.parse(request.body.body);
-        const { firstName, middleName ,lastName, email, ssnOrItin, birthDate, phone, acceptTerms, ein = undefined, primaryAddress, secondaryAddress = undefined } = infoResult;
+        const { access = "CONTRACTOR", firstName, middleName ,lastName, email, ssnOrItin, birthDate, phone, acceptTerms, ein = undefined, primaryAddress, secondaryAddress = undefined } = infoResult;
         const { address, city, zipcode, state  } = primaryAddress;
         if (secondaryAddress != undefined ) {
             const { address: address2, city: city2, zipcode: zipcode2, state:state2  } = secondaryAddress;
@@ -53,7 +53,8 @@ export class CreateContractorController {
              urlPrimaryResidencyProof,
              urlSecondaryResidencyProof,
              urlDocumentProof,
-             urlProfile
+             urlProfile,
+             access
         },
         {
             address,

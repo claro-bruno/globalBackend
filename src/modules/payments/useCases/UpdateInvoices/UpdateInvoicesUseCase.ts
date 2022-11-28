@@ -5,10 +5,9 @@ import { AppError } from "../../../../middlewares/AppError";
 interface IUpdateInvoice {
     date_invoice: Date;
     value: number;
-    payed_for: string;
     identification?: string;
-    method: string;
     fk_id_client: number;
+    description?: string;
     id: number;
 }
 
@@ -31,40 +30,46 @@ function toMonthName(monthNumber: number) {
 }
 
 export class UpdateInvoicesUseCase {
-    async execute({ date_invoice, payed_for, value, method, identification, fk_id_client, id  }: IUpdateInvoice) {
-
-        const invoiceExist = await prisma.contractors.findUnique({
+    async execute({ id, date_invoice, value, identification, description, fk_id_client  }: IUpdateInvoice) {
+        const month = toMonthName(new Date(date_invoice).getMonth() + 1);
+        const year  = new Date(date_invoice).getFullYear();
+        const invoiceExist = await prisma.invoices.findFirst({
             where: {
                 id,
             }
          });
+
+         const invoiceAlreadyExist = await prisma.invoices.findFirst({
+            where: {
+                identification,
+            }
+         });
+         
+         if(invoiceAlreadyExist) {
+             throw new AppError('Invoice already exists', 400)
+         }
  
          if(!invoiceExist) {
              throw new AppError('Invoice does not exists', 400)
          }
 
         const date = new Date(date_invoice);
-        const month = date.getMonth();
-        const year = date.getFullYear();
-         
-
-       
-
-        await prisma.payments.update({
+        await prisma.invoices.update({
             where: {
-                id
+                id,
             },
             data: {
                 value: +value,
-                method: method as any,
-                year: +year,
-                month: toMonthName(month),
+                date_at: date,
+                fk_id_client: +fk_id_client,
                 identification,
-                pay_des_for: payed_for,
-                type: 'INVOICE',
-                fk_id_client
+                description,
+                year,
+                month
                 }
             });
+        
+    
 
         return 'Ok';
     }

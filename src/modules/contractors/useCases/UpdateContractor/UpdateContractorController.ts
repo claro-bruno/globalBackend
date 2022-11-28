@@ -25,7 +25,7 @@ export class UpdateContractorController {
         let urlProfile = "";
 
         if (request.files) {
-            const { primaryResidencyProof, documentProof, profile } = request.files;
+            const { primaryResidencyProof,  documentProof, profile } = request.files;
             urlPrimaryResidencyProof = primaryResidencyProof ? `${request.protocol}://${request.hostname}:${process.env.PORT}/images/${primaryResidencyProof[0].filename}` : "";
             urlDocumentProof = documentProof ? `${request.protocol}://${request.hostname}:${process.env.PORT}/images/${documentProof[0].filename}` : "";
             urlProfile = profile ? `${request.protocol}://${request.hostname}:${process.env.PORT}/images/${profile[0].filename}` : "";
@@ -34,7 +34,7 @@ export class UpdateContractorController {
         // console.log(request.body);
         const infoResult = JSON.parse(request.body.body);
         
-        const { first_name, middle_name ,last_name, email, identification, dob, telephone, ein, address, city, state, zipcode } = infoResult;
+        const { access = "", first_name, middle_name ,last_name, email, identification, dob, telephone, ein, address, city, state, zipcode } = infoResult;
         // const { address, city, zipcode, state  } = primaryAddress;
         // if (secondaryAddress != undefined ) {
         //     const { address: address2, city: city2, zipcode: zipcode2, state:state2  } = secondaryAddress;
@@ -59,7 +59,8 @@ export class UpdateContractorController {
              address,
              city,
              zipcode,
-             state
+             state,
+             access
         }
        
         );

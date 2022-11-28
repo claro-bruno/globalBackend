@@ -17,6 +17,7 @@ interface ICreateContractor {
   urlSecondaryResidencyProof: string;
   urlDocumentProof: string;
   urlProfile: string;
+  access?: string;
 }
 
 interface ICreateContractorAddress {
@@ -41,7 +42,8 @@ export class CreateContractorUseCase {
       urlPrimaryResidencyProof,
       urlSecondaryResidencyProof,
       urlDocumentProof,
-      urlProfile
+      urlProfile,
+      access="CONTRACTOR",
     }: ICreateContractor,
     { address, city, zipcode, state }: ICreateContractorAddress,
     {
@@ -51,8 +53,8 @@ export class CreateContractorUseCase {
       state2 = ""
     }: ICreateContractorAddress | any
   ): Promise<any> {
-    const birthday = new Date(dob);
-
+    
+    const role = access == "" ? "CONTRACTOR" : access;
     // validar se o contractor existe
     const contractorExist = await prisma.contractors.findUnique({
       where: {
@@ -64,6 +66,7 @@ export class CreateContractorUseCase {
       throw new AppError("Email already exists", 400);
     }
 
+    const birthday = new Date(dob);
     const username =
       firstName[0].toLowerCase() + lastName + birthday.getFullYear().toString();
     const password =
@@ -81,6 +84,7 @@ export class CreateContractorUseCase {
         password: hashPassword,
         access: "CONTRACTOR",
         status: "ACTIVE"
+        
       }
     });
 
@@ -149,9 +153,11 @@ export class CreateContractorUseCase {
       to: email,
       subject: "Welcome to Global Janitorial Services",
       plain: "Registration Account",
-      html: `<strong>Your account has been created with sucess!<br> Your login information: <br> Login: ${username} <br> Password: ${password}</strong>`,
+      html: `<strong>Your account has been created with sucess!<br> <br> Your login information: <br> Login: ${username} <br> Password: ${password}</strong>`,
+
       headers: { "x-myheader": "test header" }
     };
+    // Your account will be revised and soon will be aproved
     transporter.sendMail(message, (err: any, info: any) => {
       if (err) {
         console.log(err);

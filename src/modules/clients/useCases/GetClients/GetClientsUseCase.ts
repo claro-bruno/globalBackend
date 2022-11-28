@@ -7,7 +7,8 @@ export class GetClientsUseCase {
     async execute() {
 
         const clients = await prisma.clients.findMany({
-            orderBy: [{ name: 'asc' }],
+            orderBy: [{ name: 'asc'}],
+
             where: {
                 status: 'ACTIVE',
             }

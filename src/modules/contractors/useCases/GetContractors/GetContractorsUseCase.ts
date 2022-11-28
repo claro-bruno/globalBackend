@@ -5,17 +5,36 @@ import { sign } from "jsonwebtoken";
 import { AppError} from "../../../../middlewares/AppError";
 export class GetContractorsUseCase {
     async execute() {
-        // Receber userName, password
-        // Verificar se o userName cadastrado
-        const contractors = await prisma.contractors.findMany({
+        return prisma.contractors.findMany({
             orderBy: [{
                 first_name: 'asc',
             }],
-            include: {
+            select: {
+                email: true,
+                first_name: true,
+                middle_name: true,
+                last_name: true,
+                urlProfile: true,
+                urlDocumentProof: true,
+                urlPrimaryResidencyProof:true,
+                urlSecondaryResidencyProof: true,
+                status: true,
+                ein: true,
+                identification: true,
+                dob: true,
+                telephone: true,
                 address: true,
+                account: {
+                    select: {
+                        access: true,
+                    }
+                }
             }
+            // include: {
+            //     address: true,
+            //     account: true
+            // },
         });
-        return contractors;
     }
 }
 

@@ -6,7 +6,7 @@ export class GetExpensivesByMonthController {
         const { month, year } = request.query;
         const getExpensivesByMonthUseCase = new GetExpensivesByMonthUseCase();
         if(month && year){
-            const result = await getExpensivesByMonthUseCase.execute(+year, month as string);
+            const result = await getExpensivesByMonthUseCase.execute({ month: month as string, year: +year});
             return response.json(result);
         }
 

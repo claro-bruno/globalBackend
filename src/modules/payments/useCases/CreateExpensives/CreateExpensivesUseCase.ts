@@ -1,88 +1,142 @@
-
-import { stat } from "fs";
 import { prisma } from "../../../../database/prismaClient";
 import { AppError } from "../../../../middlewares/AppError";
 
-interface ICreatePayments {
+interface ICreateExpensive {
     date_expensive: Date;
     value: number;
     payed_for: string;
-    identification?: string;
+    identifier?: string;
     type: string;
     method: string;
     status: string;
 }
 
-function getMonthFromString(mon: string){
-
-    var d = Date.parse(mon + "1, 2022");
-    if(!isNaN(d)){
-        return new Date(d).getMonth();
+function getMonthFromString(mon: string, year: number) {
+    const d = Date.parse(mon + "1, " + year);
+    if (!isNaN(d)) {
+      return new Date(d).getMonth() - 1;
     }
     return -1;
-}
-
-function toMonthName(monthNumber: number) {
-    const date = new Date();
-    date.setMonth(monthNumber - 1);
+  }
   
-    return date.toLocaleString('en-US', {
-      month: 'long',
+  function toMonthName(monthNumber: number) {
+    const date = new Date();
+    date.setMonth(monthNumber);
+  
+    return date.toLocaleString("en-US", {
+      month: "long"
     });
-}
+  }
 
 export class CreateExpensivesUseCase {
-    async execute({ date_expensive, payed_for, value, method, identification, type, status  }: ICreatePayments) {
-
-        // const contractorExist = await prisma.contractors.findUnique({
-        //     where: {
-        //         id: +contractor_id as number,
-        //     }
-        //  });
- 
-        //  if(!contractorExist) {
-        //      throw new AppError('Contractor does not exists', 400)
-        //  }
-
-        const date = new Date(date_expensive);
-        const month = date.getMonth();
-        const year = date.getFullYear();
-         
-
-       
-
-        await prisma.payments.create({
-            data: {
-                value: +value,
-                method: method as any,
-                year: +year,
-                month: toMonthName(month),
-                identification,
-                pay_des_for: payed_for,
-                type: type as any,
-                status: status as any    
-            }
-            });
+    async execute({ date_expensive, payed_for, value, method, identifier, type, status  }: ICreateExpensive) {
+        let balanceLastMonthExist: any = {};
+    
+        const month = toMonthName(new Date(date_expensive).getMonth()+1);
+        const year  = new Date(date_expensive).getFullYear();
         
-        const balanceExist = await prisma.balances.findFirst({
+        // Verificar o balance do mes atual
+        const balanceMonthExist = await prisma.balances.findFirst({
+            where: {
+                month: month,
+                year: year
+            }
+        });
+
+        // Se não existir, seta do mes anterior
+        const lastMonth = month == 'January' ? 'December' : toMonthName(getMonthFromString(month, year));
+        const lastYear = month == 'January' ? year - 1 : year;
+
+        balanceLastMonthExist = await prisma.balances.findFirst({
+            where: {
+            month: lastMonth,
+            year: lastYear
+        }
+        });
+        
+        if(!balanceMonthExist) {  
+            //setando o balance do mes anterior para o mes atual
+            if(balanceLastMonthExist) {
+                await prisma.balances.create({
+                data: {
+                    month, 
+                    year,
+                    value: +balanceLastMonthExist?.value
+                }});
+            }
+        }
+
+        let valor = value == null ? 0 : value;
+        if(valor > 0 && identifier != "" && method != "") {
+
+            await prisma.payments.create({
+                data: {
+                  value,
+                  method: method as any,
+                  type: type as any,
+                  year: +year,
+                  month,
+                  identification: identifier,
+                  date_at: new Date(date_expensive),
+                  payed_for, 
+                  status: status as any
+                }
+              });
+            
+              const sumOutput = await prisma.payments.aggregate({
+                _sum: {
+                    value: true
+                },
+  
+                where: {
+                    month,
+                    year,
+                    NOT: {
+                        type: {
+                            equals: 'INPUT' as any
+                        }
+                    }
+                }
+            });
+  
+            const sumInput = await prisma.payments.aggregate({
+                _sum: {
+                    value: true
+                },
+  
+                where: {
+                    month,
+                    year,
+                    type: 'INPUT' as any
+                }
+            });
+  
+          const balanceExist = await prisma.balances.findFirst({
             where: {
                 month: month as any,
                 year
             }
         });
-
-        if(balanceExist) {
+  
+        const total_input = sumInput._sum.value == null ? 0 : sumInput._sum.value;  
+        const total_output = sumOutput._sum.value == null ? 0 : sumOutput._sum.value;  
+      
+        if(balanceExist && balanceLastMonthExist) {
             await prisma.balances.update({
                 where: {
                     id: balanceExist.id
-                }, 
+                },
                 data: {
-                    value: balanceExist.value - value
+                    value: balanceLastMonthExist.value + total_input - total_output
                 }
             });
         }
-       
 
+        } else if(valor> 0){
+            if(identifier == "" || method == "") {
+              throw new AppError("Identifier and method are required!", 401);
+            }
+        }
         return 'Ok';
     }
 }

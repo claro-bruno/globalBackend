@@ -42,9 +42,11 @@ contractorsRoutes.post("/",
             },
             {
                 name: 'secondaryResidencyProof',
+
             },
             {
                 name: 'documentProof',
+
             },
             {
                 name: 'profile',
