@@ -9,6 +9,26 @@ interface IGetDataClient {
 
 export class GetClientsProfitUseCase {
     async execute({ year, month}: IGetDataClient) {
+
+        const arrTypes: any = [
+            "INPUT",
+            "LABOUR_PAYROOL",
+            "VAN_FUEL_OIL",
+            "FUEL_OIL",
+            "EQUIPMENT",
+            "ADVERTISEMENT",
+            "UNIFORM",
+            "REPAIRS_MAINTENANCE",
+            "OFFICE_EXPENSES",
+            "MEALS",
+            "CONTRACTOR",
+            "CONTRACTOR_WORKERS",
+            "CHEMICAL_CONSUMABLES",
+            "INSURANCE_TAX",
+            "EXTRAS",
+            "GLOBAL"
+        ];
+
         const result: any = [];
         const clients = await prisma.clients.findMany({
             orderBy: [{ id: 'asc' }],
@@ -56,13 +76,13 @@ export class GetClientsProfitUseCase {
             ;`;
         
         const total_exp: any = await prisma.$queryRaw`
-           SELECT SUM(a.value) AS total FROM payments AS p
+           SELECT SUM(p.value+p.others) AS total FROM payments AS p
             WHERE p.month = ${month} AND p.year = ${year} AND p.type != 'CONTRACTOR_WORKERS' AND p.type != 'INPUT'
             ;`;
 
         
 
-        const total_expensives_by_type: any = await prisma.payments.groupBy({
+        const total_expenses_by_type: any = await prisma.payments.groupBy({
             by: ['type'],
             _sum: {
                 value: true
@@ -72,6 +92,16 @@ export class GetClientsProfitUseCase {
                 year
             }
         });
+
+        const resultt: any = {};
+        arrTypes.forEach((type: string) => {
+            const payments_type = total_expenses_by_type.find(
+                (info: any) => info.type === type
+              );
+              resultt[`${type}`] = typeof payments_type === 'undefined' || payments_type === null ? 0 : payments_type._sum.value as any;
+
+        });
+
 
         const total_labour_by_client: any = await prisma.$queryRaw`
             SELECT j.fk_id_client, SUM(a.value*q.value_hour) AS total FROM jobs AS j
@@ -83,23 +113,22 @@ export class GetClientsProfitUseCase {
                 ORDER BY j.fk_id_client ASC
          ;`
 
-
+        
         const total_expenses = total_exp.total == null ? 0 : total_exp.total;
         const total_support = total_supp.total == null ? 0 : total_supp.total;
         const total_despesas = total_expenses + total_support;
         const total_invoices = total_invs._sum.value == null ? 0 : total_invs._sum.value;
-        total_expensives_by_type.support = total_support;
-
-        let info: any = {};
+        total_expenses_by_type.support = total_support;
 
         if(clients.length > 0) {
             clients.forEach((client: any) => {
+                const info: any = {};
                 const invoice_info = total_invoices_by_clients.find(
-                    (info: any) => info.fk_id_client === client.fk_id_client
+                    (info: any) => info.fk_id_client === client.id
                   );
 
                 const labour_info = total_labour_by_client.find(
-                    (info: any) => info.fk_id_client === client.fk_id_client
+                    (info: any) => info.fk_id_client === client.id
                   );
                 if(invoice_info) {
                     info.amount = invoice_info._sum.value != null ? invoice_info._sum.value : 0;
@@ -112,18 +141,18 @@ export class GetClientsProfitUseCase {
                         info.profit = labour_info.total != null &&  invoice_info._sum.value != null ? info.amount - info.expensive_value - info.total : 0;
                     }
                 }
-                
+
                 info.name = client.name;
-                info.fk_id_client = client.fk_id_client;
+                info.fk_id_client = client.id;
                 result.push(info);
             })
         }
 
         return {
-            expensives: total_expensives_by_type,
+            expenses: resultt,
+            total_expenses: total_despesas,
             clients: result,
             total_support,
-            total_expenses: total_despesas,
             total_invoices
         };
 

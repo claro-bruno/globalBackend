@@ -22,10 +22,11 @@ const updateStatusClientController = new UpdateStatusClientController();
 const getClientsProfitController = new GetClientsProfitController();
 
 clientsRoutes.post("/", use(ensureAuthenticate), use(createClientController.handle));
+clientsRoutes.get("/profit", use(ensureAuthenticate), use(getClientsProfitController.handle));
 clientsRoutes.put("/status/:id", use(ensureAuthenticate), use(updateStatusClientController.handle));
 clientsRoutes.put("/:id", use(ensureAuthenticate), use(updateClientController.handle));
 clientsRoutes.get("/:id", use(ensureAuthenticate), use(getClientController.handle));
 clientsRoutes.get("/", use(ensureAuthenticate), use(getClientsController.handle));
-clientsRoutes.get("/profit", use(ensureAuthenticate), use(getClientsProfitController.handle));
+
 
 export { clientsRoutes };
