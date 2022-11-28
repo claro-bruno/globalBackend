@@ -34,7 +34,8 @@ export class UpdateContractorController {
         // console.log(request.body);
         const infoResult = JSON.parse(request.body.body);
         
-        const { access = "", first_name, middle_name ,last_name, email, identification, dob, telephone, ein, address, city, state, zipcode } = infoResult;
+        const { access = "", first_name, middle_name="" ,last_name, email, identification, dob, telephone, ein, address, city, state, zipcode } = infoResult;
+        console.log(middle_name);
         // const { address, city, zipcode, state  } = primaryAddress;
         // if (secondaryAddress != undefined ) {
         //     const { address: address2, city: city2, zipcode: zipcode2, state:state2  } = secondaryAddress;
@@ -42,6 +43,7 @@ export class UpdateContractorController {
 
         // }
         // const einn = ein != undefined ? ein : "";
+        
         const result = await updateContractorUseCase.execute({
              id: +id,
              first_name,

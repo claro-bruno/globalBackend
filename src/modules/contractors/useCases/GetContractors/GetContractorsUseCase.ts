@@ -10,6 +10,7 @@ export class GetContractorsUseCase {
                 first_name: 'asc',
             }],
             select: {
+                id: true,
                 email: true,
                 first_name: true,
                 middle_name: true,

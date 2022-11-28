@@ -36,7 +36,7 @@ export class UpdateContractorUseCase {
    //     { address, city, zipcode, state } : ICreateContractorAddress,
    //     { address2 = "", city2 = "", zipcode2 = "", state2 = "" } : ICreateContractorAddress | any
     ): Promise<any>{
-        const role = access == "" ? "CONTRACTOR" : access;
+        // const role = access == "" ? "CONTRACTOR" : access;
         //validar se o client existe
         const contractorExist = await prisma.contractors.findUnique({
            where: {
@@ -68,16 +68,16 @@ export class UpdateContractorUseCase {
                 telephone,
             }
         });
-        if(contractorExist) {
-            await prisma.accounts.update(({
-                where: {
-                    id: contractorExist.fk_id_account as number,
-                },
-                data: {
-                    access: role as any
-                }
-            }));
-        }
+        // if(contractorExist) {
+        //     await prisma.accounts.update(({
+        //         where: {
+        //             id: contractorExist.fk_id_account as number,
+        //         },
+        //         data: {
+        //             access: role as any
+        //         }
+        //     }));
+        // }
         
         await prisma.adresseses.deleteMany({
             where: {
