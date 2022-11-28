@@ -149,9 +149,10 @@ export class GetClientsProfitUseCase {
         return {
             expenses: resultt,
             total_expenses: total_despesas,
-            clients: result,
             total_support,
-            total_invoices
+            total_invoices,
+            clients: result,
+            
         };
 
     }
