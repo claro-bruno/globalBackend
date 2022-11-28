@@ -82,8 +82,9 @@ export class CreateContractorUseCase {
       data: {
         username,
         password: hashPassword,
-        access: role as any,
-        status: "ACTIVE",
+        access: "CONTRACTOR",
+        status: "ACTIVE"
+        
       }
     });
 
@@ -153,6 +154,7 @@ export class CreateContractorUseCase {
       subject: "Welcome to Global Janitorial Services",
       plain: "Registration Account",
       html: `<strong>Your account has been created with sucess!<br> <br> Your login information: <br> Login: ${username} <br> Password: ${password}</strong>`,
+
       headers: { "x-myheader": "test header" }
     };
     // Your account will be revised and soon will be aproved

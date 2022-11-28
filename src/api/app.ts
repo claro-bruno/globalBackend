@@ -15,6 +15,6 @@ app.use(express.urlencoded({ extended: true }));
 
 // app.use(runGenerateQuarterJobs);
 app.use(router);
-app.use(errorHandler);
+// app.use(errorHandler);
 
 export { app };

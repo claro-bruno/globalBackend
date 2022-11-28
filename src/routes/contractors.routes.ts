@@ -16,7 +16,6 @@ const updateContractorController = new UpdateContractorController();
 
 contractorsRoutes.get("/:id", use(ensureAuthenticate), use(getContractorController.handle));
 contractorsRoutes.get("/", use(ensureAuthenticate), use(getContractorsController.handle));
-// use(ensureAuthenticate)
 contractorsRoutes.put("/:id",
         use(ensureAuthenticate),
         multer(new UploadDocuments()).fields(
@@ -51,7 +50,6 @@ contractorsRoutes.post("/",
             },
             {
                 name: 'profile',
-
             }
         ]),
     use(createContractorController.handle)
