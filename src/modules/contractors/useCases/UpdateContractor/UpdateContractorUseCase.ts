@@ -32,7 +32,7 @@ interface ICreateContractorAddress {
 
 export class UpdateContractorUseCase {
     async execute(
-        { id, access="", first_name, middle_name, last_name, email, identification, ein, dob, telephone, urlPrimaryResidencyProof, urlSecondaryResidencyProof, urlDocumentProof, urlProfile, address, city, state, zipcode } : IUpdateContractor,
+        { id, access, first_name, middle_name, last_name, email, identification, ein, dob, telephone, urlPrimaryResidencyProof, urlSecondaryResidencyProof, urlDocumentProof, urlProfile, address, city, state, zipcode } : IUpdateContractor,
    //     { address, city, zipcode, state } : ICreateContractorAddress,
    //     { address2 = "", city2 = "", zipcode2 = "", state2 = "" } : ICreateContractorAddress | any
     ): Promise<any>{
@@ -44,10 +44,12 @@ export class UpdateContractorUseCase {
            }
         });
 
+        
         if(!contractorExist) {
             throw new AppError('Contractor does not exists', 401)
         }
 
+        
         //atualizar o contractor
         const contractor = await prisma.contractors.update({
             where: {

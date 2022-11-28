@@ -18,7 +18,7 @@ const getAnualReportController = new GetAnualReportController();
 
 paymentsRoutes.post("/contractor", use(ensureAuthenticate), use(createPaymentsController.handle));
 paymentsRoutes.get("/contractor", use(ensureAuthenticate), use(getPaymentsController.handle));
-paymentsRoutes.get("/report", use(ensureAuthenticate), use(getAnualReportController.handle));
+paymentsRoutes.get("/report/:year", use(ensureAuthenticate), use(getAnualReportController.handle));
 
 
 

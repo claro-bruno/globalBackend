@@ -10,14 +10,16 @@ export class GetAnualReportUseCase {
     async execute({ year }: IGetReport) {
         const result: any = [];
         const contractors = await prisma.contractors.findMany();
-        let info: any = {};
+        
         if(contractors.length > 0) {
             await contractors.reduce(async (memo: any, contractor: any) => {
                 await memo;
+                const info: any = {};
                 const total_payments_by_contractor = await prisma.payments.groupBy({
                     by: ['month'],
                     _sum: {
-                        value: true
+                        value: true,
+                        others: true
                     },
                     where: {
                         year,
@@ -25,9 +27,22 @@ export class GetAnualReportUseCase {
                         type: 'CONTRACTOR_WORKERS',
                     },
                 });
+                const arr: any = [];
+                if(total_payments_by_contractor.length > 0) {
+                    total_payments_by_contractor.forEach((info) => {
+                        const obj: any = {};
+                        const total: any = typeof info == undefined || info == null ? 0 : info._sum.value;
+                        const others: any = typeof info == undefined || info == null ? 0 : info._sum.others;
+                        obj.month = info.month;
+                        obj.total = total + others;
+                        arr.push(obj);
+                    });
+                    
+                }
                 const total_payment = await prisma.payments.aggregate({
                     _sum: {
-                        value: true
+                        value: true,
+                        others: true
                     },
         
                     where: {
@@ -37,11 +52,11 @@ export class GetAnualReportUseCase {
                     }
                 });
                 if(total_payments_by_contractor) {
-                    info.total_payments = total_payment._sum.value =! null ? total_payment._sum.value : 0;
-                    info.payments = total_payments_by_contractor;
                     info.contrator = contractor;
+                    info.payments = arr;
+                    info.total_payments = total_payment._sum.value =! null ? total_payment._sum.value : 0;
                 }
-                
+                result.push(info);
                 
             }, undefined);
 
@@ -51,7 +66,8 @@ export class GetAnualReportUseCase {
 
         const total = await prisma.payments.aggregate({
             _sum: {
-                value: true
+                value: true,
+                others: true
             },
 
             where: {

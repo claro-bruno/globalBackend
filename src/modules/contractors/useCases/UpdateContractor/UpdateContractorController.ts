@@ -18,7 +18,7 @@ export class UpdateContractorController {
         const updateContractorUseCase = new UpdateContractorUseCase();
         const { id } = request.params;
         
-
+        
         let urlPrimaryResidencyProof= "";
         let urlSecondaryResidencyProof = "";
         let urlDocumentProof = "";
@@ -33,9 +33,7 @@ export class UpdateContractorController {
         // let adr2 = { address: "", city: "", zipcode: "", state: "" };
         // console.log(request.body);
         const infoResult = JSON.parse(request.body.body);
-        
-        const { access = "", first_name, middle_name="" ,last_name, email, identification, dob, telephone, ein, address, city, state, zipcode } = infoResult;
-        console.log(middle_name);
+        const { access = "", first_name, middle_name ,last_name, email, identification, dob, telephone, ein, address, city, state, zipcode } = infoResult;
         // const { address, city, zipcode, state  } = primaryAddress;
         // if (secondaryAddress != undefined ) {
         //     const { address: address2, city: city2, zipcode: zipcode2, state:state2  } = secondaryAddress;
@@ -43,11 +41,10 @@ export class UpdateContractorController {
 
         // }
         // const einn = ein != undefined ? ein : "";
-        
         const result = await updateContractorUseCase.execute({
              id: +id,
              first_name,
-             middle_name,
+             middle_name: typeof middle_name === undefined || middle_name.length === 0 ? "" : middle_name ,
              last_name,
              email,
              identification,
