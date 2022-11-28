@@ -130,16 +130,14 @@ export class GetClientsProfitUseCase {
                 const labour_info = total_labour_by_client.find(
                     (info: any) => info.fk_id_client === client.id
                   );
-                if(invoice_info) {
+                
+                if(invoice_info && labour_info) {
                     info.amount = invoice_info._sum.value != null ? invoice_info._sum.value : 0;
                     info.ganho = invoice_info._sum.value != null && total_invoices > 0 ? (invoice_info._sum.value / total_invoices) * 100 : 0;
                     info.expensive_value = invoice_info._sum.value != null && total_despesas > 0 ? invoice_info._sum.value * total_despesas : 0;
+                    info.total_labour = labour_info.total != null ? labour_info.total : 0;
+                    info.profit = labour_info.total != null &&  invoice_info._sum.value != null ? info.amount - info.expensive_value - info.total : 0;
                     
-
-                    if(labour_info) {
-                        info.total_labour = labour_info.total != null ? labour_info.total : 0;
-                        info.profit = labour_info.total != null &&  invoice_info._sum.value != null ? info.amount - info.expensive_value - info.total : 0;
-                    }
                 }
 
                 info.name = client.name;
