@@ -33,9 +33,9 @@ export class CreateOrderUseCase {
                 fk_id_client: id_client,
                 description,
                 notes,
+                created_at: new Date(date_at),
                 colaborators, 
-                support,
-                created_at: new Date(date_at)
+                support
             }
         });
         return order;
