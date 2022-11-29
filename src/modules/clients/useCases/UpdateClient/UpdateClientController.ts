@@ -21,8 +21,7 @@ export class UpdateClientController {
             status,
             contact,
             contact_phone,
-            address
-            
+            address,            
         });
         return response.json(result);
 
