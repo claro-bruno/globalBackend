@@ -15,6 +15,8 @@ model Orders {
   description  String
   notes        String?
   client       Clients? @relation(fields: [fk_id_client], references: [id])
+  support      String?
+  colaborators String?
   fk_id_client Int?
   created_at   DateTime @default(now())
   status       Status   @default(PENDING)
