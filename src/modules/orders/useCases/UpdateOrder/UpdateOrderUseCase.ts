@@ -9,6 +9,8 @@ interface IUpdateOrder {
     end: string;
     date_at: string;
     id: number;
+    support?: string;
+    colaborators?: string;
 }
 
 export class UpdateOrderUseCase {
@@ -35,7 +37,9 @@ export class UpdateOrderUseCase {
                 fk_id_client: id_client,
                 description,
                 notes,
-                created_at: new Date(date_at)
+                created_at: new Date(date_at),
+                colaborators, 
+                support,
             }
         });
         return order;

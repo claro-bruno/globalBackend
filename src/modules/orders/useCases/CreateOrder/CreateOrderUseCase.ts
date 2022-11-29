@@ -8,10 +8,12 @@ interface ICreateOrder {
     start: string;
     end: string;
     date_at: string;
+    support?: string;
+    colaborators?: string;
 }
 
 export class CreateOrderUseCase {
-    async execute({ date_at, description, notes, id_client, start, end } : ICreateOrder): Promise<any>{
+    async execute({ date_at, description, notes, id_client, start, end, colaborators, support } : ICreateOrder): Promise<any>{
         //validar se o client existe
         const clientExist = await prisma.clients.findFirst({
            where: {
@@ -31,6 +33,8 @@ export class CreateOrderUseCase {
                 fk_id_client: id_client,
                 description,
                 notes,
+                colaborators, 
+                support,
                 created_at: new Date(date_at)
             }
         });
