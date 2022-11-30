@@ -13,6 +13,8 @@ export class GetOrdersUseCase {
                 notes: true,
                 created_at: true,
                 fk_id_client: true,
+                colaborators: true,
+                support: true,
                 client: {
                  select: {
                      name: true,
