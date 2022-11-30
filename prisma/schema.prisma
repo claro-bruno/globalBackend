@@ -124,15 +124,15 @@ model Clients {
   created_at    DateTime   @default(now())
   account       Accounts?  @relation(fields: [fk_id_account], references: [id])
   fk_id_account Int?       @unique
-  start         String
-  end           String
-  monday        Boolean
-  tuesday       Boolean
-  wednesday     Boolean
-  thursday      Boolean
-  friday        Boolean
-  saturday      Boolean
-  sunday        Boolean
+  start         String     @default("08:00")
+  end           String     @default("18:00")
+  monday        Boolean    @default(true)
+  tuesday       Boolean    @default(true)
+  wednesday     Boolean    @default(true)
+  thursday      Boolean    @default(true)
+  friday        Boolean    @default(true)
+  saturday      Boolean    @default(true)
+  sunday        Boolean    @default(false)
   contact       String?
   contact_phone String?
   address       String?
@@ -179,13 +179,15 @@ model Jobs {
   client           Clients     @relation(fields: [fk_id_client], references: [id])
   fk_id_client     Int
   created_at       DateTime    @default(now())
-  monday           Boolean
-  tuesday          Boolean
-  wednesday        Boolean
-  thursday         Boolean
-  friday           Boolean
-  saturday         Boolean
-  sunday           Boolean
+  start            String?     @default("08:00")
+  end              String?     @default("18:00")
+  monday           Boolean?    @default(true)
+  tuesday          Boolean?    @default(true)
+  wednesday        Boolean?    @default(true)
+  thursday         Boolean?    @default(true)
+  friday           Boolean?    @default(true)
+  saturday         Boolean?    @default(true)
+  sunday           Boolean?    @default(false)
   status           Status      @default(ACTIVE)
 
   quarter Quarters[]
