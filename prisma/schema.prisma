@@ -18,7 +18,7 @@ model Orders {
   support            String?
   fk_support_id      Int?
   support_contractor Contractors? @relation(fields: [fk_support_id], references: [id])
-  colaborators       String?
+  collaborators      String?
   client             Clients?     @relation(fields: [fk_id_client], references: [id])
   fk_id_client       Int?
   created_at         DateTime     @default(now())

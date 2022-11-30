@@ -10,11 +10,11 @@ interface IUpdateOrder {
     date_at: string;
     id: number;
     support?: string;
-    colaborators?: string;
+    collaborators?: string;
 }
 
 export class UpdateOrderUseCase {
-    async execute({ id, date_at, description, notes, id_client, start, end, colaborators, support } : IUpdateOrder): Promise<any>{
+    async execute({ id, date_at, description, notes, id_client, start, end, collaborators, support } : IUpdateOrder): Promise<any>{
         //validar se o client existe
         const orderExist = await prisma.orders.findFirst({
            where: {
@@ -38,7 +38,7 @@ export class UpdateOrderUseCase {
                 description,
                 notes,
                 created_at: new Date(date_at),
-                colaborators, 
+                collaborators, 
                 support,
             }
         });
