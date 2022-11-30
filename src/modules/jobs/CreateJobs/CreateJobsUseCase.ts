@@ -9,15 +9,17 @@ interface IAppointment {
 interface IService {
   id_contractor: number;
   id_client: number;
-  sunday: boolean;
-  monday: boolean;
-  tuesday: boolean;
-  wednesday: boolean;
-  thursday: boolean;
-  friday: boolean;
-  saturday: boolean;
+  sunday?: boolean;
+  monday?: boolean;
+  tuesday?: boolean;
+  wednesday?: boolean;
+  thursday?: boolean;
+  friday?: boolean;
+  saturday?: boolean;
   value: number;
   value_hour: number;
+  start?: string;
+  end?: string;
 }
 
 function getMonthFromString(mon: string) {
@@ -48,8 +50,11 @@ export class CreateJobsUseCase {
     thursday,
     friday,
     saturday,
+    start,
+    end,
     value,
-    value_hour
+    value_hour,
+    
   }: IService) {
     const arrDays = [];
     let arr = [];
@@ -74,13 +79,15 @@ export class CreateJobsUseCase {
       data: {
         fk_id_contractor: id_contractor,
         fk_id_client: id_client,
-        monday,
-        sunday,
-        tuesday,
-        wednesday,
-        thursday,
-        friday,
-        saturday
+        monday : monday as boolean,
+        sunday: sunday as boolean,
+        tuesday: tuesday as boolean,
+        wednesday: wednesday as boolean,
+        thursday: thursday as boolean,
+        friday: friday as boolean,
+        saturday: saturday as boolean,
+        start, 
+        end
       }
     });
     const date = new Date(Date.now());

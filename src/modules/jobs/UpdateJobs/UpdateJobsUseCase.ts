@@ -12,12 +12,35 @@ interface IService {
     id: number;
     id_contractor: number;
     id_client: number;
+    sunday?: boolean;
+    monday?: boolean;
+    tuesday?: boolean;
+    wednesday?: boolean;
+    thursday?: boolean;
+    friday?: boolean;
+    saturday?: boolean;
+    start?: string;
+    end?: string;
 }
 
 
 export class UpdateJobsUseCase {
     // async execute({ id, id_contractor, id_client, sunday, monday, tuesday, wednesday, thursday, friday, saturday, value, value_hour }: IService) {
-    async execute({ id, id_contractor, id_client }: IService) {
+    async execute({ 
+        id, 
+        id_contractor, 
+        id_client, 
+        sunday,
+        monday,
+        tuesday,
+        wednesday,
+        thursday,
+        friday,
+        saturday,
+        start,
+        end 
+    }: IService) 
+    {
         const existJob = await prisma.jobs.findFirst({
             where: {
                 id
@@ -48,6 +71,15 @@ export class UpdateJobsUseCase {
                 data: {
                     fk_id_contractor: id_contractor,
                     fk_id_client: id_client,
+                    monday : monday as boolean,
+                    sunday: sunday as boolean,
+                    tuesday: tuesday as boolean,
+                    wednesday: wednesday as boolean,
+                    thursday: thursday as boolean,
+                    friday: friday as boolean,
+                    saturday: saturday as boolean,
+                    start, 
+                    end
                 }
             });
             return 'Ok';

@@ -23,6 +23,15 @@ export class GetJobsUseCase {
           select: {
             status: true,
             id: true,
+            sunday: true,
+            monday: true,
+            tuesday: true,
+            wednesday: true,
+            thursday: true,
+            friday: true,
+            saturday: true,
+            start: true,
+            end: true,
             client: {
               select: {
                 name: true,
