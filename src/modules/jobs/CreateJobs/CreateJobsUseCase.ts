@@ -58,20 +58,20 @@ export class CreateJobsUseCase {
   }: IService) {
     const arrDays = [];
     let arr = [];
-    const existJob = await prisma.jobs.findFirst({
-      where: {
-        fk_id_contractor: id_contractor,
-        fk_id_client: id_client,
-        status: "ACTIVE"
-      }
-    });
+    // const existJob = await prisma.jobs.findFirst({
+    //   where: {
+    //     fk_id_contractor: id_contractor,
+    //     fk_id_client: id_client,
+    //     status: "ACTIVE"
+    //   }
+    // });
 
     if(!id_contractor || !id_client || !value || !value_hour ) {
       throw new AppError("Invalid Data");
     }
-    if (existJob) {
-      throw new AppError("Job already exist");
-    }
+    // if (existJob) {
+    //   throw new AppError("Job already exist");
+    // }
 
 
     console.log(id_contractor, id_client, value, value_hour);
