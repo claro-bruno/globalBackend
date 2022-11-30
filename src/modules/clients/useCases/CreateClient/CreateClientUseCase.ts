@@ -31,21 +31,21 @@ export class CreateClientUseCase {
             throw new AppError('Client already exists', 401)
         }
 
-        const password = `global${name}1234` ;
+        // const password = `global${name}1234` ;
 
-        //criptografar a senha
-        const hashPassword = await hash(password, 10);
-        const username = name.trim().split(" ").join("").toLowerCase();
+        // //criptografar a senha
+        // const hashPassword = await hash(password, 10);
+        // const username = name.trim().split(" ").join("").toLowerCase();
 
-        const client_account = await prisma.accounts.create({
-            data: {
-                username,
-                password: hashPassword,
-                access: "CLIENT",
-                status: "ACTIVE",
-                resetPassword: true
-            }
-        });
+        // const client_account = await prisma.accounts.create({
+        //     data: {
+        //         username,
+        //         password: hashPassword,
+        //         access: "CLIENT",
+        //         status: "ACTIVE",
+        //         resetPassword: true
+        //     }
+        // });
 
         const client = await prisma.clients.create({
             data: {
@@ -59,7 +59,7 @@ export class CreateClientUseCase {
                 saturday,
                 start,
                 end,
-                fk_id_account: client_account.id,
+                // fk_id_account: client_account.id,
                 contact,
                 contact_phone,
                 address

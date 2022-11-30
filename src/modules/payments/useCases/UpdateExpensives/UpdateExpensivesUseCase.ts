@@ -66,10 +66,10 @@ export class UpdateExpensivesUseCase {
                   type: type as any,
                   year: +year,
                   month,
-                  identification,
                   date_at: new Date(date_expensive),
                   payed_for,
-                  status: status as any
+                  status: status as any,
+                  identification: type !== "CHECK" ? id as any : identification
                 }
               });
             

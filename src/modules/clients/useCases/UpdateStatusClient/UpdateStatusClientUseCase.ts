@@ -3,7 +3,8 @@ import { AppError} from "../../../../middlewares/AppError";
 
 interface IUpdateCompany {
     id: number;
-    status: boolean
+    status: boolean;
+
 }
 
 
@@ -25,7 +26,7 @@ export class UpdateStatusClientUseCase {
                 id
             },
             data: {
-                status
+                status: status as any,
             }
         });
         return client;

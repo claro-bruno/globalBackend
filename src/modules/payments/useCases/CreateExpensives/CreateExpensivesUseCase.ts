@@ -69,19 +69,27 @@ export class CreateExpensivesUseCase {
         let valor = value == null ? 0 : value;
         if(valor > 0 && identifier != "" && method != "") {
 
-            await prisma.payments.create({
+            const payment = await prisma.payments.create({
                 data: {
                   value,
                   method: method as any,
                   type: type as any,
                   year: +year,
                   month,
-                  identification: identifier,
                   date_at: new Date(date_expensive),
                   payed_for, 
                   status: status as any
                 }
               });
+
+              await prisma.payments.update({
+                where: {
+                    id: payment.id
+                },
+                data: {
+                    identification: type !== "CHECK" ? payment.id as any : identifier
+                }
+              })
             
               const sumOutput = await prisma.payments.aggregate({
                 _sum: {
