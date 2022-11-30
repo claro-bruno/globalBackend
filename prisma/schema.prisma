@@ -9,19 +9,36 @@ datasource db {
 }
 
 model Orders {
-  id           Int      @id @default(autoincrement())
-  start        String
-  end          String
-  description  String
-  notes        String?
-  client       Clients? @relation(fields: [fk_id_client], references: [id])
-  support      String?
-  colaborators String?
-  fk_id_client Int?
-  created_at   DateTime @default(now())
-  status       Status   @default(PENDING)
+  id          Int     @id @default(autoincrement())
+  start       String
+  end         String
+  description String
+  notes       String?
+
+  support            String?
+  fk_support_id      Int?
+  support_contractor Contractors? @relation(fields: [fk_support_id], references: [id])
+  colaborators       String?
+  client             Clients?     @relation(fields: [fk_id_client], references: [id])
+  fk_id_client       Int?
+  created_at         DateTime     @default(now())
+  status             Status       @default(PENDING)
+
+  ordersContractors OrderContractors[]
 
   @@map("orders")
+}
+
+model OrderContractors {
+  id               Int          @id @default(autoincrement())
+  order            Orders?      @relation(fields: [fk_id_order], references: [id])
+  fk_id_order      Int
+  contractor       Contractors? @relation(fields: [fk_id_contractor], references: [id])
+  fk_id_contractor Int
+  start_hour       String
+  end_hour         String
+
+  @@map("ordesContractors")
 }
 
 model Invoices {
@@ -92,9 +109,11 @@ model Contractors {
   account                    Accounts? @relation(fields: [fk_id_account], references: [id])
   fk_id_account              Int?      @unique
 
-  payments Payments[]
-  address  Adresseses[]
-  jobs     Jobs[]
+  ordersSupport     Orders[]
+  payments          Payments[]
+  address           Adresseses[]
+  jobs              Jobs[]
+  ordersContractors OrderContractors[]
 
   @@map("contractors")
 }
@@ -216,8 +235,8 @@ enum Role {
 enum Status {
   REVISED
   ACTIVE
-  OK
-  UNKNOWN
+  RECEIPT
+  NORECEIPT
   INACTIVE
   PENDING
 }
@@ -227,6 +246,7 @@ enum Method {
   TRANSFER
   RECEIPT
   VENMO
+  CARD
 }
 
 enum Type {
