@@ -23,7 +23,16 @@ export class GetJobsByContractorUseCase {
             c.id,
             ap.fk_id_quarter,
             q.month,
-            q.others
+            q.others,
+            j.sunday,
+            j.monday,
+            j.tuesday,
+            j.wednesday,
+            j.thursday,
+            j.friday,
+            j.saturday,
+            j.start,
+            j.end
             FROM appointments ap
             INNER JOIN quarters q ON q.id = ap.fk_id_quarter
             INNER JOIN jobs j ON j.id = q.fk_id_job

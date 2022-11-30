@@ -64,7 +64,8 @@ export class CompleteJobsUseCase {
         id
       },
       data: {
-        status: status as any
+        status: status as any,
+
       }
     });
 
@@ -123,7 +124,7 @@ export class CompleteJobsUseCase {
         await memo;
         await prisma.appointments.create({
           data: {
-            fk_id_quarter: quarterResult.id,
+            fk_id_quarter: quarterResult.id as any,
             value: +value,
             date: date
           }
