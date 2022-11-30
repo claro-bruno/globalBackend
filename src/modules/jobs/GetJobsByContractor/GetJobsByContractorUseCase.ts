@@ -159,19 +159,21 @@ export class GetJobsByContractorUseCase {
           WHERE q.year = ${year} AND q.month = ${month} AND j.fk_id_contractor = ${id} AND j.status = 'ACTIVE'
           GROUP BY q.order
     ;`;
+    
+    
+      
 
-    const { total: total_1, total_hours: total_hours_1 } =  results_total_quarter[0];     
-    const { total: total_2, total_hours: total_hours_2 } =  results_total_quarter[1];  
-    const {
-      total,
-      total_hours,
-      total_others,
-      total_others_1,
-      total_others_2
-    } = results_total[0];
+    if (result.length > 0 && results_total_quarter.length > 0) {
 
-
-    if (result.length > 0) {
+      const { total: total_1, total_hours: total_hours_1 } =  results_total_quarter[0];     
+      const { total: total_2, total_hours: total_hours_2 } =  results_total_quarter[1];  
+      const {
+        total,
+        total_hours,
+        total_others,
+        total_others_1,
+        total_others_2
+      } = results_total[0];
       //     jobsGrouped.forEach((job: any) => {
       //         const job_info: any = {};
 
