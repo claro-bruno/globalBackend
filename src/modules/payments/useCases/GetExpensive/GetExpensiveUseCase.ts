@@ -11,7 +11,7 @@ export class GetExpensiveUseCase {
         const orderExist = await prisma.payments.findFirst({
            where: {
                id,
-           }
+           },
         });
 
         if(!orderExist) {

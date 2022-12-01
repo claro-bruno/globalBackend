@@ -87,7 +87,7 @@ export class CreateExpensivesUseCase {
                     id: payment.id
                 },
                 data: {
-                    identification: type !== "CHECK" ? payment.id as any : identifier
+                    identification: type !== "CHECK" ? payment.id.toString() as any : identifier
                 }
               })
             
