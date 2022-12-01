@@ -3,7 +3,6 @@ import { CreateExpensivesUseCase } from "./CreateExpensivesUseCase";
 
 export class CreateExpensivesController {
     async handle(request: Request, response: Response, next: NextFunction)  {
-        console.log('aqui');
         const { date_expensive, payed_for, value, method, identifier, type, status } = request.body;
         const createExpensivesUseCase = new CreateExpensivesUseCase();
 
