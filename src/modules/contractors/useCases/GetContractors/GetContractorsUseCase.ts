@@ -6,6 +6,15 @@ import { AppError} from "../../../../middlewares/AppError";
 export class GetContractorsUseCase {
     async execute() {
         return prisma.contractors.findMany({
+            where: {
+                NOT: {
+                    account: {
+                        access: {
+                            equals: 'DEV' as any
+                        }
+                    }
+                }
+            },
             orderBy: [{
                 first_name: 'asc',
             }],

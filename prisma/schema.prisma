@@ -136,6 +136,7 @@ model Clients {
   contact       String?
   contact_phone String?
   address       String?
+  email         String?
   jobs          Jobs[]
   status        Status     @default(ACTIVE)
   payments      Payments[]
@@ -226,6 +227,7 @@ enum Access {
   CLIENT
   OFFICE
   ADMIN
+  DEV
 }
 
 enum Role {
