@@ -14,14 +14,15 @@ interface IUpdateCompany {
     start: string;
     end: string;
     status: string;
-    contact: string;
-    contact_phone: string;
-    address: string;
+    contact?: string;
+    contact_phone?: string;
+    address?: string;
+    email?: string;
 }
 
 
 export class UpdateClientUseCase {
-    async execute({ id, name, sunday, monday, tuesday, wednesday, thursday, friday, saturday, start, end, status, contact, contact_phone, address  }  : IUpdateCompany): Promise<any>{
+    async execute({ id, name, sunday, monday, tuesday, wednesday, thursday, friday, saturday, start, end, status, contact, contact_phone, address, email  }  : IUpdateCompany): Promise<any>{
         //validar se o client existe
         const clientExist = await prisma.clients.findFirst({
            where: {
@@ -51,7 +52,7 @@ export class UpdateClientUseCase {
                 status: status as any,
                 contact,
                 contact_phone,
-                address
+                address, email
             }
         });
         return client;
