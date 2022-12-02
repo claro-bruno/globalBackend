@@ -22,12 +22,13 @@ export class GetOrderUseCase {
             fk_id_client: true,
             collaborators: true,
             support: true,
+            email: true,
+            contact: true,
+            contact_phone: true,
+            address: true,
             client: {
              select: {
                  name: true,
-                 address: true,
-                 contact: true,
-                 contact_phone: true,
              }
             }
         }
