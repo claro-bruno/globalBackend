@@ -11,10 +11,14 @@ interface IUpdateOrder {
     id: number;
     support?: string;
     collaborators?: string;
+    email: string; 
+    contact: string;
+    contact_phone: string;
+    address: string;
 }
 
 export class UpdateOrderUseCase {
-    async execute({ id, date_at, description, notes, id_client, start, end, collaborators, support } : IUpdateOrder): Promise<any>{
+    async execute({ id, date_at, description, notes, id_client, start, end, collaborators, support, email, contact, contact_phone, address } : IUpdateOrder): Promise<any>{
         //validar se o client existe
         const orderExist = await prisma.orders.findFirst({
            where: {
@@ -40,6 +44,10 @@ export class UpdateOrderUseCase {
                 created_at: new Date(date_at),
                 collaborators, 
                 support,
+                email, 
+                contact, 
+                contact_phone,
+                address
             }
         });
         return order;

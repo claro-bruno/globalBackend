@@ -9,12 +9,15 @@ datasource db {
 }
 
 model Orders {
-  id          Int     @id @default(autoincrement())
-  start       String
-  end         String
-  description String
-  notes       String?
-
+  id                 Int          @id @default(autoincrement())
+  start              String
+  end                String
+  description        String
+  notes              String?
+  email              String?
+  contact            String?
+  contact_phone      String?
+  address            String?
   support            String?
   fk_support_id      Int?
   support_contractor Contractors? @relation(fields: [fk_support_id], references: [id])
