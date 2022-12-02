@@ -17,7 +17,7 @@ export class GetOrdersUseCase {
                 support: true,
                 email: true,
                 contact: true,
-                contact_phone: true
+                contact_phone: true,
                 address: true,
                 client: {
                  select: {
