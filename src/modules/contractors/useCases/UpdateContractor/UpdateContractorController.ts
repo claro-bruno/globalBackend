@@ -33,7 +33,7 @@ export class UpdateContractorController {
         // let adr2 = { address: "", city: "", zipcode: "", state: "" };
         // console.log(request.body);
         const infoResult = JSON.parse(request.body.body);
-        const { access = "", first_name, middle_name ,last_name, email, identification, dob, telephone, ein, address, city, state, zipcode } = infoResult;
+        const { first_name, middle_name ,last_name, email, identification, dob, telephone, ein, address, city, state, zipcode } = infoResult;
         // const { address, city, zipcode, state  } = primaryAddress;
         // if (secondaryAddress != undefined ) {
         //     const { address: address2, city: city2, zipcode: zipcode2, state:state2  } = secondaryAddress;
@@ -58,8 +58,7 @@ export class UpdateContractorController {
              address,
              city,
              zipcode,
-             state,
-             access
+             state
         }
        
         );
