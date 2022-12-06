@@ -19,6 +19,8 @@ model Orders {
   contact_phone      String?
   address            String?
   support            String?
+  fk_invoice_id      Int?
+  invoices           Invoices?    @relation(fields: [fk_invoice_id], references: [id])
   fk_support_id      Int?
   support_contractor Contractors? @relation(fields: [fk_support_id], references: [id])
   collaborators      String?
@@ -56,6 +58,7 @@ model Invoices {
 
   client       Clients? @relation(fields: [fk_id_client], references: [id])
   fk_id_client Int?
+  Orders       Orders[]
 
   @@map("invoices")
 }

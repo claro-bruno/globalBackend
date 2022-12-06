@@ -19,6 +19,12 @@ export class GetOrdersUseCase {
                 contact: true,
                 contact_phone: true,
                 address: true,
+                invoices: {
+                    select: {
+                        id: true,
+                        identification: true,
+                    }
+                },
                 client: {
                  select: {
                      name: true,

@@ -13,7 +13,6 @@ app.use("/images", express.static(path.resolve(__dirname, "../../uploads")));
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
-// app.use(runGenerateQuarterJobs);
 app.use(router);
 app.use(errorHandler);
 

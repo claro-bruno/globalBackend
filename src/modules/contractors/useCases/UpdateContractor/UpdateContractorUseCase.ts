@@ -19,7 +19,6 @@ interface IUpdateContractor {
     city: string;
     zipcode: string;
     state: string;
-    access: string;
 }
 
 interface ICreateContractorAddress {
@@ -32,7 +31,7 @@ interface ICreateContractorAddress {
 
 export class UpdateContractorUseCase {
     async execute(
-        { id, access, first_name, middle_name, last_name, email, identification, ein, dob, telephone, urlPrimaryResidencyProof, urlSecondaryResidencyProof, urlDocumentProof, urlProfile, address, city, state, zipcode } : IUpdateContractor,
+        { id, first_name, middle_name, last_name, email, identification, ein, dob, telephone, urlPrimaryResidencyProof, urlSecondaryResidencyProof, urlDocumentProof, urlProfile, address, city, state, zipcode } : IUpdateContractor,
    //     { address, city, zipcode, state } : ICreateContractorAddress,
    //     { address2 = "", city2 = "", zipcode2 = "", state2 = "" } : ICreateContractorAddress | any
     ): Promise<any>{

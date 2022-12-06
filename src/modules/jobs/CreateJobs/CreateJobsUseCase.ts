@@ -53,8 +53,7 @@ export class CreateJobsUseCase {
     start,
     end,
     value,
-    value_hour,
-    
+    value_hour
   }: IService) {
     const arrDays = [];
     let arr = [];
@@ -66,15 +65,15 @@ export class CreateJobsUseCase {
       }
     });
 
-    if(!id_contractor || !id_client || !value || !value_hour ) {
+    if(!id_contractor || !id_client || value === null || !value_hour ) {
       throw new AppError("Invalid Data");
     }
     if (existJob) {
       throw new AppError("Job already exist");
     }
 
-
-    console.log(id_contractor, id_client, value, value_hour);
+    const start_value = start === null || !start || start === '' ? '' : start;
+    const end_value = end === null || !end || end === '' ? '' : end;
     const job = await prisma.jobs.create({
       data: {
         fk_id_contractor: id_contractor,
@@ -86,8 +85,8 @@ export class CreateJobsUseCase {
         thursday: thursday as boolean,
         friday: friday as boolean,
         saturday: saturday as boolean,
-        start, 
-        end
+        start: start_value, 
+        end: end_value, 
       }
     });
     const date = new Date(Date.now());
