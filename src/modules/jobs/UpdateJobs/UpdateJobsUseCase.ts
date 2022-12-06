@@ -58,11 +58,8 @@ export class UpdateJobsUseCase {
             }
         });
         
-        if(alreadyExistsJobs)
+        if(existJob.id === id && existJob.fk_id_client === id_client && existJob.fk_id_contractor === id_contractor)
         {
-            throw new AppError("Job already exists");
-        }
-        else {
             const start_value = start === null || !start || start === '' ? '' : start;
             const end_value = end === null || !end || end === '' ? '' : end;
             await prisma.jobs.update({
@@ -84,6 +81,10 @@ export class UpdateJobsUseCase {
                 }
             });
             return 'Ok';
+        }
+        else if(alreadyExistsJobs){
+            throw new AppError("Job already exists");
+            
             
         }
     }
