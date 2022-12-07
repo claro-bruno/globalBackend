@@ -5,6 +5,10 @@ import { AppError } from "../../../../middlewares/AppError";
 export class GetOrdersUseCase {
     async execute(): Promise<any>{
         return prisma.orders.findMany({
+            orderBy: [
+                {
+                    id: "asc"
+                }],
             select: {
                 id: true,
                 start: true,

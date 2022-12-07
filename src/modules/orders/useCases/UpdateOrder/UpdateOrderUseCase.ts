@@ -30,7 +30,6 @@ export class UpdateOrderUseCase {
             throw new AppError('Order does not exists', 401)
         }
 
-      
         const order = await prisma.orders.update({
             where: {
                 id,
