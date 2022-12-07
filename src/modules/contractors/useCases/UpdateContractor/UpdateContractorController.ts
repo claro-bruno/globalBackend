@@ -44,7 +44,7 @@ export class UpdateContractorController {
         const result = await updateContractorUseCase.execute({
              id: +id,
              first_name,
-             middle_name: typeof middle_name === undefined || middle_name.length === 0 ? "" : middle_name ,
+             middle_name: typeof middle_name === undefined || middle_name =='' ? "" : middle_name ,
              last_name,
              email,
              identification,
