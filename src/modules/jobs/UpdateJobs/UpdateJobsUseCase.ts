@@ -58,8 +58,9 @@ export class UpdateJobsUseCase {
             }
         });
         
-        if(existJob.id === id && existJob.fk_id_client === id_client && existJob.fk_id_contractor === id_contractor)
+        if(!alreadyExistsJobs || (existJob.fk_id_client === id_client && existJob.fk_id_contractor === id_contractor))
         {
+            
             const start_value = start === null || !start || start === '' ? '' : start;
             const end_value = end === null || !end || end === '' ? '' : end;
             await prisma.jobs.update({
