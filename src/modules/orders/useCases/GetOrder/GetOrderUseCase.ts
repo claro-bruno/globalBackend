@@ -26,6 +26,8 @@ export class GetOrderUseCase {
             contact: true,
             contact_phone: true,
             address: true,
+            fk_invoice_id: true,
+            total_hours: true,
             invoices: {
                 select: {
                     id: true,
