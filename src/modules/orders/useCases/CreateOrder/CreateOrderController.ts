@@ -4,7 +4,7 @@ import {CreateOrderUseCase} from "./CreateOrderUseCase";
 
 export class CreateOrderController {
     async handle(request: Request, response: Response, next: NextFunction): Promise<Response>  {
-        const { date_at, description, notes, id_client, start, end, collaborators, support, email, contact, telephone, clientAddress  } = request.body;
+        const { date_at, description, notes, id_client, start, end, collaborators, support, email, contact, telephone, clientAddress, total_hours  } = request.body;
         const createOrderUseCase = new CreateOrderUseCase();
         const result = await createOrderUseCase.execute({
             description,
@@ -18,7 +18,8 @@ export class CreateOrderController {
             email, 
             contact, 
             contact_phone: telephone, 
-            address: clientAddress
+            address: clientAddress,
+            total_hours: +total_hours
         });
         return response.json(result);
     }

@@ -14,10 +14,11 @@ interface ICreateOrder {
     contact: string;
     contact_phone: string;
     address: string;
+    total_hours: number;
 }
 
 export class CreateOrderUseCase {
-    async execute({ date_at, description, notes, id_client, start, end, collaborators, support, email, contact, contact_phone, address } : ICreateOrder): Promise<any>{
+    async execute({ date_at, description, notes, id_client, start, end, collaborators, support, email, contact, contact_phone, address, total_hours } : ICreateOrder): Promise<any>{
         //validar se o client existe
         const clientExist = await prisma.clients.findFirst({
            where: {
@@ -43,7 +44,8 @@ export class CreateOrderUseCase {
                 email, 
                 contact, 
                 contact_phone, 
-                address
+                address,
+                total_hours
             }
         });
         return order;
