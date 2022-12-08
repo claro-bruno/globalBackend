@@ -26,6 +26,7 @@ model Orders {
   collaborators      String?
   client             Clients?     @relation(fields: [fk_id_client], references: [id])
   fk_id_client       Int?
+  total_hours        Float?
   created_at         DateTime     @default(now())
   status             Status       @default(PENDING)
 

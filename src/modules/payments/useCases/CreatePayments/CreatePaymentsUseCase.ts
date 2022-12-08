@@ -81,7 +81,7 @@ export class CreatePaymentsUseCase {
       id,
       method,
       identifier,
-      value,
+      totalPayment: value,
       quarter,
       othersValue: value_others,
       othersDescription: description
@@ -94,7 +94,7 @@ export class CreatePaymentsUseCase {
             id
           },
           data: {
-            value: valor - +value_others,
+            value: valor,
             identification: identifier,
             others: +value_others,
             description
@@ -118,7 +118,7 @@ export class CreatePaymentsUseCase {
 
         const pay_1 = await prisma.payments.create({
           data: {
-            value: +value - +value_others,
+            value: +value,
             method,
             year: +year,
             month,
@@ -201,7 +201,7 @@ export class CreatePaymentsUseCase {
       method: method_2,
       id: id_2,
       identifier: identifier_2,
-      value: value_2,
+      totalPayment: value_2,
       quarter: quarter_2,
       othersValue: value_others_2,
       othersDescription: description_2
@@ -215,7 +215,7 @@ export class CreatePaymentsUseCase {
               id: +id_2
             },
             data: {
-              value: valor - +value_others_2,
+              value: valor,
               identification: identifier_2,
               others: +value_others_2,
               description: description_2
@@ -237,7 +237,7 @@ export class CreatePaymentsUseCase {
         {
           const pay_2 = await prisma.payments.create({
             data: {
-              value: valor - +value_others_2,
+              value: valor,
               method,
               year: +year,
               month,
