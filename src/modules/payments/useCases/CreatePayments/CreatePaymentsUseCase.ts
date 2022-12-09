@@ -111,6 +111,26 @@ export class CreatePaymentsUseCase {
               type: "INPUT",
             }
           });
+
+          // const invoice_payment = await prisma.invoicesContractors.findFirst({
+          //   where: {
+          //     fk_id_payment: id,
+          //   }  
+          // });
+          // if(invoice_payment) {
+          //   await prisma.invoicesContractors.update({
+          //     where: {
+          //       id: invoice_payment.id,
+          //     }, 
+          //     data: {
+          //       fk_id_contractor: +contractor_id,
+          //       month,
+          //       year,
+          //       quarter,
+          //       total: valor
+          //     }
+          //   });
+          // }
         
       } 
       else 
@@ -118,7 +138,7 @@ export class CreatePaymentsUseCase {
 
         const pay_1 = await prisma.payments.create({
           data: {
-            value: +value,
+            value: +valor,
             method,
             year: +year,
             month,
@@ -140,6 +160,16 @@ export class CreatePaymentsUseCase {
 
             }
           });
+          // await prisma.invoicesContractors.create({ 
+          //   data: {
+          //     fk_id_payment: pay_1.id,
+          //     fk_id_contractor: +contractor_id,
+          //     month,
+          //     year,
+          //     quarter,
+          //     total: valor
+          //   }
+          // });
       }
 
         const sumOutput = await prisma.payments.aggregate({
@@ -232,6 +262,27 @@ export class CreatePaymentsUseCase {
                 type: "INPUT",
               }
             });
+
+            // const invoice_payment = await prisma.invoicesContractors.findFirst({
+            //   where: {
+            //     fk_id_payment: id_2,
+            //   }  
+            // });
+            // if(invoice_payment) {
+            //   await prisma.invoicesContractors.update({
+            //     where: {
+            //       id: invoice_payment.id,
+            //     }, 
+            //     data: {
+            //       fk_id_contractor: +contractor_id,
+            //       month,
+            //       year,
+            //       quarter,
+            //       total: valor
+            //     }
+            //   });
+            // }
+            
         } 
         else 
         {
@@ -258,6 +309,16 @@ export class CreatePaymentsUseCase {
                 type: "INPUT"
               }
             });
+            // await prisma.invoicesContractors.create({ 
+            //   data: {
+            //     fk_id_payment: pay_2.id,
+            //     fk_id_contractor: +contractor_id,
+            //     month,
+            //     year,
+            //     quarter,
+            //     total: valor
+            //   }
+            // });
       }
   
           const sumOutput = await prisma.payments.aggregate({

@@ -134,10 +134,8 @@ model ClientsContractors {
   name           String
   created_at     DateTime     @default(now())
   identification String
-  contact        String?
   phone          String?
   address        String?
-  email          String?
   Contractors    Contractors?
 
   @@map("clients_Contractors")
