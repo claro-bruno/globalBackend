@@ -14,6 +14,6 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(router);
-app.use(errorHandler);
+// app.use(errorHandler);
 
 export { app };
