@@ -4,7 +4,6 @@ import { errorHandler } from "../middlewares/ErrorMessage";
 import cors from "cors";
 import path from "path";
 import "dotenv/config";
-import { runGenerateQuarterJobs } from "../middlewares/cromJobs";
 
 
 const app = express();
@@ -14,6 +13,6 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(router);
-// app.use(errorHandler);
+app.use(errorHandler);
 
 export { app };
