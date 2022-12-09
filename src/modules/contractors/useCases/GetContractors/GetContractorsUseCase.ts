@@ -29,7 +29,6 @@ export class GetContractorsUseCase {
                 urlPrimaryResidencyProof:true,
                 urlSecondaryResidencyProof: true,
                 status: true,
-                ein: true,
                 identification: true,
                 dob: true,
                 telephone: true,
