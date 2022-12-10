@@ -15,7 +15,7 @@ interface IUpdateOrder {
     contact: string;
     contact_phone: string;
     address: string;
-    fk_invoice_id: number;
+    isInvoice: boolean;
     total_hours: number;
     type?: string;
     infos?: any;
@@ -30,7 +30,7 @@ interface IInfo {
 }
 
 export class UpdateOrderUseCase {
-    async execute({ id, type, date_at, description, notes, id_client, start, end, collaborators, support, email, contact, contact_phone, address, fk_invoice_id, total_hours, infos } : IUpdateOrder): Promise<any>{
+    async execute({ id, type, date_at, description, notes, id_client, start, end, collaborators, support, email, contact, contact_phone, address, isInvoice, total_hours, infos } : IUpdateOrder): Promise<any>{
         //validar se o client existe
         const orderExist = await prisma.orders.findFirst({
            where: {
@@ -53,14 +53,14 @@ export class UpdateOrderUseCase {
                 description,
                 notes,
                 created_at: new Date(date_at),
-                collaborators, 
+                // collaborators, 
                 support,
                 email, 
                 type,
                 contact, 
                 contact_phone,
                 address,
-                fk_invoice_id,
+                isInvoice,
                 total_hours
             }
         });

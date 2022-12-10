@@ -49,7 +49,7 @@ export class CreateOrderUseCase {
                 description,
                 notes,
                 created_at: new Date(date_at),
-                collaborators, 
+                // collaborators, 
                 support,
                 email, 
                 contact, 
