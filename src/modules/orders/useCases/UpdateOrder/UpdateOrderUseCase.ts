@@ -17,10 +17,20 @@ interface IUpdateOrder {
     address: string;
     fk_invoice_id: number;
     total_hours: number;
+    type?: string;
+    infos?: any;
+}
+
+interface IInfo {
+    order_id?: number;
+    contractor_id?: number;
+    start: string;
+    end: string;
+    total: string;
 }
 
 export class UpdateOrderUseCase {
-    async execute({ id, date_at, description, notes, id_client, start, end, collaborators, support, email, contact, contact_phone, address, fk_invoice_id, total_hours } : IUpdateOrder): Promise<any>{
+    async execute({ id, type, date_at, description, notes, id_client, start, end, collaborators, support, email, contact, contact_phone, address, fk_invoice_id, total_hours, infos } : IUpdateOrder): Promise<any>{
         //validar se o client existe
         const orderExist = await prisma.orders.findFirst({
            where: {
@@ -46,6 +56,7 @@ export class UpdateOrderUseCase {
                 collaborators, 
                 support,
                 email, 
+                type,
                 contact, 
                 contact_phone,
                 address,
@@ -53,6 +64,27 @@ export class UpdateOrderUseCase {
                 total_hours
             }
         });
+
+        await prisma.ordersContractors.deleteMany(
+        { 
+            where: { 
+                fk_id_order: +id
+            }
+        });
+
+        await infos.reduce(async (memo: any, info: IInfo) => {
+            await memo;            
+            await prisma.ordersContractors.create({
+                data: {
+                    fk_id_order: order.id as any,
+                    fk_id_contractor: info.contractor_id,
+                    start,
+                    end,
+                    total: info.total
+                }
+            });
+        }, undefined);
+        
         return order;
     }
 }

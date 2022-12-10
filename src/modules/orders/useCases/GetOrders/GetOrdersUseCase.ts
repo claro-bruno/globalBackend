@@ -6,36 +6,13 @@ export class GetOrdersUseCase {
     async execute(): Promise<any>{
         return prisma.orders.findMany({
             orderBy: [
-                {
-                    id: "asc"
-                }],
-            select: {
-                id: true,
-                start: true,
-                end: true,
-                description: true,
-                notes: true,
-                created_at: true,
-                fk_id_client: true,
-                collaborators: true,
-                support: true,
-                email: true,
-                contact: true,
-                contact_phone: true,
-                address: true,
-                fk_invoice_id: true,
-                total_hours: true,
-                invoices: {
-                    select: {
-                        id: true,
-                        identification: true,
-                    }
-                },
-                client: {
-                 select: {
-                     name: true,
-                 }
-                }
+            {
+                id: "asc"
+            }],
+            include: {
+                ordersContractors: true,
+                invoices: true,
+                client: true
             }
         });
     }

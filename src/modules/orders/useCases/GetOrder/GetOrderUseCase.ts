@@ -12,34 +12,11 @@ export class GetOrderUseCase {
            where: {
                id,
            },
-           select: {
-            id: true,
-            start: true,
-            end: true,
-            description: true,
-            notes: true,
-            created_at: true,
-            fk_id_client: true,
-            collaborators: true,
-            support: true,
-            email: true,
-            contact: true,
-            contact_phone: true,
-            address: true,
-            fk_invoice_id: true,
-            total_hours: true,
-            invoices: {
-                select: {
-                    id: true,
-                    identification: true,
-                }
-            },
-            client: {
-             select: {
-                 name: true,
-             }
-            }
-        }
+           include: {
+            ordersContractors: true,
+            invoices: true,
+            client: true
+           }
         });
 
         if(!orderExist) {
