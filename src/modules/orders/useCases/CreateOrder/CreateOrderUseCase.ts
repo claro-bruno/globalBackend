@@ -24,7 +24,7 @@ interface IInfo {
     contractor_id?: number;
     start: string;
     end: string;
-    total: string;
+    total_hours: number;
 }
 
 export class CreateOrderUseCase {
@@ -68,7 +68,7 @@ export class CreateOrderUseCase {
                     fk_id_contractor: info.contractor_id,
                     start: info.start,
                     end: info.end,
-                    total: +info.total
+                    total: +info.total_hours
                 }
             });
         }, undefined);
