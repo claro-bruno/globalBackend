@@ -66,9 +66,9 @@ export class CreateOrderUseCase {
                 data: {
                     fk_id_order: order.id as any,
                     fk_id_contractor: info.contractor_id,
-                    start,
-                    end,
-                    total: info.total
+                    start: info.start,
+                    end: info.end,
+                    total: +info.total
                 }
             });
         }, undefined);

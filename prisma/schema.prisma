@@ -45,7 +45,7 @@ model OrdersContractors {
   fk_id_contractor Int
   start            String
   end              String
-  total            String?
+  total            Float
 
   @@map("ordersContractors")
 }
