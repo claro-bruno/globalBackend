@@ -28,7 +28,7 @@ interface IInfo {
 }
 
 export class CreateOrderUseCase {
-    async execute({ date_at, description, notes, id_client, start, end, collaborators, support, email, contact, contact_phone, address, total_hours, type, infos } : ICreateOrder): Promise<any>{
+    async execute({ date_at, description, notes, id_client, start, end, support, email, contact, contact_phone, address, total_hours, type, infos } : ICreateOrder): Promise<any>{
         //validar se o client existe
         const clientExist = await prisma.clients.findFirst({
            where: {
