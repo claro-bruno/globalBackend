@@ -19,7 +19,6 @@ interface IUpdateContractor {
     city: string;
     zipcode: string;
     state: string;
-    access: string;
 }
 
 interface ICreateContractorAddress {
@@ -32,7 +31,7 @@ interface ICreateContractorAddress {
 
 export class UpdateContractorUseCase {
     async execute(
-        { id, access, first_name, middle_name, last_name, email, identification, ein, dob, telephone, urlPrimaryResidencyProof, urlSecondaryResidencyProof, urlDocumentProof, urlProfile, address, city, state, zipcode } : IUpdateContractor,
+        { id, first_name, middle_name, last_name, email, identification, ein, dob, telephone, urlPrimaryResidencyProof, urlSecondaryResidencyProof, urlDocumentProof, urlProfile, address, city, state, zipcode } : IUpdateContractor,
    //     { address, city, zipcode, state } : ICreateContractorAddress,
    //     { address2 = "", city2 = "", zipcode2 = "", state2 = "" } : ICreateContractorAddress | any
     ): Promise<any>{
@@ -49,7 +48,9 @@ export class UpdateContractorUseCase {
             throw new AppError('Contractor does not exists', 401)
         }
 
-        
+        const profile = urlProfile === '' ? contractorExist.urlProfile: urlProfile;
+        const documentProof = urlDocumentProof === '' ? contractorExist.urlDocumentProof: urlDocumentProof;
+        const primaryResidencyProof = urlPrimaryResidencyProof === '' ? contractorExist.urlPrimaryResidencyProof: urlPrimaryResidencyProof;
         //atualizar o contractor
         const contractor = await prisma.contractors.update({
             where: {
@@ -61,9 +62,9 @@ export class UpdateContractorUseCase {
                 last_name,
                 email,
                 ein,
-                urlProfile,
-                urlDocumentProof,
-                urlPrimaryResidencyProof,
+                urlProfile: profile,
+                urlDocumentProof: documentProof,
+                urlPrimaryResidencyProof: primaryResidencyProof,
                 urlSecondaryResidencyProof,
                 identification,
                 dob: new Date(dob),

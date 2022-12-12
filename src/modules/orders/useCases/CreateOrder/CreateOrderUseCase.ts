@@ -14,10 +14,21 @@ interface ICreateOrder {
     contact: string;
     contact_phone: string;
     address: string;
+    total_hours: number;
+    type: string;
+    infos: any;
+}
+
+interface IInfo {
+    order_id?: number;
+    contractor_id?: number;
+    start: string;
+    end: string;
+    total_hours: number;
 }
 
 export class CreateOrderUseCase {
-    async execute({ date_at, description, notes, id_client, start, end, collaborators, support, email, contact, contact_phone, address } : ICreateOrder): Promise<any>{
+    async execute({ date_at, description, notes, id_client, start, end, support, email, contact, contact_phone, address, total_hours, type, infos } : ICreateOrder): Promise<any>{
         //validar se o client existe
         const clientExist = await prisma.clients.findFirst({
            where: {
@@ -38,14 +49,29 @@ export class CreateOrderUseCase {
                 description,
                 notes,
                 created_at: new Date(date_at),
-                collaborators, 
+                // collaborators, 
                 support,
                 email, 
                 contact, 
                 contact_phone, 
-                address
+                address,
+                total_hours, 
+                type
             }
         });
+
+        await infos.reduce(async (memo: any, info: IInfo) => {
+            await memo;            
+            await prisma.ordersContractors.create({
+                data: {
+                    fk_id_order: order.id as any,
+                    fk_id_contractor: info.contractor_id,
+                    start: info.start,
+                    end: info.end,
+                    total: +info.total_hours
+                }
+            });
+        }, undefined);
         return order;
     }
 }

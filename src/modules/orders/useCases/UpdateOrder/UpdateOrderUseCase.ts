@@ -15,10 +15,22 @@ interface IUpdateOrder {
     contact: string;
     contact_phone: string;
     address: string;
+    isInvoice: boolean;
+    total_hours: number;
+    type?: string;
+    infos?: any;
+}
+
+interface IInfo {
+    order_id?: number;
+    contractor_id?: number;
+    start: string;
+    end: string;
+    total_hours: number;
 }
 
 export class UpdateOrderUseCase {
-    async execute({ id, date_at, description, notes, id_client, start, end, collaborators, support, email, contact, contact_phone, address } : IUpdateOrder): Promise<any>{
+    async execute({ id, type, date_at, description, notes, id_client, start, end, support, email, contact, contact_phone, address, isInvoice, total_hours, infos } : IUpdateOrder): Promise<any>{
         //validar se o client existe
         const orderExist = await prisma.orders.findFirst({
            where: {
@@ -30,7 +42,6 @@ export class UpdateOrderUseCase {
             throw new AppError('Order does not exists', 401)
         }
 
-      
         const order = await prisma.orders.update({
             where: {
                 id,
@@ -42,14 +53,38 @@ export class UpdateOrderUseCase {
                 description,
                 notes,
                 created_at: new Date(date_at),
-                collaborators, 
+                // collaborators, 
                 support,
                 email, 
+                type,
                 contact, 
                 contact_phone,
-                address
+                address,
+                isInvoice,
+                total_hours,
             }
         });
+
+        await prisma.ordersContractors.deleteMany(
+        { 
+            where: { 
+                fk_id_order: +id
+            }
+        });
+
+        await infos.reduce(async (memo: any, info: IInfo) => {
+            await memo;            
+            await prisma.ordersContractors.create({
+                data: {
+                    fk_id_order: order.id as any,
+                    fk_id_contractor: info.contractor_id,
+                    start: info.start,
+                    end: info.end,
+                    total: +info.total_hours
+                }
+            });
+        }, undefined);
+        
         return order;
     }
 }

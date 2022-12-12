@@ -52,7 +52,8 @@ export class UpdateClientUseCase {
                 status: status as any,
                 contact,
                 contact_phone,
-                address, email
+                address, 
+                email
             }
         });
         return client;

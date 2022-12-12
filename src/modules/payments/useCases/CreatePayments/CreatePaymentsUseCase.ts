@@ -81,7 +81,7 @@ export class CreatePaymentsUseCase {
       id,
       method,
       identifier,
-      value,
+      totalPayment: value,
       quarter,
       othersValue: value_others,
       othersDescription: description
@@ -94,7 +94,7 @@ export class CreatePaymentsUseCase {
             id
           },
           data: {
-            value: valor - +value_others,
+            value: valor,
             identification: identifier,
             others: +value_others,
             description
@@ -111,6 +111,26 @@ export class CreatePaymentsUseCase {
               type: "INPUT",
             }
           });
+
+          // const invoice_payment = await prisma.invoicesContractors.findFirst({
+          //   where: {
+          //     fk_id_payment: id,
+          //   }  
+          // });
+          // if(invoice_payment) {
+          //   await prisma.invoicesContractors.update({
+          //     where: {
+          //       id: invoice_payment.id,
+          //     }, 
+          //     data: {
+          //       fk_id_contractor: +contractor_id,
+          //       month,
+          //       year,
+          //       quarter,
+          //       total: valor
+          //     }
+          //   });
+          // }
         
       } 
       else 
@@ -118,7 +138,7 @@ export class CreatePaymentsUseCase {
 
         const pay_1 = await prisma.payments.create({
           data: {
-            value: +value - +value_others,
+            value: +valor,
             method,
             year: +year,
             month,
@@ -140,6 +160,16 @@ export class CreatePaymentsUseCase {
 
             }
           });
+          // await prisma.invoicesContractors.create({ 
+          //   data: {
+          //     fk_id_payment: pay_1.id,
+          //     fk_id_contractor: +contractor_id,
+          //     month,
+          //     year,
+          //     quarter,
+          //     total: valor
+          //   }
+          // });
       }
 
         const sumOutput = await prisma.payments.aggregate({
@@ -201,7 +231,7 @@ export class CreatePaymentsUseCase {
       method: method_2,
       id: id_2,
       identifier: identifier_2,
-      value: value_2,
+      totalPayment: value_2,
       quarter: quarter_2,
       othersValue: value_others_2,
       othersDescription: description_2
@@ -215,7 +245,7 @@ export class CreatePaymentsUseCase {
               id: +id_2
             },
             data: {
-              value: valor - +value_others_2,
+              value: valor,
               identification: identifier_2,
               others: +value_others_2,
               description: description_2
@@ -232,12 +262,33 @@ export class CreatePaymentsUseCase {
                 type: "INPUT",
               }
             });
+
+            // const invoice_payment = await prisma.invoicesContractors.findFirst({
+            //   where: {
+            //     fk_id_payment: id_2,
+            //   }  
+            // });
+            // if(invoice_payment) {
+            //   await prisma.invoicesContractors.update({
+            //     where: {
+            //       id: invoice_payment.id,
+            //     }, 
+            //     data: {
+            //       fk_id_contractor: +contractor_id,
+            //       month,
+            //       year,
+            //       quarter,
+            //       total: valor
+            //     }
+            //   });
+            // }
+            
         } 
         else 
         {
           const pay_2 = await prisma.payments.create({
             data: {
-              value: valor - +value_others_2,
+              value: valor,
               method,
               year: +year,
               month,
@@ -258,6 +309,16 @@ export class CreatePaymentsUseCase {
                 type: "INPUT"
               }
             });
+            // await prisma.invoicesContractors.create({ 
+            //   data: {
+            //     fk_id_payment: pay_2.id,
+            //     fk_id_contractor: +contractor_id,
+            //     month,
+            //     year,
+            //     quarter,
+            //     total: valor
+            //   }
+            // });
       }
   
           const sumOutput = await prisma.payments.aggregate({
