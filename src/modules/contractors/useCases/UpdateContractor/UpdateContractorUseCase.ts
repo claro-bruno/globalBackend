@@ -47,7 +47,10 @@ export class UpdateContractorUseCase {
         if(!contractorExist) {
             throw new AppError('Contractor does not exists', 401)
         }
-
+        
+        const profile = urlProfile === '' ? contractorExist.urlProfile: urlProfile;
+        const documentProof = urlDocumentProof === '' ? contractorExist.urlDocumentProof: urlDocumentProof;
+        const primaryResidencyProof = urlPrimaryResidencyProof === '' ? contractorExist.urlPrimaryResidencyProof: urlPrimaryResidencyProof;
         
         //atualizar o contractor
         const contractor = await prisma.contractors.update({
@@ -61,24 +64,14 @@ export class UpdateContractorUseCase {
                 email,
                 ein,
                 urlProfile,
-                urlDocumentProof,
-                urlPrimaryResidencyProof,
-                urlSecondaryResidencyProof,
+                urlProfile: profile,
+                urlDocumentProof: documentProof,
+                urlPrimaryResidencyProof: primaryResidencyProof,
                 identification,
                 dob: new Date(dob),
                 telephone,
             }
         });
-        // if(contractorExist) {
-        //     await prisma.accounts.update(({
-        //         where: {
-        //             id: contractorExist.fk_id_account as number,
-        //         },
-        //         data: {
-        //             access: role as any
-        //         }
-        //     }));
-        // }
         
         await prisma.adresseses.deleteMany({
             where: {
