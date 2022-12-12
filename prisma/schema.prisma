@@ -18,9 +18,11 @@ model Orders {
   contact            String?
   contact_phone      String?
   address            String?
+  type               String?
   support            String?
   fk_invoice_id      Int?
   invoices           Invoices?    @relation(fields: [fk_invoice_id], references: [id])
+  isInvoice          Boolean?     @default(false)
   fk_support_id      Int?
   support_contractor Contractors? @relation(fields: [fk_support_id], references: [id])
   collaborators      String?
@@ -30,21 +32,22 @@ model Orders {
   created_at         DateTime     @default(now())
   status             Status       @default(PENDING)
 
-  ordersContractors OrderContractors[]
+  ordersContractors OrdersContractors[]
 
   @@map("orders")
 }
 
-model OrderContractors {
+model OrdersContractors {
   id               Int          @id @default(autoincrement())
   order            Orders?      @relation(fields: [fk_id_order], references: [id])
   fk_id_order      Int
   contractor       Contractors? @relation(fields: [fk_id_contractor], references: [id])
   fk_id_contractor Int
-  start_hour       String
-  end_hour         String
+  start            String
+  end              String
+  total            Float
 
-  @@map("ordesContractors")
+  @@map("ordersContractors")
 }
 
 model Invoices {
@@ -111,6 +114,7 @@ model Contractors {
   acceptTerms                Boolean
   identification             String
   dob                        DateTime
+  ein                        String?
   telephone                  String
   created_at                 DateTime            @default(now())
   fk_id_account              Int?                @unique
@@ -122,7 +126,7 @@ model Contractors {
   payments          Payments[]
   address           Adresseses[]
   jobs              Jobs[]
-  ordersContractors OrderContractors[]
+  ordersContractors OrdersContractors[]
 
   InvoicesContractors InvoicesContractors[]
 
