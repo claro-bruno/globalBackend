@@ -10,7 +10,13 @@ export class GetOrdersUseCase {
                 id: "asc"
             }],
             include: {
-                ordersContractors: true,
+                ordersContractors: 
+                { 
+                    include: 
+                    { 
+                        contractor: true 
+                    } 
+                },
                 invoices: true,
                 client: true
             }
