@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "Access" AS ENUM ('CONTRACTOR', 'CLIENT', 'OFFICE', 'ADMIN');
+CREATE TYPE "Access" AS ENUM ('CONTRACTOR', 'CLIENT', 'OFFICE', 'ADMIN', 'DEV');
 
 -- CreateEnum
 CREATE TYPE "Role" AS ENUM ('CONTRACTOR', 'CLIENT', 'OFFICE');
@@ -20,10 +20,18 @@ CREATE TABLE "orders" (
     "end" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "notes" TEXT,
+    "email" TEXT,
+    "contact" TEXT,
+    "contact_phone" TEXT,
+    "address" TEXT,
+    "type" TEXT,
     "support" TEXT,
+    "fk_invoice_id" INTEGER,
+    "isInvoice" BOOLEAN DEFAULT false,
     "fk_support_id" INTEGER,
-    "colaborators" TEXT,
+    "collaborators" TEXT,
     "fk_id_client" INTEGER,
+    "total_hours" DOUBLE PRECISION,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "status" "Status" NOT NULL DEFAULT 'PENDING',
 
@@ -31,14 +39,15 @@ CREATE TABLE "orders" (
 );
 
 -- CreateTable
-CREATE TABLE "ordesContractors" (
+CREATE TABLE "ordersContractors" (
     "id" SERIAL NOT NULL,
     "fk_id_order" INTEGER NOT NULL,
     "fk_id_contractor" INTEGER NOT NULL,
-    "start_hour" TEXT NOT NULL,
-    "end_hour" TEXT NOT NULL,
+    "start" TEXT NOT NULL,
+    "end" TEXT NOT NULL,
+    "total" DOUBLE PRECISION NOT NULL,
 
-    CONSTRAINT "ordesContractors_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "ordersContractors_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -100,15 +109,42 @@ CREATE TABLE "contractors" (
     "urlPrimaryResidencyProof" TEXT,
     "urlSecondaryResidencyProof" TEXT,
     "status" "Status" NOT NULL DEFAULT 'ACTIVE',
-    "ein" TEXT,
     "acceptTerms" BOOLEAN NOT NULL,
     "identification" TEXT NOT NULL,
     "dob" TIMESTAMP(3) NOT NULL,
+    "ein" TEXT,
     "telephone" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "fk_id_account" INTEGER,
+    "fk_id_client_contractor" INTEGER,
 
     CONSTRAINT "contractors_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "clients_Contractors" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "identification" TEXT NOT NULL,
+    "phone" TEXT,
+    "address" TEXT,
+
+    CONSTRAINT "clients_Contractors_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "invoices_contractor" (
+    "id" SERIAL NOT NULL,
+    "fk_id_payment" INTEGER NOT NULL,
+    "fk_id_contractor" INTEGER NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "month" TEXT NOT NULL,
+    "year" INTEGER NOT NULL,
+    "quarter" INTEGER NOT NULL,
+    "total" DOUBLE PRECISION,
+
+    CONSTRAINT "invoices_contractor_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -129,6 +165,7 @@ CREATE TABLE "clients" (
     "contact" TEXT,
     "contact_phone" TEXT,
     "address" TEXT,
+    "email" TEXT,
     "status" "Status" NOT NULL DEFAULT 'ACTIVE',
 
     CONSTRAINT "clients_pkey" PRIMARY KEY ("id")
@@ -166,15 +203,15 @@ CREATE TABLE "jobs" (
     "fk_id_contractor" INTEGER NOT NULL,
     "fk_id_client" INTEGER NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "start" TEXT NOT NULL DEFAULT '08:00',
-    "end" TEXT NOT NULL DEFAULT '18:00',
-    "monday" BOOLEAN NOT NULL DEFAULT true,
-    "tuesday" BOOLEAN NOT NULL DEFAULT true,
-    "wednesday" BOOLEAN NOT NULL DEFAULT true,
-    "thursday" BOOLEAN NOT NULL DEFAULT true,
-    "friday" BOOLEAN NOT NULL DEFAULT true,
-    "saturday" BOOLEAN NOT NULL DEFAULT true,
-    "sunday" BOOLEAN NOT NULL DEFAULT false,
+    "start" TEXT DEFAULT '08:00',
+    "end" TEXT DEFAULT '18:00',
+    "monday" BOOLEAN DEFAULT true,
+    "tuesday" BOOLEAN DEFAULT true,
+    "wednesday" BOOLEAN DEFAULT true,
+    "thursday" BOOLEAN DEFAULT true,
+    "friday" BOOLEAN DEFAULT true,
+    "saturday" BOOLEAN DEFAULT true,
+    "sunday" BOOLEAN DEFAULT false,
     "status" "Status" NOT NULL DEFAULT 'ACTIVE',
 
     CONSTRAINT "jobs_pkey" PRIMARY KEY ("id")
@@ -215,7 +252,13 @@ CREATE UNIQUE INDEX "contractors_email_key" ON "contractors"("email");
 CREATE UNIQUE INDEX "contractors_fk_id_account_key" ON "contractors"("fk_id_account");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "contractors_fk_id_client_contractor_key" ON "contractors"("fk_id_client_contractor");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "clients_fk_id_account_key" ON "clients"("fk_id_account");
+
+-- AddForeignKey
+ALTER TABLE "orders" ADD CONSTRAINT "orders_fk_invoice_id_fkey" FOREIGN KEY ("fk_invoice_id") REFERENCES "invoices"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "orders" ADD CONSTRAINT "orders_fk_support_id_fkey" FOREIGN KEY ("fk_support_id") REFERENCES "contractors"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -224,10 +267,10 @@ ALTER TABLE "orders" ADD CONSTRAINT "orders_fk_support_id_fkey" FOREIGN KEY ("fk
 ALTER TABLE "orders" ADD CONSTRAINT "orders_fk_id_client_fkey" FOREIGN KEY ("fk_id_client") REFERENCES "clients"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ordesContractors" ADD CONSTRAINT "ordesContractors_fk_id_order_fkey" FOREIGN KEY ("fk_id_order") REFERENCES "orders"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "ordersContractors" ADD CONSTRAINT "ordersContractors_fk_id_order_fkey" FOREIGN KEY ("fk_id_order") REFERENCES "orders"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ordesContractors" ADD CONSTRAINT "ordesContractors_fk_id_contractor_fkey" FOREIGN KEY ("fk_id_contractor") REFERENCES "contractors"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "ordersContractors" ADD CONSTRAINT "ordersContractors_fk_id_contractor_fkey" FOREIGN KEY ("fk_id_contractor") REFERENCES "contractors"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "invoices" ADD CONSTRAINT "invoices_fk_id_client_fkey" FOREIGN KEY ("fk_id_client") REFERENCES "clients"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -240,6 +283,15 @@ ALTER TABLE "payments" ADD CONSTRAINT "payments_fk_id_client_fkey" FOREIGN KEY (
 
 -- AddForeignKey
 ALTER TABLE "contractors" ADD CONSTRAINT "contractors_fk_id_account_fkey" FOREIGN KEY ("fk_id_account") REFERENCES "accounts"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "contractors" ADD CONSTRAINT "contractors_fk_id_client_contractor_fkey" FOREIGN KEY ("fk_id_client_contractor") REFERENCES "clients_Contractors"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "invoices_contractor" ADD CONSTRAINT "invoices_contractor_fk_id_payment_fkey" FOREIGN KEY ("fk_id_payment") REFERENCES "payments"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "invoices_contractor" ADD CONSTRAINT "invoices_contractor_fk_id_contractor_fkey" FOREIGN KEY ("fk_id_contractor") REFERENCES "contractors"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "clients" ADD CONSTRAINT "clients_fk_id_account_fkey" FOREIGN KEY ("fk_id_account") REFERENCES "accounts"("id") ON DELETE SET NULL ON UPDATE CASCADE;
