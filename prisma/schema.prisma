@@ -9,7 +9,7 @@ datasource db {
 }
 
 model Orders {
-  id                 Int          @id @default(autoincrement())
+  id                 Int                 @id @default(autoincrement())
   start              String
   end                String
   description        String
@@ -21,18 +21,17 @@ model Orders {
   type               String?
   support            String?
   fk_invoice_id      Int?
-  invoices           Invoices?    @relation(fields: [fk_invoice_id], references: [id])
-  isInvoice          Boolean?     @default(false)
+  invoices           Invoices?           @relation(fields: [fk_invoice_id], references: [id])
+  isInvoice          Boolean?            @default(false)
   fk_support_id      Int?
-  support_contractor Contractors? @relation(fields: [fk_support_id], references: [id])
+  support_contractor Contractors?        @relation(fields: [fk_support_id], references: [id])
   collaborators      String?
-  client             Clients?     @relation(fields: [fk_id_client], references: [id])
+  client             Clients?            @relation(fields: [fk_id_client], references: [id])
   fk_id_client       Int?
   total_hours        Float?
-  created_at         DateTime     @default(now())
-  status             Status       @default(PENDING)
-
-  ordersContractors OrdersContractors[]
+  created_at         DateTime            @default(now())
+  status             Status              @default(PENDING)
+  ordersContractors  OrdersContractors[]
 
   @@map("orders")
 }
@@ -59,10 +58,9 @@ model Invoices {
   description    String?
   month          String
   year           Int
-
-  client       Clients? @relation(fields: [fk_id_client], references: [id])
-  fk_id_client Int?
-  Orders       Orders[]
+  client         Clients? @relation(fields: [fk_id_client], references: [id])
+  fk_id_client   Int?
+  Orders         Orders[]
 
   @@map("invoices")
 }
@@ -101,8 +99,8 @@ model Balances {
 }
 
 model Contractors {
-  id                         Int                 @id @default(autoincrement())
-  email                      String              @unique
+  id                         Int                   @id @default(autoincrement())
+  email                      String                @unique
   first_name                 String
   middle_name                String?
   last_name                  String
@@ -110,25 +108,23 @@ model Contractors {
   urlDocumentProof           String?
   urlPrimaryResidencyProof   String?
   urlSecondaryResidencyProof String?
-  status                     Status              @default(ACTIVE)
+  status                     Status                @default(ACTIVE)
   acceptTerms                Boolean
   identification             String
   dob                        DateTime
   ein                        String?
   telephone                  String
-  created_at                 DateTime            @default(now())
-  fk_id_account              Int?                @unique
-  account                    Accounts?           @relation(fields: [fk_id_account], references: [id])
-  fk_id_client_contractor    Int?                @unique
-  clientContractor           ClientsContractors? @relation(fields: [fk_id_client_contractor], references: [id])
-
-  ordersSupport     Orders[]
-  payments          Payments[]
-  address           Adresseses[]
-  jobs              Jobs[]
-  ordersContractors OrdersContractors[]
-
-  InvoicesContractors InvoicesContractors[]
+  created_at                 DateTime              @default(now())
+  fk_id_account              Int?                  @unique
+  account                    Accounts?             @relation(fields: [fk_id_account], references: [id])
+  fk_id_client_contractor    Int?                  @unique
+  clientContractor           ClientsContractors?   @relation(fields: [fk_id_client_contractor], references: [id])
+  ordersSupport              Orders[]
+  payments                   Payments[]
+  address                    Adresseses[]
+  jobs                       Jobs[]
+  ordersContractors          OrdersContractors[]
+  InvoicesContractors        InvoicesContractors[]
 
   @@map("contractors")
 }
@@ -232,8 +228,7 @@ model Jobs {
   saturday         Boolean?    @default(true)
   sunday           Boolean?    @default(false)
   status           Status      @default(ACTIVE)
-
-  quarter Quarters[]
+  quarter          Quarters[]
 
   @@map("jobs")
 }
