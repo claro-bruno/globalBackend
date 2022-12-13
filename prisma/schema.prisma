@@ -19,6 +19,8 @@ model Orders {
   contact_phone      String?
   address            String?
   support            String?
+  type               String?
+  isInvoice          Boolean      @default(false)
   fk_invoice_id      Int?
   invoices           Invoices?    @relation(fields: [fk_invoice_id], references: [id])
   fk_support_id      Int?
@@ -41,10 +43,11 @@ model OrderContractors {
   fk_id_order      Int
   contractor       Contractors? @relation(fields: [fk_id_contractor], references: [id])
   fk_id_contractor Int
-  start_hour       String
-  end_hour         String
+  start            String
+  end              String
+  total            Float
 
-  @@map("ordesContractors")
+  @@map("ordersContractors")
 }
 
 model Invoices {
@@ -107,6 +110,7 @@ model Contractors {
   urlDocumentProof           String?
   urlPrimaryResidencyProof   String?
   urlSecondaryResidencyProof String?
+  ein                        String?
   status                     Status              @default(ACTIVE)
   acceptTerms                Boolean
   identification             String
@@ -138,7 +142,7 @@ model ClientsContractors {
   address        String?
   Contractors    Contractors?
 
-  @@map("clients_Contractors")
+  @@map("clients_contractor")
 }
 
 model InvoicesContractors {

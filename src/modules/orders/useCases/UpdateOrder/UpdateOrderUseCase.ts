@@ -21,6 +21,7 @@ interface IUpdateOrder {
 
 export class UpdateOrderUseCase {
     async execute({ id, date_at, description, notes, id_client, start, end, collaborators, support, email, contact, contact_phone, address, fk_invoice_id, total_hours } : IUpdateOrder): Promise<any>{
+        // console.log('DATE AT', date_at)
         //validar se o client existe
         const orderExist = await prisma.orders.findFirst({
            where: {
