@@ -65,7 +65,7 @@ export class UpdateOrderUseCase {
             }
         });
 
-        await prisma.ordersContractors.deleteMany(
+        await prisma.orderContractors.deleteMany(
         { 
             where: { 
                 fk_id_order: +id
@@ -74,7 +74,7 @@ export class UpdateOrderUseCase {
 
         await infos.reduce(async (memo: any, info: IInfo) => {
             await memo;            
-            await prisma.ordersContractors.create({
+            await prisma.orderContractors.create({
                 data: {
                     fk_id_order: order.id as any,
                     fk_id_contractor: info.contractor_id,

@@ -9,7 +9,7 @@ datasource db {
 }
 
 model Orders {
-  id                 Int                 @id @default(autoincrement())
+  id                 Int                @id @default(autoincrement())
   start              String
   end                String
   description        String
@@ -18,25 +18,25 @@ model Orders {
   contact            String?
   contact_phone      String?
   address            String?
-  type               String?
   support            String?
+  type               String?
+  isInvoice          Boolean            @default(false)
   fk_invoice_id      Int?
-  invoices           Invoices?           @relation(fields: [fk_invoice_id], references: [id])
-  isInvoice          Boolean?            @default(false)
+  invoices           Invoices?          @relation(fields: [fk_invoice_id], references: [id])
   fk_support_id      Int?
-  support_contractor Contractors?        @relation(fields: [fk_support_id], references: [id])
+  support_contractor Contractors?       @relation(fields: [fk_support_id], references: [id])
   collaborators      String?
-  client             Clients?            @relation(fields: [fk_id_client], references: [id])
+  client             Clients?           @relation(fields: [fk_id_client], references: [id])
   fk_id_client       Int?
   total_hours        Float?
-  created_at         DateTime            @default(now())
-  status             Status              @default(PENDING)
-  ordersContractors  OrdersContractors[]
+  created_at         DateTime           @default(now())
+  status             Status             @default(PENDING)
+  ordersContractors  OrderContractors[]
 
   @@map("orders")
 }
 
-model OrdersContractors {
+model OrderContractors {
   id               Int          @id @default(autoincrement())
   order            Orders?      @relation(fields: [fk_id_order], references: [id])
   fk_id_order      Int
@@ -108,11 +108,11 @@ model Contractors {
   urlDocumentProof           String?
   urlPrimaryResidencyProof   String?
   urlSecondaryResidencyProof String?
+  ein                        String?
   status                     Status                @default(ACTIVE)
   acceptTerms                Boolean
   identification             String
   dob                        DateTime
-  ein                        String?
   telephone                  String
   created_at                 DateTime              @default(now())
   fk_id_account              Int?                  @unique
@@ -123,7 +123,7 @@ model Contractors {
   payments                   Payments[]
   address                    Adresseses[]
   jobs                       Jobs[]
-  ordersContractors          OrdersContractors[]
+  ordersContractors          OrderContractors[]
   InvoicesContractors        InvoicesContractors[]
 
   @@map("contractors")
@@ -138,7 +138,7 @@ model ClientsContractors {
   address        String?
   Contractors    Contractors?
 
-  @@map("clients_Contractors")
+  @@map("clients_contractor")
 }
 
 model InvoicesContractors {

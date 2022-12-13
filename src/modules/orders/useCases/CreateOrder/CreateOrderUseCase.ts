@@ -62,7 +62,7 @@ export class CreateOrderUseCase {
 
         await infos.reduce(async (memo: any, info: IInfo) => {
             await memo;            
-            await prisma.ordersContractors.create({
+            await prisma.orderContractors.create({
                 data: {
                     fk_id_order: order.id as any,
                     fk_id_contractor: info.contractor_id,
