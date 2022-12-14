@@ -7,7 +7,6 @@ export class UpdateOrderController {
         const { date_at, description, notes, id_client, start, end, collaborators, support, email, contact, telephone, clientAddress, isInvoice, total_hours, event_type  } = request.body;
         
         const { id } = request.params;
-
         const updateOrderUseCase = new UpdateOrderUseCase();
         const result = await updateOrderUseCase.execute({
             id: +id,
@@ -17,7 +16,7 @@ export class UpdateOrderController {
             start,
             end, 
             date_at,
-            collaborators, 
+            infos: collaborators, 
             support,
             email, 
             contact, 

@@ -71,7 +71,7 @@ export class UpdateOrderUseCase {
                 fk_id_order: +id
             }
         });
-
+        console.log(infos);
         await infos.reduce(async (memo: any, info: IInfo) => {
             await memo;            
             await prisma.orderContractors.create({
