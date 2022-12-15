@@ -41,6 +41,7 @@ export class UpdateOrderUseCase {
         if(!orderExist) {
             throw new AppError('Order does not exists', 401)
         }
+        const total: number = Number(total_hours) 
 
         const order = await prisma.orders.update({
             where: {
@@ -53,7 +54,6 @@ export class UpdateOrderUseCase {
                 description,
                 notes,
                 created_at: new Date(date_at),
-                // collaborators, 
                 support,
                 email, 
                 type,
@@ -61,7 +61,7 @@ export class UpdateOrderUseCase {
                 contact_phone,
                 address,
                 isInvoice,
-                total_hours,
+                total_hours: total,
             }
         });
 
@@ -71,16 +71,18 @@ export class UpdateOrderUseCase {
                 fk_id_order: +id
             }
         });
-        console.log(infos);
         await infos.reduce(async (memo: any, info: IInfo) => {
-            await memo;            
+            await memo;  
+            const id_contractor: number = Number(info.contractor_id)       
+            const id_order: number = Number(order.id)    
+            const total: number = Number(info.total_hours) 
             await prisma.orderContractors.create({
                 data: {
-                    fk_id_order: order.id as any,
-                    fk_id_contractor: info.contractor_id,
+                    fk_id_order: id_order,
+                    fk_id_contractor: id_contractor,
                     start: info.start,
                     end: info.end,
-                    total: +info.total_hours
+                    total: total
                 }
             });
         }, undefined);
