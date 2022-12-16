@@ -16,7 +16,7 @@ interface IUpdateOrder {
     contact_phone: string;
     address: string;
     isInvoice: boolean;
-    total_hours: number;
+    total_hours?: number;
     type?: string;
     infos?: any;
 }
@@ -41,7 +41,13 @@ export class UpdateOrderUseCase {
         if(!orderExist) {
             throw new AppError('Order does not exists', 401)
         }
-        const total: number = Number(total_hours) 
+        
+        let total = 0;
+        if(infos.length > 0) {
+            total = infos.reduce((acc: number, currently: IInfo) => {
+                return acc + Number(currently.total_hours)
+            })
+        }
 
         const order = await prisma.orders.update({
             where: {
