@@ -37,10 +37,13 @@ export class CreatePaymentsUseCase {
         id: +contractor_id as number
       }
     });
+    
 
     if (!contractorExist) {
       throw new AppError("Contractor does not exists", 400);
     }
+
+    let contractor_client_id: number = Number(contractorExist.fk_id_client_contractor)
 
     // Verificar o balance do mes atual
     const balanceMonthExist = await prisma.balances.findFirst({
@@ -112,6 +115,7 @@ export class CreatePaymentsUseCase {
             }
           });
 
+
           // const invoice_payment = await prisma.invoicesContractors.findFirst({
           //   where: {
           //     fk_id_payment: id,
@@ -124,6 +128,7 @@ export class CreatePaymentsUseCase {
           //     }, 
           //     data: {
           //       fk_id_contractor: +contractor_id,
+          //       fk_id_contractor_client: +contractor_client_id,
           //       month,
           //       year,
           //       quarter,
@@ -164,6 +169,7 @@ export class CreatePaymentsUseCase {
           //   data: {
           //     fk_id_payment: pay_1.id,
           //     fk_id_contractor: +contractor_id,
+          //     fk_id_contractor_client: +contractor_client_id,
           //     month,
           //     year,
           //     quarter,
@@ -275,6 +281,7 @@ export class CreatePaymentsUseCase {
             //     }, 
             //     data: {
             //       fk_id_contractor: +contractor_id,
+            //       fk_id_contractor_client: +contractor_client_id,
             //       month,
             //       year,
             //       quarter,
@@ -313,6 +320,7 @@ export class CreatePaymentsUseCase {
             //   data: {
             //     fk_id_payment: pay_2.id,
             //     fk_id_contractor: +contractor_id,
+            //     fk_id_contractor_client: +contractor_client_id,
             //     month,
             //     year,
             //     quarter,
