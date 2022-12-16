@@ -134,28 +134,33 @@ model Contractors {
 }
 
 model ClientsContractors {
-  id             Int          @id @default(autoincrement())
+  id             Int      @id @default(autoincrement())
   name           String
-  created_at     DateTime     @default(now())
+  created_at     DateTime @default(now())
   identification String
   phone          String?
   address        String?
-  Contractors    Contractors?
+  status         Status   @default(ACTIVE)
+
+  Contractors         Contractors?
+  InvoicesContractors InvoicesContractors[]
 
   @@map("clients_contractor")
 }
 
 model InvoicesContractors {
-  id               Int          @id @default(autoincrement())
-  fk_id_payment    Int
-  payment          Payments?    @relation(fields: [fk_id_payment], references: [id])
-  fk_id_contractor Int
-  contractor       Contractors? @relation(fields: [fk_id_contractor], references: [id])
-  created_at       DateTime     @default(now())
-  month            String
-  year             Int
-  quarter          Int
-  total            Float?
+  id                      Int                 @id @default(autoincrement())
+  fk_id_payment           Int
+  payment                 Payments?           @relation(fields: [fk_id_payment], references: [id])
+  fk_id_contractor        Int
+  contractor              Contractors?        @relation(fields: [fk_id_contractor], references: [id])
+  fk_id_contractor_client Int
+  clientsContractor       ClientsContractors? @relation(fields: [fk_id_contractor_client], references: [id])
+  created_at              DateTime            @default(now())
+  month                   String
+  year                    Int
+  quarter                 Int
+  total                   Float?
 
   @@map("invoices_contractor")
 }
