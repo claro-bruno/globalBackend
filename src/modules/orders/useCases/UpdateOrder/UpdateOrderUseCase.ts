@@ -46,7 +46,7 @@ export class UpdateOrderUseCase {
         if(infos.length > 0) {
             total = infos.reduce((acc: number, currently: IInfo) => {
                 return acc + Number(currently.total_hours)
-            })
+            },0)
         }
 
         const order = await prisma.orders.update({
