@@ -1,11 +1,11 @@
 
 import { prisma} from "../../../../database/prismaClient";
-import { AppError} from "../../../../middlewares/AppError";
 
 interface IGetInvoices {
     month: string;
     year: number;
 }
+
 
 export class GetInvoicesByMonthUseCase {
     async execute({ month, year } : IGetInvoices) {
