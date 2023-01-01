@@ -71,16 +71,6 @@ export class UpdateContractorUseCase {
                 telephone,
             }
         });
-        // if(contractorExist) {
-        //     await prisma.accounts.update(({
-        //         where: {
-        //             id: contractorExist.fk_id_account as number,
-        //         },
-        //         data: {
-        //             access: role as any
-        //         }
-        //     }));
-        // }
         
         await prisma.adresseses.deleteMany({
             where: {
