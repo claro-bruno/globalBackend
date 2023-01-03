@@ -47,11 +47,10 @@ export class UpdateContractorUseCase {
         if(!contractorExist) {
             throw new AppError('Contractor does not exists', 401)
         }
-        
+
         const profile = urlProfile === '' ? contractorExist.urlProfile: urlProfile;
         const documentProof = urlDocumentProof === '' ? contractorExist.urlDocumentProof: urlDocumentProof;
         const primaryResidencyProof = urlPrimaryResidencyProof === '' ? contractorExist.urlPrimaryResidencyProof: urlPrimaryResidencyProof;
-        
         //atualizar o contractor
         const contractor = await prisma.contractors.update({
             where: {
@@ -63,10 +62,10 @@ export class UpdateContractorUseCase {
                 last_name,
                 email,
                 ein,
-                urlProfile,
                 urlProfile: profile,
                 urlDocumentProof: documentProof,
                 urlPrimaryResidencyProof: primaryResidencyProof,
+                urlSecondaryResidencyProof,
                 identification,
                 dob: new Date(dob),
                 telephone,
