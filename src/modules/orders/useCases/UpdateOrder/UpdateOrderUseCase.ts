@@ -1,5 +1,6 @@
 import { prisma } from "../../../../database/prismaClient";
 import { AppError } from "../../../../middlewares/AppError";
+import { contractorsRoutes } from "../../../../routes/contractors.routes";
 
 interface IUpdateOrder {
     description: string;
@@ -48,51 +49,56 @@ export class UpdateOrderUseCase {
                 return acc + Number(currently.total_hours)
             },0)
         }
-
-        const order = await prisma.orders.update({
-            where: {
-                id,
-            },
-            data: {
-                start,
-                end,
-                fk_id_client: id_client,
-                description,
-                notes,
-                created_at: new Date(date_at),
-                support,
-                email, 
-                type,
-                contact, 
-                contact_phone,
-                address,
-                isInvoice,
-                total_hours: total,
-            }
-        });
-
-        await prisma.orderContractors.deleteMany(
-        { 
-            where: { 
-                fk_id_order: +id
-            }
-        });
-        await infos.reduce(async (memo: any, info: IInfo) => {
-            await memo;  
-            const id_contractor: number = Number(info.contractor_id)       
-            const id_order: number = Number(order.id)    
-            const total: number = Number(info.total_hours) 
-            await prisma.orderContractors.create({
+        
+        if(total > 0) {
+            const order = await prisma.orders.update({
+                where: {
+                    id,
+                },
                 data: {
-                    fk_id_order: id_order,
-                    fk_id_contractor: id_contractor,
-                    start: info.start,
-                    end: info.end,
-                    total: total
+                    start,
+                    end,
+                    fk_id_client: id_client,
+                    description,
+                    notes,
+                    created_at: new Date(date_at),
+                    support,
+                    email, 
+                    type,
+                    contact, 
+                    contact_phone,
+                    address,
+                    isInvoice,
+                    total_hours: total,
                 }
             });
-        }, undefined);
+    
+            await prisma.orderContractors.deleteMany(
+            { 
+                where: { 
+                    fk_id_order: +id
+                }
+            });
+            await infos.reduce(async (memo: any, info: IInfo) => {
+                await memo;  
+                const id_contractor: number = Number(info.contractor_id)       
+                const id_order: number = Number(order.id)    
+                const total: number = Number(info.total_hours) 
+                await prisma.orderContractors.create({
+                    data: {
+                        fk_id_order: id_order,
+                        fk_id_contractor: id_contractor,
+                        start: info.start,
+                        end: info.end,
+                        total: total
+                    }
+                });
+            }, undefined);
+            return order;
+
+        }
         
-        return order;
+        return 'ok';
+        
     }
 }
