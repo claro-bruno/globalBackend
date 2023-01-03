@@ -4,10 +4,9 @@ import {UpdateOrderUseCase} from "./UpdateOrderUseCase";
 
 export class UpdateOrderController {
     async handle(request: Request, response: Response, next: NextFunction): Promise<Response>  {
-        const { date_at, description, notes, id_client, start, end, collaborators, support, email, contact, telephone, clientAddress, fk_invoice_id, total_hours  } = request.body;
+        const { date_at, description, notes, id_client, start, end, collaborators, support, email, contact, telephone, clientAddress, isInvoice, total_hours, event_type  } = request.body;
         
         const { id } = request.params;
-
         const updateOrderUseCase = new UpdateOrderUseCase();
         const result = await updateOrderUseCase.execute({
             id: +id,
@@ -17,14 +16,15 @@ export class UpdateOrderController {
             start,
             end, 
             date_at,
-            collaborators, 
+            infos: collaborators, 
             support,
             email, 
             contact, 
             contact_phone: telephone, 
             address: clientAddress,
-            fk_invoice_id,
-            total_hours
+            isInvoice,
+            total_hours, 
+            type: event_type
 
         });
         return response.json(result);

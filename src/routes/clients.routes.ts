@@ -14,6 +14,7 @@ import { CreateClientContractorController } from "../modules/clients/useCases/Cr
 import { UpdateClientContractorController } from "../modules/clients/useCases/UpdateClientContractor/UpdateClientContractorController";
 import { GetClientsContractorController } from "../modules/clients/useCases/GetClientsContractor /GetClientsContractorController";
 import { GetClientContractorController } from "../modules/clients/useCases/GetClientContractor/GetClientContractorController";
+import { UpdateActiveClientContractorController } from "../modules/clients/useCases/UpdateActiveClientContractor /UpdateActiveClientContractorController";
 
 
 
@@ -29,12 +30,14 @@ const createClientContractorController = new CreateClientContractorController();
 const updateClientContractorController = new UpdateClientContractorController();
 const getClientsContractorController = new GetClientsContractorController();
 const getClientContractorController = new GetClientContractorController();
+const updateActiveClientContractorController = new UpdateActiveClientContractorController();
 
 clientsRoutes.post("/contractor", use(ensureAuthenticate), use(createClientContractorController.handle));
 clientsRoutes.post("/", use(ensureAuthenticate), use(createClientController.handle));
 clientsRoutes.get("/profit", use(ensureAuthenticate), use(getClientsProfitController.handle));
 clientsRoutes.put("/status/:id", use(ensureAuthenticate), use(updateStatusClientController.handle));
 clientsRoutes.put("/contractor/:id", use(ensureAuthenticate), use(updateClientContractorController.handle));
+clientsRoutes.put("/contractor/atual", use(ensureAuthenticate), use(updateActiveClientContractorController.handle));
 clientsRoutes.put("/:id", use(ensureAuthenticate), use(updateClientController.handle));
 clientsRoutes.get("/contractor/:id", use(ensureAuthenticate), use(getClientContractorController.handle));
 clientsRoutes.get("/:id", use(ensureAuthenticate), use(getClientController.handle));

@@ -10,13 +10,13 @@ interface IAccountContractor {
 
 export class ResetPasswordContractorUseCase {
   async execute({ email }: IAccountContractor): Promise<any> {
+    
     const contractorExist = await prisma.contractors.findFirst({
       where: {
         email,
         status: "ACTIVE"
       }
     });
-
     if (!contractorExist) {
       throw new AppError("Email does not exists", 401);
     }
@@ -78,22 +78,8 @@ export class ResetPasswordContractorUseCase {
         html: `<strong>Your password account has been reseted to <br> Login: ${contractorAccountExist.username} <br> Password: ${password}</strong>`,
         headers: { "x-myheader": "test header" }
       };
-      transporter.sendMail(message, (err: any, info: any) => {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log(info);
-        }
-      });
+      transporter.sendMail(message);
     }
-
-    // const client = new MessageClient({ username: 'e09f948c506dea73', apiKey: 'yp6dNedhU7Y369aGvqLbHAo6'});
-    // const response = await client.sendMessage({
-
-    // plain: "Reset Pasword Account",
-    // html: `<strong>Your password account has been reseted to <br> Login: ${contractorAccountExist.username} <br> Password: ${password}</strong>`,
-    // headers: { 'x-myheader': 'test header' }
-    // });
 
     return "Your username and password has been sent to your email";
   }
