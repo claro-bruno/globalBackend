@@ -97,12 +97,12 @@ export class GetJobsUseCase {
           id,
           status
           // client: { name, id: client_id },
-          // contractor: { first_name, middle_name, last_name , id: contractor_id }
+          // contractor: { first_name, last_name , id: contractor_id }
         } = job[0].jobs;
-        job_info.id = id;
+        job_info.id = id; 
         job_info.contractor = job[0].jobs.contractor;
         job_info.client = job[0].jobs.client;
-        // job_info.contractor_name = middle_name != undefined ? `${first_name} ${middle_name} ${last_name}` : `${first_name} ${last_name}` ;
+        job_info.name = `${job[0].jobs.contractor.first_name} ${job[0].jobs.contractor.last_name}` ;
         // job_info.contractor_id = contractor_id;
         // job_info.client_name = name;
         // job_info.client_id = client_id;
@@ -121,6 +121,17 @@ export class GetJobsUseCase {
 
         job_info.quarter = job;
         result.push(job_info);
+      });
+
+      result.sort(function (a: any, b: any) {
+        if (a.name > b.name) {
+          return 1;
+        }
+        if (a.name < b.name) {
+          return -1;
+        }
+        // a must be equal to b
+        return 0;
       });
       return result;
     } else {
