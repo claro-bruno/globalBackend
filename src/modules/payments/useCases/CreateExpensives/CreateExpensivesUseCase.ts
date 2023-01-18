@@ -32,8 +32,9 @@ export class CreateExpensivesUseCase {
     async execute({ date_expensive, payed_for, value, method, identifier, type, status  }: ICreateExpensive) {
         let balanceLastMonthExist: any = {};
     
-        const month = toMonthName(new Date(date_expensive).getMonth()+1);
-        const year  = new Date(date_expensive).getFullYear();
+        const month = toMonthName(new Date(date_expensive).getUTCMonth());
+        const year  = new Date(date_expensive).getUTCFullYear();
+        
         
         // Verificar o balance do mes atual
         const balanceMonthExist = await prisma.balances.findFirst({
@@ -43,9 +44,13 @@ export class CreateExpensivesUseCase {
             }
         });
 
+        
+
         // Se não existir, seta do mes anterior
         const lastMonth = month == 'January' ? 'December' : toMonthName(getMonthFromString(month, year));
-        const lastYear = month == 'January' ? year - 1 : year;
+        const lastYear = year - 1
+
+        
 
         balanceLastMonthExist = await prisma.balances.findFirst({
             where: {
@@ -53,8 +58,10 @@ export class CreateExpensivesUseCase {
             year: lastYear
         }
         });
-        
+
         if(!balanceMonthExist) {  
+            
+            //console.log(month, year, +balanceLastMonthExist?.value)
             //setando o balance do mes anterior para o mes atual
             if(balanceLastMonthExist) {
                 await prisma.balances.create({
@@ -64,6 +71,7 @@ export class CreateExpensivesUseCase {
                     value: +balanceLastMonthExist?.value
                 }});
             }
+            
         }
 
         let valor = value == null ? 0 : value;

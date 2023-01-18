@@ -66,6 +66,7 @@ export class CreatePaymentsUseCase {
         }
       });
     
+    
     if(!balanceMonthExist) {  
       //setando o balance do mes anterior para o mes atual
       if(balanceLastMonthExist) {
