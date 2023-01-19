@@ -31,69 +31,71 @@ export class GetPaymentsUseCase {
             GROUP BY c.id,q.year,q.month,name,q.status
             ORDER BY c.id ASC
             ;`;
+
+    
     const payments: any = await prisma.$queryRaw`
     SELECT 
             DISTINCT jobs.fk_id_contractor,
             (
               SELECT id AS id_1
-                FROM payments as pa
+                FROM "paymentsContractors" as pa
                 where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS'
              
             )AS id_1,
             (
         
 				SELECT value AS value_1
-                FROM payments as pa
+                FROM "paymentsContractors" as pa
                 where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS'
             ) AS value_1,
             (
 				SELECT others AS value_1
-                FROM payments as pa
+                FROM "paymentsContractors" as pa
                 where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS'
             ) AS others_1,
             (
 				SELECT identification 
-                FROM payments as pa
+                FROM "paymentsContractors" as pa
                 where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS'
             ) AS identification_1,
             (
 				SELECT description 
-                FROM payments as pa
+                FROM "paymentsContractors" as pa
                 where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS'
             ) AS description_1,
             (
 				SELECT method 
-                FROM payments as pa
+                FROM "paymentsContractors" as pa
                 where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS'
             ) AS method_1,
             (
               SELECT id AS id_2
-                FROM payments as pa
+                FROM "paymentsContractors" as pa
                 where pa.fk_id_contractor = c.id AND pa.quarter = 2 AND pa.type = 'CONTRACTOR_WORKERS'
             )AS id_2,
             (
 				SELECT value 
-                FROM payments as pa
+                FROM "paymentsContractors" as pa
                 where pa.fk_id_contractor = c.id AND pa.quarter = 2 AND pa.type = 'CONTRACTOR_WORKERS'
             ) AS value_2,
             (
 				SELECT others
-                FROM payments as pa
+                FROM "paymentsContractors" as pa
                 where pa.fk_id_contractor = c.id AND pa.quarter = 2 AND pa.type = 'CONTRACTOR_WORKERS'
             ) AS others_2,
             (
 				SELECT identification 
-                FROM payments as pa
+                FROM "paymentsContractors" as pa
                 where pa.fk_id_contractor = c.id AND pa.quarter = 2 AND pa.type = 'CONTRACTOR_WORKERS'
             ) AS identification_2,
             (
 				SELECT description 
-                FROM payments as pa
+                FROM "paymentsContractors" as pa
                 where pa.fk_id_contractor = c.id AND pa.quarter = 2 AND pa.type = 'CONTRACTOR_WORKERS'
             ) AS description_2,
             (
 				SELECT method 
-                FROM payments as pa
+                FROM "paymentsContractors" as pa
                 where pa.fk_id_contractor = c.id AND pa.quarter = 2 AND pa.type = 'CONTRACTOR_WORKERS'
              ) AS method_2
             FROM jobs
@@ -114,8 +116,8 @@ export class GetPaymentsUseCase {
         payment.identification_2 = pay.identification_2;
         payment.description_1 = pay.description_1;
         payment.description_2 = pay.description_2;
-        payment.others_1 = pay.others_1 == null ? payment.others_1 :  pay.others_1;
-        payment.others_2 = pay.others_2 == null ? payment.others_2 :  pay.others_2;
+        payment.others_1 = payment.others_1;
+        payment.others_2 = payment.others_2;
         payment.method_1 = pay.method_1;
         payment.method_2 = pay.method_2;
         payment.total_1_payment = payment.value_1 - payment.others_1;
@@ -126,17 +128,17 @@ export class GetPaymentsUseCase {
 
     const result_totals: any = await prisma.$queryRaw`
             SELECT 
-            sum(case when q.order = 1 then ap.value*q.value_hour end) total_1,
-            sum(case when q.order = 2 then ap.value*q.value_hour end) total_2,
+            sum(case when q.order = 1 and q.month = ${month} and q.year = ${year} then ap.value*q.value_hour end) total_1,
+            sum(case when q.order = 2 and q.month = ${month} and q.year = ${year} then ap.value*q.value_hour end) total_2,
             ( 
               SELECT sum(quarters.others) FROM jobs
               INNER JOIN quarters ON quarters.fk_id_job = jobs.id
-              WHERE quarters.order = 1
+              WHERE quarters.order = 1 and quarters.month = ${month} and quarters.year = ${year} 
             ) AS total_others_1,
               ( 
               SELECT sum(quarters.others) FROM jobs
               INNER JOIN quarters ON quarters.fk_id_job = jobs.id
-              WHERE quarters.order = 2
+              WHERE quarters.order = 2 and quarters.month = ${month} and quarters.year = ${year} 
             ) AS total_others_2
             FROM jobs j
             INNER JOIN quarters q ON q.fk_id_job = j.id
