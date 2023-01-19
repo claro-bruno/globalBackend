@@ -28,7 +28,7 @@ function getMonthFromString(mon: string, year: number) {
 export class GetExpensivesByMonthUseCase {
     
     async execute({ year, month }:IGetExpensives) {
-
+        
         const arrTypes: any = [
             "INPUT",
             "LABOUR_PAYROOL",
@@ -105,7 +105,6 @@ export class GetExpensivesByMonthUseCase {
                 year: lastYear
             }
         });
-
         const balanceExist = await prisma.balances.findFirst({
             where: {
                 month: month,

@@ -91,6 +91,25 @@ model Payments {
   @@map("payments")
 }
 
+model PaymentsContractors {
+  id               Int          @id @default(autoincrement())
+  value            Float
+  others           Float?
+  method           Method?
+  year             Int
+  month            String
+  date_at          DateTime     @default(now())
+  type             Type
+  description      String?
+  quarter          Int?
+  identification   String?      @default("")
+  contractor       Contractors? @relation(fields: [fk_id_contractor], references: [id])
+  fk_id_contractor Int?
+  status           Status?
+
+  @@map("paymentsContractors")
+}
+
 model Balances {
   id    Int    @id @default(autoincrement())
   year  Int
@@ -129,6 +148,7 @@ model Contractors {
   ordersContractors OrderContractors[]
 
   InvoicesContractors InvoicesContractors[]
+  PaymentsContractors PaymentsContractors[]
 
   @@map("contractors")
 }

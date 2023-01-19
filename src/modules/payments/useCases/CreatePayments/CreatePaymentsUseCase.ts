@@ -91,9 +91,22 @@ export class CreatePaymentsUseCase {
       othersDescription: description
     } = payments[0];
   let valor = value == null ? 0 : value;
-  if(valor > 0 && identifier != "" && method != "") {
+  if(valor > 0 && method != "") {
     if (id != '') {
-      const pay_1 = await prisma.payments.update({
+      if (method !== "CHECK") {
+        await prisma.payments.update({
+          where: {
+            pay_id: id,
+          },
+          data: {
+            value: valor,
+            identification: identifier,
+            others: +value_others,
+            description
+          }
+        });
+      }
+      await prisma.paymentsContractors.update({
           where: {
             id
           },
@@ -142,7 +155,7 @@ export class CreatePaymentsUseCase {
       else 
       {
 
-        const pay_1 = await prisma.payments.create({
+        let pay_1 = await prisma.paymentsContractors.create({
           data: {
             value: +valor,
             method,
@@ -153,19 +166,41 @@ export class CreatePaymentsUseCase {
             fk_id_contractor: +contractor_id,
             type: "CONTRACTOR_WORKERS",
             others: +value_others,
-            description
+            description,
           }
         });
+
+        if (method !== "CHECK") {
           await prisma.payments.create({
             data: {
-              value: +value_others,
+              value: +valor,
+              method,
               year: +year,
               month,
+              quarter: +quarter,
+              identification: identifier,
+              fk_id_contractor: +contractor_id,
+              type: "CONTRACTOR_WORKERS",
+              others: +value_others,
+              description,
               pay_id: +pay_1.id,
-              type: "INPUT",
-
             }
           });
+        }
+
+       
+
+        await prisma.payments.create({
+          data: {
+            value: +value_others,
+            year: +year,
+            month,
+            pay_id: +pay_1.id,
+            type: "INPUT",
+
+          }
+        });
+        
           // await prisma.invoicesContractors.create({ 
           //   data: {
           //     fk_id_payment: pay_1.id,
@@ -229,8 +264,8 @@ export class CreatePaymentsUseCase {
       }
       
     } else if(valor> 0){
-        if(identifier == "" || method == "") {
-          throw new AppError("Identifier and method are required!", 401);
+        if(method == "") {
+          throw new AppError("method is required!", 401);
         }
     }
 
@@ -245,9 +280,24 @@ export class CreatePaymentsUseCase {
     } = payments[1];
     
     valor = value_2 == null ? 0 : value_2;
-    if(valor > 0 && identifier_2 != "" && method_2 != "") {
+    if(valor > 0 && method_2 != "") {
       if (id_2 != "") {
+
+        if (method_2 === "CHECK") {
           await prisma.payments.update({
+            where: {
+              pay_id: id_2
+            },
+            data: {
+              value: valor,
+              identification: identifier_2,
+              others: +value_others_2,
+              description: description_2
+            }
+          });
+        }
+        
+          prisma.paymentsContractors.update({
             where: {
               id: +id_2
             },
@@ -258,6 +308,8 @@ export class CreatePaymentsUseCase {
               description: description_2
             }
           });
+          
+          
             await prisma.payments.update({
               where: {
                 pay_id: id_2,
@@ -294,7 +346,9 @@ export class CreatePaymentsUseCase {
         } 
         else 
         {
-          const pay_2 = await prisma.payments.create({
+
+          
+          let pay_2 = await prisma.payments.create({
             data: {
               value: valor,
               method,
@@ -308,15 +362,37 @@ export class CreatePaymentsUseCase {
               description: description_2
             }
           });
+
+          if (method_2 === "CHECK") {
             await prisma.payments.create({
               data: {
-                value: +value_others_2,
+                value: valor,
+                method,
                 year: +year,
                 month,
+                quarter: +quarter_2,
+                identification: identifier_2,
+                fk_id_contractor: +contractor_id,
+                type: "CONTRACTOR_WORKERS",
+                others: +value_others_2,
+                description: description_2,
                 pay_id: +pay_2.id,
-                type: "INPUT"
               }
             });
+             
+          }
+
+
+          await prisma.payments.create({
+            data: {
+              value: +value_others_2,
+              year: +year,
+              month,
+              pay_id: +pay_2.id,
+              type: "INPUT"
+            }
+          });
+         
             // await prisma.invoicesContractors.create({ 
             //   data: {
             //     fk_id_payment: pay_2.id,
@@ -380,8 +456,8 @@ export class CreatePaymentsUseCase {
         }
         
       } else if(valor > 0){
-          if(!identifier_2 || !method_2) {
-            throw new AppError("Identifier and method are required!", 401);
+          if(!method_2) {
+            throw new AppError("Method are required!", 401);
           }
       }
 
