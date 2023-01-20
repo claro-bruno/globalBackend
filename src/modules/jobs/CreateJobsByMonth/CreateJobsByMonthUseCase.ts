@@ -3,14 +3,13 @@ import {NextFunction, Request, Response} from "express";
 import { AppError } from "../../../middlewares/AppError";
 
 
-function getMonthFromString(mon: string){
-
+function getMonthFromString(mon: string) {
     var d = Date.parse(mon + "1, 2022");
-    if(!isNaN(d)){
-        return new Date(d).getMonth() + 1;
+    if (!isNaN(d)) {
+      return new Date(d).getMonth();
     }
     return -1;
-}
+  }
 
 function toMonthName(monthNumber: number) {
     const date = new Date();
@@ -60,7 +59,7 @@ export class CreateJobsByMonthUseCase {
                 });
                     
                 if(last_value?.value_hour != undefined) {
-                    const last_date = new Date(year, +getMonthFromString(month), 0);
+                    const last_date = new Date(year, +getMonthFromString(month) + 1, 0);
                     let quarterCreated = await prisma.quarters.create({
                         data: {
                             fk_id_job: +job.id,

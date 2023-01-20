@@ -23,7 +23,7 @@ interface IService {
 }
 
 function getMonthFromString(mon: string) {
-  var d = Date.parse(mon + "1, 2022");
+  var d = Date.parse(mon + "1, 2023");
   if (!isNaN(d)) {
     return new Date(d).getMonth() + 1;
   }
