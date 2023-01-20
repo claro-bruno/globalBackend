@@ -7,7 +7,7 @@ import { GetJobsByClientController } from "../modules/jobs/GetServicesByClient/G
 import { GetJobsByContractorController } from "../modules/jobs/GetJobsByContractor/GetJobsByContractorController";
 import { CompleteJobsController } from "../modules/jobs/CompleteJobs/CompleteJobsController";
 import { UpdateJobsController } from "../modules/jobs/UpdateJobs/UpdateJobsController";
-import { CreateJobsByQuartersController } from "../modules/jobs/CreateJobsByQuarters/CreateJobsByQuartersController";
+import { CreateJobsByMonthController } from "../modules/jobs/CreateJobsByMonth/CreateJobsByMonthController";
 
 const jobsRoutes = Router();
 
@@ -17,7 +17,7 @@ const getJobsByClientController = new GetJobsByClientController();
 const getJobsByContractorController = new GetJobsByContractorController();
 const completeJobsController = new CompleteJobsController();
 const updateJobsController = new UpdateJobsController();
-const createJobsByQuartersController = new CreateJobsByQuartersController();
+const createJobsByMonthController = new CreateJobsByMonthController();
 
 jobsRoutes.post(
   "/",
@@ -45,7 +45,7 @@ jobsRoutes.get(
   use(getJobsByClientController.handle)
 );
 jobsRoutes.get("/", use(ensureAuthenticate), use(getJobsController.handle));
-// jobsRoutes.post("/crom", use(createJobsByQuartersController.handle));
+jobsRoutes.post("/crom", use(ensureAuthenticate), use(createJobsByMonthController.handle));
 
 
 export { jobsRoutes };

@@ -35,26 +35,36 @@ function getMonthFromString(mon: string, year: number) {
 
 export class UpdateExpensivesUseCase {
     async execute({ date_expensive, payed_for, value, method, identification, status, type, id  }: IUpdateExpensives) {
-
+    
         let balanceLastMonthExist: any = {};
     
-        const month = toMonthName(new Date(date_expensive).getMonth() + 1);
-        const year  = new Date(date_expensive).getFullYear();
-        
-        // Verificar o balance do mes atual
-        const lastMonth = month == 'January' ? 'December' : toMonthName(getMonthFromString(month, year));
-        const lastYear = month == 'January' ? year - 1 : year;
+        const month = toMonthName(new Date(date_expensive).getUTCMonth());
+        const year  = new Date(date_expensive).getUTCFullYear();
 
-        balanceLastMonthExist = await prisma.balances.findFirst({
+        // Verificar o balance do mes atual
+        const balanceMonthExist = await prisma.balances.findFirst({
             where: {
-            month: lastMonth,
-            year: lastYear
+                month: month,
+                year: year
             }
         });
         
+         // Se não existir, seta do mes anterior
+         const lastMonth = month == 'January' ? 'December' : toMonthName(getMonthFromString(month, year));
+         const lastYear = year - 1
+ 
+         
+ 
+         balanceLastMonthExist = await prisma.balances.findFirst({
+             where: {
+             month: lastMonth,
+             year: lastYear
+         }
+         });
+        
 
         let valor = value == null ? 0 : value;
-        if(valor > 0 && identification != "" && method != "") {
+        if(valor > 0 && method != "") {
 
             await prisma.payments.update({
                 where: {
@@ -69,7 +79,7 @@ export class UpdateExpensivesUseCase {
                   date_at: new Date(date_expensive),
                   payed_for,
                   status: status as any,
-                  identification: type !== "CHECK" ? id as any : identification
+                  identification: type !== "CHECK" ? String(id) as any : identification
                 }
               });
             
@@ -123,8 +133,8 @@ export class UpdateExpensivesUseCase {
         }
 
         } else if(valor> 0){
-            if(identification == "" || method == "") {
-              throw new AppError("Identifier and method are required!", 401);
+            if(method == "") {
+              throw new AppError("Method is required!", 401);
             }
         }
         return 'Ok';
