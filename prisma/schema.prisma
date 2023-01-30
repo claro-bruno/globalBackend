@@ -21,8 +21,8 @@ model Orders {
   support            String?
   type               String?
   isInvoice          Boolean      @default(false)
-  fk_invoice_id      Int?
-  invoices           Invoices?    @relation(fields: [fk_invoice_id], references: [id])
+  invoice            String?
+  // invoices           Invoices?    @relation(fields: [fk_invoice_id], references: [id])
   fk_support_id      Int?
   support_contractor Contractors? @relation(fields: [fk_support_id], references: [id])
   collaborators      String?
@@ -33,6 +33,8 @@ model Orders {
   status             Status       @default(PENDING)
 
   ordersContractors OrderContractors[]
+  Invoices          Invoices?          @relation(fields: [invoicesId], references: [id])
+  invoicesId        Int?
 
   @@map("orders")
 }

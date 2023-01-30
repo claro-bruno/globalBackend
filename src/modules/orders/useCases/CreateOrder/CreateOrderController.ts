@@ -20,7 +20,7 @@ export class CreateOrderController {
             contact_phone: telephone, 
             address: clientAddress,
             total_hours: +total_hours,
-            infos: collaborators
+            infos: collaborators,
         });
         return response.json(result);
     }

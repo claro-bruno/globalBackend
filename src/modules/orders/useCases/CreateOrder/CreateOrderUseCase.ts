@@ -50,6 +50,8 @@ export class CreateOrderUseCase {
             }, 0)
         }
 
+        
+
         if(total> 0) {
             const order = await prisma.orders.create({
                 data: {
@@ -74,8 +76,7 @@ export class CreateOrderUseCase {
                 await memo;
                 const id_contractor: number = Number(info.contractor_id)       
                 const id_order: number = Number(order.id) 
-                const value_order: number = Number(info.total_hours)    
-                console.log(value_order)         
+                const value_order: number = Number(info.total_hours)           
                 await prisma.orderContractors.create({
                     data: {
                         fk_id_order: id_order,
