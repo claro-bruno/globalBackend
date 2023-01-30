@@ -35,9 +35,21 @@ function getMonthFromString(mon: string, year: number) {
 
 export class UpdateExpensivesUseCase {
     async execute({ date_expensive, payed_for, value, method, identification, status, type, id  }: IUpdateExpensives) {
-    
+        
         let balanceLastMonthExist: any = {};
-    
+        let identificacao : any = 0
+
+        if(method === 'CHECK') {
+            identificacao = identification
+        }
+        else {
+            identificacao = id
+        }
+
+        
+
+        // console.log(method, identification)
+        // throw new AppError("Method is required!", 401);
         const month = toMonthName(new Date(date_expensive).getUTCMonth());
         const year  = new Date(date_expensive).getUTCFullYear();
 
@@ -64,7 +76,7 @@ export class UpdateExpensivesUseCase {
         
 
         let valor = value == null ? 0 : value;
-        if(valor > 0 && method != "") {
+        if(valor > 0) {
 
             await prisma.payments.update({
                 where: {
@@ -79,7 +91,7 @@ export class UpdateExpensivesUseCase {
                   date_at: new Date(date_expensive),
                   payed_for,
                   status: status as any,
-                  identification: type !== "CHECK" ? String(id) as any : identification
+                  identification: identificacao
                 }
               });
             
