@@ -90,25 +90,6 @@ model Payments {
   @@map("payments")
 }
 
-model PaymentsContractors {
-  id               Int          @id @default(autoincrement())
-  value            Float
-  others           Float?
-  method           Method?
-  year             Int
-  month            String
-  date_at          DateTime     @default(now())
-  type             Type
-  description      String?
-  quarter          Int?
-  identification   String?      @default("")
-  fk_id_contractor Int?
-  status           Status?
-  contractor       Contractors? @relation(fields: [fk_id_contractor], references: [id])
-
-  @@map("paymentsContractors")
-}
-
 model Balances {
   id    Int    @id @default(autoincrement())
   year  Int
@@ -145,7 +126,7 @@ model Contractors {
   ordersSupport              Orders[]
   ordersContractors          OrderContractors[]
   payments                   Payments[]
-  PaymentsContractors        PaymentsContractors[]
+  paymentsContractors        paymentsContractors[]
 
   @@map("contractors")
 }
@@ -282,6 +263,23 @@ model Appointments {
   quarter       Quarters @relation(fields: [fk_id_quarter], references: [id])
 
   @@map("appointments")
+}
+
+model paymentsContractors {
+  id               Int          @id @default(autoincrement())
+  value            Float
+  others           Float?
+  method           Method?
+  year             Int
+  month            String
+  date_at          DateTime     @default(now())
+  type             Type
+  description      String?
+  quarter          Int?
+  identification   String?      @default("")
+  fk_id_contractor Int?
+  status           Status?
+  contractors      Contractors? @relation(fields: [fk_id_contractor], references: [id])
 }
 
 enum Access {

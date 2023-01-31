@@ -33,9 +33,10 @@ interface IInfo {
 
 export class UpdateOrderUseCase {
     async execute({ id, type, date_at, description, notes, id_client, start, end, support, email, contact, contact_phone, address, isInvoice, total_hours, infos, invoice } : IUpdateOrder): Promise<any>{
-        console.log(`invoice ${invoice}`)
-        throw new AppError('Client does not exists', 401)
         
+        let isInv: boolean = false;
+        let invoice_id: string = "";
+       
         //validar se o client existe
         const orderExist = await prisma.orders.findFirst({
            where: {
@@ -47,6 +48,11 @@ export class UpdateOrderUseCase {
             throw new AppError('Order does not exists', 401)
         }
         
+        if(invoice!=='') {
+            isInv = true;
+            invoice_id = invoice as any;
+        }
+
         let total = 0;
         if(infos.length > 0) {
             total = infos.reduce((acc: number, currently: IInfo) => {
@@ -72,7 +78,8 @@ export class UpdateOrderUseCase {
                     contact, 
                     contact_phone,
                     address,
-                    isInvoice,
+                    isInvoice: isInv,
+                    fk_invoice_id: invoice_id,
                     total_hours: total,
                 }
             });

@@ -17,7 +17,6 @@ export class GetOrdersUseCase {
                         contractor: true 
                     } 
                 },
-                invoices: true,
                 client: true
             }
         });

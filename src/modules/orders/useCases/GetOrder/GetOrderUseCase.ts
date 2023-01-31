@@ -20,7 +20,7 @@ export class GetOrderUseCase {
                     contractor: true 
                 } 
             },
-            invoices: true,
+            // invoices: true,
             client: true
            }
         });
