@@ -29,7 +29,7 @@ export class GetPaymentsUseCase {
             INNER JOIN contractors AS c ON c.id = j.fk_id_contractor
             WHERE q.year = ${year} AND q.month = ${month} AND q.status = 'REVISED'
             GROUP BY c.id,q.year,q.month,name,q.status
-            ORDER BY c.id ASC
+            ORDER BY c.first_name ASC
             ;`;
 
     

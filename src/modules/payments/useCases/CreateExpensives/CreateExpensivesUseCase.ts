@@ -34,7 +34,7 @@ export class CreateExpensivesUseCase {
     
         const month = toMonthName(new Date(date_expensive).getUTCMonth());
         const year  = new Date(date_expensive).getUTCFullYear();
-        
+
         
         // Verificar o balance do mes atual
         const balanceMonthExist = await prisma.balances.findFirst({
@@ -75,8 +75,7 @@ export class CreateExpensivesUseCase {
         }
 
         let valor = value == null ? 0 : value;
-        if(valor > 0 && identifier != "" && method != "") {
-
+        if(valor > 0 ) {
             const payment = await prisma.payments.create({
                 data: {
                   value,
@@ -95,7 +94,7 @@ export class CreateExpensivesUseCase {
                     id: payment.id
                 },
                 data: {
-                    identification: type !== "CHECK" ? payment.id.toString() as any : identifier
+                    identification: method !== "CHECK" ? payment.id.toString() as any : identifier
                 }
               })
             
