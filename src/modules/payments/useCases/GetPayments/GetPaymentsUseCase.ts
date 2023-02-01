@@ -6,6 +6,7 @@ export class GetPaymentsUseCase {
     const result: any = await prisma.$queryRaw`
         SELECT
             DISTINCT c.id as fk_id_contractor,
+            c.first_name,
             CONCAT(c.first_name,' ',c.middle_name,' ',c.last_name) AS name,
             q.year,
             q.month,
