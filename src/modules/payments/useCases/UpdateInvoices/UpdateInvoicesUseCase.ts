@@ -31,8 +31,10 @@ function toMonthName(monthNumber: number) {
 
 export class UpdateInvoicesUseCase {
     async execute({ id, date_invoice, value, identification, description, fk_id_client  }: IUpdateInvoice) {
-        const month = toMonthName(new Date(date_invoice).getMonth() + 1);
-        const year  = new Date(date_invoice).getFullYear();
+
+        const month = toMonthName(new Date(date_invoice).getUTCMonth());
+        const year  = new Date(date_invoice).getUTCFullYear();
+        
         const invoiceExist = await prisma.invoices.findFirst({
             where: {
                 id,
