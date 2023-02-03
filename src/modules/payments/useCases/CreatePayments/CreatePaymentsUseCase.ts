@@ -94,7 +94,7 @@ export class CreatePaymentsUseCase {
 
   let valor = value == null ? 0 : value;
   if(valor > 0 && method != "") {
-    if (id != '') {
+    if (id != '' && id != null) {
       let res = await prisma.payments.findFirst({
         where: {
           pay_id: id
@@ -327,7 +327,7 @@ export class CreatePaymentsUseCase {
     
     valor = value_2 == null ? 0 : value_2;
     if(valor > 0 && method_2 != "") {
-      if (id_2 != "") {
+      if (id_2 != '' && id_2 != null) {
         let res = await prisma.payments.findFirst({
           where: {
             pay_id: id_2
