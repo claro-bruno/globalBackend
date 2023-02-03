@@ -29,6 +29,7 @@ function toMonthName(monthNumber: number) {
 
 export class CreatePaymentsUseCase {
   async execute({ contractor_id, month, year, payments }: ICreatePayments) {
+    console.log(contractor_id, month, year, payments);
     
     let balanceLastMonthExist: any = {};
 
@@ -90,6 +91,7 @@ export class CreatePaymentsUseCase {
       othersValue: value_others,
       othersDescription: description
     } = payments[0];
+
   let valor = value == null ? 0 : value;
   if(valor > 0 && method != "") {
     if (id != '') {
@@ -130,7 +132,7 @@ export class CreatePaymentsUseCase {
             description
           }
         });
-        if (value_others > 0 && res_pay?.others === 0) {
+        if (value_others > 0 && Number(res_pay?.others) === 0) {
           await prisma.payments.create({
             data: {
               value: +value_others,
@@ -306,11 +308,12 @@ export class CreatePaymentsUseCase {
           });
       }
       
-    } else if(valor> 0){
-        if(method == "") {
-          throw new AppError("method is required!", 401);
-        }
-    }
+    } 
+    // else if(valor> 0){
+    //     if(method == "") {
+    //       throw new AppError("method is required!", 401);
+    //     }
+    // }
 
     const {
       method: method_2,
@@ -427,9 +430,9 @@ export class CreatePaymentsUseCase {
         {
 
           
-          let pay_2 = await prisma.payments.create({
+          let pay_2 = await prisma.paymentsContractors.create({
             data: {
-              value: valor,
+              value: +valor,
               method,
               year: +year,
               month,
@@ -537,11 +540,12 @@ export class CreatePaymentsUseCase {
             });
         }
         
-      } else if(valor > 0){
-          if(!method_2) {
-            throw new AppError("Method is required!", 401);
-          }
-      }
+      } 
+      // else if(valor > 0){
+      //     if(!method_2) {
+      //       throw new AppError("Method is required!", 401);
+      //     }
+      // }
 
     return "Ok";
   }

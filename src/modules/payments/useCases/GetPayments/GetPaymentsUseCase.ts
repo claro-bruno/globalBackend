@@ -6,7 +6,6 @@ export class GetPaymentsUseCase {
     const result: any = await prisma.$queryRaw`
         SELECT
             DISTINCT c.id as fk_id_contractor,
-            c.first_name,
             CONCAT(c.first_name,' ',c.middle_name,' ',c.last_name) AS name,
             q.year,
             q.month,
@@ -29,8 +28,8 @@ export class GetPaymentsUseCase {
             INNER JOIN appointments AS ap ON ap.fk_id_quarter = q.id
             INNER JOIN contractors AS c ON c.id = j.fk_id_contractor
             WHERE q.year = ${year} AND q.month = ${month} AND q.status = 'REVISED'
-            GROUP BY c.id,q.year,q.month,name,q.status
-            ORDER BY c.first_name ASC
+            GROUP BY c.id,q.year,q.month, c.first_name,q.status
+            ORDER BY name ASC
             ;`;
 
     
