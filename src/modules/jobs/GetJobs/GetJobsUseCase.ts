@@ -70,14 +70,41 @@ export class GetJobsUseCase {
       (quarter: any) => quarter.fk_id_job
     );
     
-    const totals_days: any = await prisma.$queryRaw`
+    let totals_days: any = await prisma.$queryRaw`
       SELECT SUM(A.value) AS total, DATE_TRUNC ('day', A.date) AS date, extract(day from A.date) as dia from appointments A
       INNER JOIN quarters Q ON Q.id = A.fk_id_quarter
       INNER JOIN jobs J ON J.id = Q.fk_id_job
       WHERE q.month = ${month} AND q.year= ${year}
-      GROUP BY DATE_TRUNC ('day', A.date), A.date
-      ORDER BY DATE_TRUNC ('day', A.date)
+      GROUP BY extract(day from A.date), A.date
+      ORDER BY extract(day from A.date)
     `
+    let tot: any = [];
+    totals_days.forEach((day: any, index: number) => {
+
+      
+      if(tot.length === 0) {
+        tot.push(day)
+      }
+      else {
+        let indice = tot.length;
+        if(indice > 0) {
+
+          if (+tot[indice-1].dia === +day.dia && +day.total > 0) {
+            tot.pop()
+            tot.push(day)
+            
+          }
+          else if (+tot[indice-1].dia !== +day.dia) {
+            tot.push(day)
+          }
+          
+        }
+      }
+      
+      
+      
+    })
+    
     const result_totals: any = await prisma.$queryRaw`
             SELECT 
             q.fk_id_job as id,
@@ -141,7 +168,7 @@ export class GetJobsUseCase {
         // a must be equal to b
         return 0;
       });
-      return { jobs: result, totals: totals_days };
+      return { jobs: result, totals: tot };
     } else {
       return [];
     }
