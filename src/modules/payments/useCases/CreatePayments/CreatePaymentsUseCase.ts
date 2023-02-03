@@ -490,7 +490,7 @@ export class CreatePaymentsUseCase {
             //   }
             // });
       }
-  
+          console.log(month, year)
           const sumOutput = await prisma.payments.aggregate({
                 _sum: {
                     value: true
