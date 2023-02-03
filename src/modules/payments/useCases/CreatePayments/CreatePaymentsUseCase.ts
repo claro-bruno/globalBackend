@@ -197,6 +197,9 @@ export class CreatePaymentsUseCase {
       else 
       {
 
+        await prisma.paymentsContractors.deleteMany({ where: { quarter: +quarter, month, year,  fk_id_contractor: +contractor_id }})
+        await prisma.payments.deleteMany({ where: { quarter: +quarter, month, year,  fk_id_contractor: +contractor_id }})
+
         let pay_1 = await prisma.paymentsContractors.create({
           data: {
             value: +valor,
@@ -429,7 +432,9 @@ export class CreatePaymentsUseCase {
         else 
         {
 
-          
+          await prisma.paymentsContractors.deleteMany({ where: { quarter: +quarter_2, month, year,  fk_id_contractor: +contractor_id }})
+          await prisma.payments.deleteMany({ where: { quarter: +quarter_2, month, year,  fk_id_contractor: +contractor_id }})
+
           let pay_2 = await prisma.paymentsContractors.create({
             data: {
               value: +valor,
@@ -446,6 +451,9 @@ export class CreatePaymentsUseCase {
           });
 
           if (method_2 !== "CHECK") {
+
+            
+
             await prisma.payments.create({
               data: {
                 value: valor,
@@ -490,7 +498,6 @@ export class CreatePaymentsUseCase {
             //   }
             // });
       }
-          console.log(month, year)
           const sumOutput = await prisma.payments.aggregate({
                 _sum: {
                     value: true
