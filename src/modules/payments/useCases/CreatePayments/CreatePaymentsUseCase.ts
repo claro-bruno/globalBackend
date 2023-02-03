@@ -106,17 +106,17 @@ export class CreatePaymentsUseCase {
         }
       })
       if (method !== "CHECK") {
-        await prisma.payments.update({
-          where: {
-            id: res?.id,
-          },
-          data: {
-            value: valor,
-            identification: identifier,
-            others: +value_others,
-            description
-          }
-        });
+        // await prisma.payments.update({
+        //   where: {
+        //     id: res?.id,
+        //   },
+        //   data: {
+        //     value: valor,
+        //     identification: identifier,
+        //     others: +value_others,
+        //     description
+        //   }
+        // });
       }
       else {
         await prisma.payments.deleteMany({ where: { id: res?.id, NOT: { description: 'others'}} })
@@ -198,7 +198,7 @@ export class CreatePaymentsUseCase {
       {
 
         await prisma.paymentsContractors.deleteMany({ where: { quarter: +quarter, month, year,  fk_id_contractor: +contractor_id }})
-        await prisma.payments.deleteMany({ where: { quarter: +quarter, month, year,  fk_id_contractor: +contractor_id }})
+        await prisma.payments.deleteMany({ where: { quarter: +quarter, month, year,  fk_id_contractor: +contractor_id, description: 'others' }})
 
         let pay_1 = await prisma.paymentsContractors.create({
           data: {
@@ -216,21 +216,21 @@ export class CreatePaymentsUseCase {
         });
 
         if (method !== "CHECK") {
-          await prisma.payments.create({
-            data: {
-              value: +valor,
-              method,
-              year: +year,
-              month,
-              quarter: +quarter,
-              identification: identifier,
-              fk_id_contractor: +contractor_id,
-              type: "CONTRACTOR_WORKERS",
-              others: +value_others,
-              description,
-              pay_id: +pay_1.id,
-            }
-          });
+          // await prisma.payments.create({
+          //   data: {
+          //     value: +valor,
+          //     method,
+          //     year: +year,
+          //     month,
+          //     quarter: +quarter,
+          //     identification: identifier,
+          //     fk_id_contractor: +contractor_id,
+          //     type: "CONTRACTOR_WORKERS",
+          //     others: +value_others,
+          //     description,
+          //     pay_id: +pay_1.id,
+          //   }
+          // });
         }
 
        
@@ -342,17 +342,17 @@ export class CreatePaymentsUseCase {
           }
         })
         if (method_2 !== "CHECK") {
-          await prisma.payments.update({
-            where: {
-              id: res?.id
-            },
-            data: {
-              value: valor,
-              identification: identifier_2,
-              others: +value_others_2,
-              description: description_2
-            }
-          });
+          // await prisma.payments.update({
+          //   where: {
+          //     id: res?.id
+          //   },
+          //   data: {
+          //     value: valor,
+          //     identification: identifier_2,
+          //     others: +value_others_2,
+          //     description: description_2
+          //   }
+          // });
         } else {
           await prisma.payments.deleteMany({ where: { id: res?.id, NOT: { description: 'others'}} })
         }
@@ -433,7 +433,7 @@ export class CreatePaymentsUseCase {
         {
 
           await prisma.paymentsContractors.deleteMany({ where: { quarter: +quarter_2, month, year,  fk_id_contractor: +contractor_id }})
-          await prisma.payments.deleteMany({ where: { quarter: +quarter_2, month, year,  fk_id_contractor: +contractor_id }})
+          await prisma.payments.deleteMany({ where: { quarter: +quarter_2, month, year,  fk_id_contractor: +contractor_id, description: 'others' }})
 
           let pay_2 = await prisma.paymentsContractors.create({
             data: {
@@ -454,21 +454,21 @@ export class CreatePaymentsUseCase {
 
             
 
-            await prisma.payments.create({
-              data: {
-                value: valor,
-                method,
-                year: +year,
-                month,
-                quarter: +quarter_2,
-                identification: identifier_2,
-                fk_id_contractor: +contractor_id,
-                type: "CONTRACTOR_WORKERS",
-                others: +value_others_2,
-                description: description_2,
-                pay_id: +pay_2.id,
-              }
-            });
+            // await prisma.payments.create({
+            //   data: {
+            //     value: valor,
+            //     method,
+            //     year: +year,
+            //     month,
+            //     quarter: +quarter_2,
+            //     identification: identifier_2,
+            //     fk_id_contractor: +contractor_id,
+            //     type: "CONTRACTOR_WORKERS",
+            //     others: +value_others_2,
+            //     description: description_2,
+            //     pay_id: +pay_2.id,
+            //   }
+            // });
              
           }
 
