@@ -61,7 +61,7 @@ export class UpdateExpensivesUseCase {
         
          // Se não existir, seta do mes anterior
          const lastMonth = month == 'January' ? 'December' : toMonthName(getMonthFromString(month, year));
-         const lastYear = year - 1
+         const lastYear = month == 'January' ? year - 1 : year
  
          
  
