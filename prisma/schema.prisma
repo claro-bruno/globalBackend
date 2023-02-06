@@ -8,6 +8,16 @@ datasource db {
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
+model Totals {
+  id    Int    @id @default(autoincrement())
+  day   Int
+  month String
+  year  Int
+  valor Float  @default(0)
+
+  @@map("totals")
+}
+
 model Orders {
   id                 Int                @id @default(autoincrement())
   start              String

@@ -1,12 +1,52 @@
+import { isAnyArrayBuffer } from "util/types";
 import { prisma } from "../../../database/prismaClient";
 import { AppError } from "../../../middlewares/AppError";
+
+function getMonthFromString(mon: string) {
+  var d = Date.parse(mon + "1, 2023");
+  if (!isNaN(d)) {
+    return new Date(d).getMonth() + 1;
+  }
+  return -1;
+}
 
 export class GetJobsUseCase {
   async execute(year: number, month: string) {
     const result: any = [];
+    let arr: any = [];
 
+    const isTotals = await prisma.totals.findFirst({ where: {
+      month,
+      year
 
+    }})
 
+    if (!isTotals) {
+      const month_number = getMonthFromString(month)
+      const last_date = new Date(year, month_number, 0);
+      for (let i = 1; i <= last_date.getDate(); i += 1) {
+        arr.push({ day: i });
+      }
+      await arr.reduce(async (memo: any, info: any) => {
+        await memo;
+        await prisma.totals.create({
+          data: {
+            month,
+            year: +year,
+            day: info.day
+          }
+        });
+      }, undefined);
+    }
+
+    let result_total_days = await prisma.totals.findMany({
+      where: {
+        month,
+        year
+      }
+    });
+
+    let result_diff: any = [];
     const jobs_quarters = await prisma.quarters.findMany({
       orderBy: [
         {
@@ -104,6 +144,10 @@ export class GetJobsUseCase {
       
       
     })
+
+    tot.forEach((info: any, index: number) => {
+      result_diff.push(+info.total - +result_total_days[index].valor)
+    })
     
     const result_totals: any = await prisma.$queryRaw`
             SELECT 
@@ -168,7 +212,9 @@ export class GetJobsUseCase {
         // a must be equal to b
         return 0;
       });
-      return { jobs: result, totals: tot };
+
+
+      return { jobs: result, totals_days: tot, totals: result_total_days, result_diff };
     } else {
       return [];
     }
