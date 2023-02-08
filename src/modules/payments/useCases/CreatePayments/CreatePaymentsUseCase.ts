@@ -118,9 +118,9 @@ export class CreatePaymentsUseCase {
         //   }
         // });
       }
-      else {
-        await prisma.payments.deleteMany({ where: { id: res?.id, NOT: { description: 'others'}} })
-      }
+      // else {
+      //   await prisma.payments.deleteMany({ where: { id: res?.id, NOT: { description: 'others'}} })
+      // }
       await prisma.paymentsContractors.update({
           where: {
             id
@@ -132,42 +132,43 @@ export class CreatePaymentsUseCase {
             description
           }
         });
-        if (value_others > 0 && Number(res_pay?.others) === 0) {
-          await prisma.payments.create({
-            data: {
-              value: +value_others,
-              year: +year,
-              month,
-              pay_id: +id,
-              type: "INPUT",
-              description: 'others'
-            }
-          });
-        } else if (value_others > 0 && Number(res_pay?.others) > 0) {
+        // if (value_others > 0 && Number(res_pay?.others) === 0) {
+        //   await prisma.payments.create({
+        //     data: {
+        //       value: +value_others,
+        //       year: +year,
+        //       month,
+        //       pay_id: +id,
+        //       type: "INPUT",
+        //       description: 'others'
+        //     }
+        //   });
+        // } 
+        // else if (value_others > 0 && Number(res_pay?.others) > 0) {
 
-          const res = await prisma.payments.findFirst({
-            where: {
-              pay_id: id,
-              description: 'others'
-            }
-          })
-          await prisma.payments.update({
-            where: {
-              id: res?.id
-            },
-            data: {
-              value: +value_others,
-              year: +year,
-              month,
-              description: 'others',
-              pay_id: +id,
-              type: "INPUT",
+        //   const res = await prisma.payments.findFirst({
+        //     where: {
+        //       pay_id: id,
+        //       description: 'others'
+        //     }
+        //   })
+        //   await prisma.payments.update({
+        //     where: {
+        //       id: res?.id
+        //     },
+        //     data: {
+        //       value: +value_others,
+        //       year: +year,
+        //       month,
+        //       description: 'others',
+        //       pay_id: +id,
+        //       type: "INPUT",
   
-            }
-          });
-        } else if(value_others === 0) {
-          await prisma.payments.deleteMany({ where: { id: res?.id, description: 'others'}})
-        }
+        //     }
+        //   });
+        // } else if(value_others === 0) {
+        //   await prisma.payments.deleteMany({ where: { id: res?.id, description: 'others'}})
+        // }
 
           
 
@@ -198,7 +199,7 @@ export class CreatePaymentsUseCase {
       {
 
         await prisma.paymentsContractors.deleteMany({ where: { quarter: +quarter, month, year,  fk_id_contractor: +contractor_id }})
-        await prisma.payments.deleteMany({ where: { quarter: +quarter, month, year,  fk_id_contractor: +contractor_id, description: 'others' }})
+        // await prisma.payments.deleteMany({ where: { quarter: +quarter, month, year,  fk_id_contractor: +contractor_id, description: 'others' }})
 
         let pay_1 = await prisma.paymentsContractors.create({
           data: {
@@ -234,19 +235,19 @@ export class CreatePaymentsUseCase {
         }
 
        
-        if (value_others > 0) {
-          await prisma.payments.create({
-            data: {
-              value: +value_others,
-              year: +year,
-              month,
-              description: 'others',
-              pay_id: +pay_1.id,
-              type: "INPUT",
+        // if (value_others > 0) {
+        //   await prisma.payments.create({
+        //     data: {
+        //       value: +value_others,
+        //       year: +year,
+        //       month,
+        //       description: 'others',
+        //       pay_id: +pay_1.id,
+        //       type: "INPUT",
   
-            }
-          });
-        }
+        //     }
+        //   });
+        // }
        
         
           // await prisma.invoicesContractors.create({ 
@@ -353,9 +354,10 @@ export class CreatePaymentsUseCase {
           //     description: description_2
           //   }
           // });
-        } else {
-          await prisma.payments.deleteMany({ where: { id: res?.id, NOT: { description: 'others'}} })
-        }
+        } 
+        // else {
+        //   await prisma.payments.deleteMany({ where: { id: res?.id, NOT: { description: 'others'}} })
+        // }
 
           prisma.paymentsContractors.update({
             where: {
@@ -370,42 +372,42 @@ export class CreatePaymentsUseCase {
           });
           
           
-          if (value_others_2 > 0 && res_pay?.others === 0) {
-            await prisma.payments.create({
-              data: {
-                value: +value_others_2,
-                year: +year,
-                month,
-                pay_id: +id,
-                type: "INPUT",
-                description: 'others'
-              }
-            });
-          } else if (value_others_2 > 0 && Number(res_pay?.others) > 0) {
+          // if (value_others_2 > 0 && res_pay?.others === 0) {
+          //   await prisma.payments.create({
+          //     data: {
+          //       value: +value_others_2,
+          //       year: +year,
+          //       month,
+          //       pay_id: +id,
+          //       type: "INPUT",
+          //       description: 'others'
+          //     }
+          //   });
+          // } else if (value_others_2 > 0 && Number(res_pay?.others) > 0) {
   
-            const res = await prisma.payments.findFirst({
-              where: {
-                pay_id: id_2,
-                description: 'others'
-              }
-            })
-            await prisma.payments.update({
-              where: {
-                id: res?.id
-              },
-              data: {
-                value: +value_others_2,
-                year: +year,
-                month,
-                description: 'others',
-                pay_id: +id_2,
-                type: "INPUT",
+          //   const res = await prisma.payments.findFirst({
+          //     where: {
+          //       pay_id: id_2,
+          //       description: 'others'
+          //     }
+          //   })
+          //   await prisma.payments.update({
+          //     where: {
+          //       id: res?.id
+          //     },
+          //     data: {
+          //       value: +value_others_2,
+          //       year: +year,
+          //       month,
+          //       description: 'others',
+          //       pay_id: +id_2,
+          //       type: "INPUT",
     
-              }
-            });
-          } else if(value_others_2 === 0 && Number(res_pay?.others) > 0) {
-            await prisma.payments.deleteMany({ where: { pay_id: res?.id, description: 'others'}})
-          }
+          //     }
+          //   });
+          // } else if(value_others_2 === 0 && Number(res_pay?.others) > 0) {
+          //   await prisma.payments.deleteMany({ where: { pay_id: res?.id, description: 'others'}})
+          // }
 
             // const invoice_payment = await prisma.invoicesContractors.findFirst({
             //   where: {
@@ -433,7 +435,7 @@ export class CreatePaymentsUseCase {
         {
 
           await prisma.paymentsContractors.deleteMany({ where: { quarter: +quarter_2, month, year,  fk_id_contractor: +contractor_id }})
-          await prisma.payments.deleteMany({ where: { quarter: +quarter_2, month, year,  fk_id_contractor: +contractor_id, description: 'others' }})
+          // await prisma.payments.deleteMany({ where: { quarter: +quarter_2, month, year,  fk_id_contractor: +contractor_id, description: 'others' }})
 
           let pay_2 = await prisma.paymentsContractors.create({
             data: {
@@ -472,18 +474,18 @@ export class CreatePaymentsUseCase {
              
           }
 
-          if(value_others_2 > 0) {
-            await prisma.payments.create({
-              data: {
-                value: +value_others_2,
-                year: +year,
-                description: 'others',
-                month,
-                pay_id: +pay_2.id,
-                type: "INPUT"
-              }
-            });
-          }
+          // if(value_others_2 > 0) {
+          //   await prisma.payments.create({
+          //     data: {
+          //       value: +value_others_2,
+          //       year: +year,
+          //       description: 'others',
+          //       month,
+          //       pay_id: +pay_2.id,
+          //       type: "INPUT"
+          //     }
+          //   });
+          // }
           
          
             // await prisma.invoicesContractors.create({ 

@@ -40,6 +40,7 @@ export class GetJobsUseCase {
     }
 
     let result_total_days = await prisma.totals.findMany({
+      orderBy: [{ day: 'asc' }],
       where: {
         month,
         year
