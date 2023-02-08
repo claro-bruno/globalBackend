@@ -8,6 +8,7 @@ import { GetJobsByContractorController } from "../modules/jobs/GetJobsByContract
 import { CompleteJobsController } from "../modules/jobs/CompleteJobs/CompleteJobsController";
 import { UpdateJobsController } from "../modules/jobs/UpdateJobs/UpdateJobsController";
 import { CreateJobsByMonthController } from "../modules/jobs/CreateJobsByMonth/CreateJobsByMonthController";
+import { UpdateTotalsController } from "../modules/jobs/updateTotals/UpdateTotalsController";
 
 const jobsRoutes = Router();
 
@@ -18,6 +19,7 @@ const getJobsByContractorController = new GetJobsByContractorController();
 const completeJobsController = new CompleteJobsController();
 const updateJobsController = new UpdateJobsController();
 const createJobsByMonthController = new CreateJobsByMonthController();
+const updateTotalsController = new UpdateTotalsController();
 
 jobsRoutes.post(
   "/",
@@ -28,6 +30,11 @@ jobsRoutes.put(
   "/:id",
   use(ensureAuthenticate),
   use(completeJobsController.handle)
+);
+jobsRoutes.put(
+  "/total",
+  use(ensureAuthenticate),
+  use(updateTotalsController.handle)
 );
 jobsRoutes.patch(
   "/:id",

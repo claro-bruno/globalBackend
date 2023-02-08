@@ -1,4 +1,3 @@
-import { isAnyArrayBuffer } from "util/types";
 import { prisma } from "../../../database/prismaClient";
 import { AppError } from "../../../middlewares/AppError";
 
@@ -47,7 +46,6 @@ export class GetJobsUseCase {
       }
     });
 
-    let result_diff: any = [];
     const jobs_quarters = await prisma.quarters.findMany({
       orderBy: [
         {
@@ -146,9 +144,6 @@ export class GetJobsUseCase {
       
     })
 
-    tot.forEach((info: any, index: number) => {
-      result_diff.push(+info.total - +result_total_days[index].valor)
-    })
     
     const result_totals: any = await prisma.$queryRaw`
             SELECT 
@@ -215,7 +210,7 @@ export class GetJobsUseCase {
       });
 
 
-      return { jobs: result, totals_days: tot, totals: result_total_days, result_diff };
+      return { jobs: result, totals_days: tot, totals: result_total_days };
     } else {
       return [];
     }
