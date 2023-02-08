@@ -73,6 +73,17 @@ export class GetExpensivesByMonthUseCase {
             }
         });
 
+        const sumOthers = await prisma.paymentsContractors.aggregate({
+            _sum: {
+                others: true
+            },
+
+            where: {
+                month,
+                year,
+            }
+        });
+
         const sumContractorsWorkers = await prisma.payments.aggregate({
             _sum: {
                 value: true
@@ -135,6 +146,7 @@ export class GetExpensivesByMonthUseCase {
 
         
         const total_input = sumInput._sum.value == null ? 0 : sumInput._sum.value;
+        const total_others = sumOthers._sum.others == null ? 0 : sumOthers._sum.others;
         const total_output = sumOutput._sum.value == null ? 0 : sumOutput._sum.value;
         const total_contractor = sumContractorsWorkers._sum.value == null ? 0 : sumContractorsWorkers._sum.value;
         const balanceLastMonth = balanceLastMonthExist?.value == null ? 0 : balanceLastMonthExist?.value;
