@@ -158,6 +158,7 @@ export class GetExpensivesByMonthUseCase {
             total_input,
             total_output,
             total_contractor,
+            total_others,
             balanceLastMonth,
             balanceMonth
         };
