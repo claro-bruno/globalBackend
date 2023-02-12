@@ -27,15 +27,16 @@ jobsRoutes.post(
   use(createServicesController.handle)
 );
 jobsRoutes.put(
-  "/:id",
-  use(ensureAuthenticate),
-  use(completeJobsController.handle)
-);
-jobsRoutes.put(
   "/total",
   use(ensureAuthenticate),
   use(updateTotalsController.handle)
 );
+jobsRoutes.put(
+  "/:id",
+  use(ensureAuthenticate),
+  use(completeJobsController.handle)
+);
+
 jobsRoutes.patch(
   "/:id",
   use(ensureAuthenticate),
