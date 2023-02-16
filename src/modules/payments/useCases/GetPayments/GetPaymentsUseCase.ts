@@ -39,64 +39,64 @@ export class GetPaymentsUseCase {
             (
               SELECT id AS id_1
                 FROM "paymentsContractors" as pa
-                where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS'
+                where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS' AND pa.year = ${year} AND pa.month = ${month}
              
             )AS id_1,
             (
         
 				SELECT value AS value_1
                 FROM "paymentsContractors" as pa
-                where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS'
+                where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS' AND pa.year = ${year} AND pa.month = ${month}
             ) AS value_1,
             (
 				SELECT others AS value_1
                 FROM "paymentsContractors" as pa
-                where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS'
+                where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS' AND pa.year = ${year} AND pa.month = ${month}
             ) AS others_1,
             (
 				SELECT identification 
                 FROM "paymentsContractors" as pa
-                where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS'
+                where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS' AND pa.year = ${year} AND pa.month = ${month}
             ) AS identification_1,
             (
 				SELECT description 
                 FROM "paymentsContractors" as pa
-                where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS'
+                where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS' AND pa.year = ${year} AND pa.month = ${month}
             ) AS description_1,
             (
 				SELECT method 
                 FROM "paymentsContractors" as pa
-                where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS'
+                where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS' AND pa.year = ${year} AND pa.month = ${month}
             ) AS method_1,
             (
               SELECT id AS id_2
                 FROM "paymentsContractors" as pa
-                where pa.fk_id_contractor = c.id AND pa.quarter = 2 AND pa.type = 'CONTRACTOR_WORKERS'
+                where pa.fk_id_contractor = c.id AND pa.quarter = 2 AND pa.type = 'CONTRACTOR_WORKERS' AND pa.year = ${year} AND pa.month = ${month}
             )AS id_2,
             (
 				SELECT value 
                 FROM "paymentsContractors" as pa
-                where pa.fk_id_contractor = c.id AND pa.quarter = 2 AND pa.type = 'CONTRACTOR_WORKERS'
+                where pa.fk_id_contractor = c.id AND pa.quarter = 2 AND pa.type = 'CONTRACTOR_WORKERS' AND pa.year = ${year} AND pa.month = ${month}
             ) AS value_2,
             (
 				SELECT others
                 FROM "paymentsContractors" as pa
-                where pa.fk_id_contractor = c.id AND pa.quarter = 2 AND pa.type = 'CONTRACTOR_WORKERS'
+                where pa.fk_id_contractor = c.id AND pa.quarter = 2 AND pa.type = 'CONTRACTOR_WORKERS' AND pa.year = ${year} AND pa.month = ${month}
             ) AS others_2,
             (
 				SELECT identification 
                 FROM "paymentsContractors" as pa
-                where pa.fk_id_contractor = c.id AND pa.quarter = 2 AND pa.type = 'CONTRACTOR_WORKERS'
+                where pa.fk_id_contractor = c.id AND pa.quarter = 2 AND pa.type = 'CONTRACTOR_WORKERS' AND pa.year = ${year} AND pa.month = ${month}
             ) AS identification_2,
             (
 				SELECT description 
                 FROM "paymentsContractors" as pa
-                where pa.fk_id_contractor = c.id AND pa.quarter = 2 AND pa.type = 'CONTRACTOR_WORKERS'
+                where pa.fk_id_contractor = c.id AND pa.quarter = 2 AND pa.type = 'CONTRACTOR_WORKERS' AND pa.year = ${year} AND pa.month = ${month}
             ) AS description_2,
             (
 				SELECT method 
                 FROM "paymentsContractors" as pa
-                where pa.fk_id_contractor = c.id AND pa.quarter = 2 AND pa.type = 'CONTRACTOR_WORKERS'
+                where pa.fk_id_contractor = c.id AND pa.quarter = 2 AND pa.type = 'CONTRACTOR_WORKERS' AND pa.year = ${year} AND pa.month = ${month}
              ) AS method_2
             FROM jobs
             INNER JOIN quarters ON quarters.fk_id_job = jobs.id
