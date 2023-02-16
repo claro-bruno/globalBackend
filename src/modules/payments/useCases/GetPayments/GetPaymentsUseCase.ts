@@ -15,14 +15,14 @@ export class GetPaymentsUseCase {
 				SELECT
 				SUM(quarters.others) FROM jobs
 				INNER JOIN quarters ON quarters.fk_id_job = jobs.id
-				WHERE quarters.order = 1 AND jobs.fk_id_contractor = c.id
+				WHERE quarters.order = 1 AND jobs.fk_id_contractor = c.id AND quarters.year = ${year} AND quarters.month = ${month}
 			) AS others_1,
 			(
 				SELECT
 				SUM(quarters.others) FROM jobs
 				INNER JOIN quarters ON quarters.fk_id_job = jobs.id
-				WHERE quarters.order = 2 AND jobs.fk_id_contractor = c.id
-			) AS others_2
+				WHERE quarters.order = 2 AND jobs.fk_id_contractor = c.id AND quarters.year = ${year} AND quarters.month = ${month}
+			) AS others_2 
             FROM jobs AS j
             INNER JOIN quarters AS q ON q.fk_id_job = j.id
             INNER JOIN appointments AS ap ON ap.fk_id_quarter = q.id
