@@ -9,7 +9,7 @@ function getMonthFromString(mon: string) {
   return -1;
 }
 
-export class GetJobsUseCase_ATUAL {
+export class GetJobsUseCase_ {
   async execute(year: number, month: string) {
     const result: any = [];
     let arr: any = [];
@@ -38,7 +38,13 @@ export class GetJobsUseCase_ATUAL {
       }, undefined);
     }
 
-    
+    let result_total_days = await prisma.totals.findMany({
+      orderBy: [{ day: 'asc' }],
+      where: {
+        month,
+        year
+      }
+    });
 
     const jobs_quarters = await prisma.quarters.findMany({
       orderBy: [
@@ -103,16 +109,8 @@ export class GetJobsUseCase_ATUAL {
       (quarter: any) => quarter.fk_id_job
     );
     
-    let result_total_days = await prisma.totals.findMany({
-      orderBy: [{ day: 'asc' }],
-      where: {
-        month,
-        year
-      }
-    });
-
     let totals_days: any = await prisma.$queryRaw`
-      SELECT SUM(A.value) AS totalHour, A.date AS date, extract(day from A.date) as dia from appointments A
+      SELECT SUM(A.value) AS total, DATE_TRUNC ('day', A.date) AS date, extract(day from A.date) as dia from appointments A
       INNER JOIN quarters Q ON Q.id = A.fk_id_quarter
       INNER JOIN jobs J ON J.id = Q.fk_id_job
       WHERE q.month = ${month} AND q.year= ${year}
@@ -120,32 +118,29 @@ export class GetJobsUseCase_ATUAL {
       ORDER BY extract(day from A.date)
     `
     let tot: any = [];
-    
     totals_days.forEach((day: any, index: number) => {
+
       
       if(tot.length === 0) {
         tot.push(day)
-        tot[0].id = result_total_days[0]?.id
-        tot[0].hour = result_total_days[0]?.valor
       }
       else {
         let indice = tot.length;
         if(indice > 0) {
-          if (+tot[indice-1].dia === +day.dia && +day.totalhour > 0) {
+
+          if (+tot[indice-1].dia === +day.dia && +day.total > 0) {
             tot.pop()
             tot.push(day)
-            tot[+day.dia-1].id =  +result_total_days[+day.dia-1]?.id
-            tot[+day.dia-1].hour = +result_total_days[+day.dia-1]?.valor
             
           }
           else if (+tot[indice-1].dia !== +day.dia) {
             tot.push(day)
-            tot[indice].id = +result_total_days[+day.dia-1]?.id
-            tot[indice].hour = +result_total_days[+day.dia-1]?.valor
           }
           
         }
       }
+      
+      
       
     })
 
@@ -154,8 +149,8 @@ export class GetJobsUseCase_ATUAL {
             SELECT 
             q.fk_id_job as id,
             j.status,
-            q.id AS quarter_id,
-            q.order,
+			q.id AS quarter_id,
+			q.order,
             CONCAT(c.first_name,' ',c.middle_name,' ',c.last_name) AS contractor_name,
             CONCAT(cl.name) AS client_name,
             sum(ap.value*q.value_hour) total,
@@ -169,8 +164,6 @@ export class GetJobsUseCase_ATUAL {
             GROUP BY q.id,contractor_name,client_name,j.status
             ORDER BY q.id ASC
             ;`;
-
-
     if (jobs_quarters.length > 0) {
       jobsGrouped.forEach((job: any) => {
         const job_info: any = {};
@@ -217,7 +210,7 @@ export class GetJobsUseCase_ATUAL {
       });
 
 
-      return { jobs: result, days: tot };
+      return { jobs: result, totals_days: tot, totals: result_total_days };
     } else {
       return [];
     }

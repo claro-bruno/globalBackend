@@ -28,7 +28,7 @@ jobsRoutes.post(
 );
 jobsRoutes.put(
   "/total",
-  use(ensureAuthenticate),
+  // use(ensureAuthenticate),
   use(updateTotalsController.handle)
 );
 jobsRoutes.put(
