@@ -103,7 +103,7 @@ export class GetJobsUseCase {
       (quarter: any) => quarter.fk_id_job
     );
     
-    let result_total_days = await prisma.totals.findMany({
+    let result_total_days: any = await prisma.totals.findMany({
       orderBy: [{ day: 'asc' }],
       where: {
         month,
@@ -120,28 +120,31 @@ export class GetJobsUseCase {
       ORDER BY extract(day from A.date)
     `
     let tot: any = [];
-    
+
     totals_days.forEach((day: any, index: number) => {
       
       if(tot.length === 0) {
         tot.push(day)
         tot[0].id = result_total_days[0]?.id
         tot[0].hour = result_total_days[0]?.valor
+        tot[0].totalHour = day.totalhour
       }
       else {
         let indice = tot.length;
         if(indice > 0) {
-          if (+tot[indice-1].dia === +day.dia && +day.totalhour > 0) {
+          if (+tot[indice-1].dia === +day.dia && +day.totalhour > +tot[indice-1].totalhour) {
             tot.pop()
             tot.push(day)
             tot[+day.dia-1].id =  +result_total_days[+day.dia-1]?.id
             tot[+day.dia-1].hour = +result_total_days[+day.dia-1]?.valor
+            tot[+day.dia-1].totalhour = +day.totalhour
             
           }
           else if (+tot[indice-1].dia !== +day.dia) {
             tot.push(day)
             tot[indice].id = +result_total_days[+day.dia-1]?.id
             tot[indice].hour = +result_total_days[+day.dia-1]?.valor
+            tot[indice].totalhour = +day.totalhour
           }
           
         }
