@@ -22,7 +22,8 @@ export class GetPaymentsUseCase {
 				SUM(quarters.others) FROM jobs
 				INNER JOIN quarters ON quarters.fk_id_job = jobs.id
 				WHERE quarters.order = 2 AND jobs.fk_id_contractor = c.id AND quarters.year = ${year} AND quarters.month = ${month}
-			) AS others_2
+			) AS others_2 
+
             FROM jobs AS j
             INNER JOIN quarters AS q ON q.fk_id_job = j.id
             INNER JOIN appointments AS ap ON ap.fk_id_quarter = q.id
@@ -56,7 +57,8 @@ export class GetPaymentsUseCase {
 				SELECT identification 
                 FROM "paymentsContractors" as pa
                 where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS' AND pa.year = ${year} AND pa.month = ${month}
-            ) AS identification_1, 
+
+            ) AS identification_1,
             (
 				SELECT description 
                 FROM "paymentsContractors" as pa
