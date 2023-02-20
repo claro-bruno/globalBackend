@@ -25,7 +25,8 @@ export class GetExpensivesByMonthUseCase {
             "CHEMICAL_CONSUMABLES",
             "INSURANCE_TAX",
             "EXTRAS",
-            "GLOBAL"
+            "GLOBAL",
+            "MISC"
         ];
 
         const arrMonths: any = [

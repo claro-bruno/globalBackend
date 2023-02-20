@@ -340,4 +340,5 @@ enum Type {
   INSURANCE_TAX
   EXTRAS
   GLOBAL
+  MISC
 }
