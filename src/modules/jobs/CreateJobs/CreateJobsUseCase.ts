@@ -68,7 +68,6 @@ export class CreateJobsUseCase {
     if(!id_contractor || !id_client || value === null || !value_hour ) {
       throw new AppError("Invalid Data");
     }
-    
     // if (existJob) {
     //   throw new AppError("Job already exist");
     // }
