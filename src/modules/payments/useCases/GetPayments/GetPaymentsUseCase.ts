@@ -56,7 +56,8 @@ export class GetPaymentsUseCase {
 				SELECT identification 
                 FROM "paymentsContractors" as pa
                 where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS' AND pa.year = ${year} AND pa.month = ${month}
-            ) AS identification_1, 
+            ) AS identification_1,
+
             (
 				SELECT description 
                 FROM "paymentsContractors" as pa
