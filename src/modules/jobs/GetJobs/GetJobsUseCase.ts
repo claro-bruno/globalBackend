@@ -19,9 +19,8 @@ export class GetJobsUseCase {
       year
 
     }})
-
+    let month_number = getMonthFromString(month)
     if (!isTotals) {
-      const month_number = getMonthFromString(month)
       const last_date = new Date(year, month_number, 0);
       for (let i = 1; i <= last_date.getDate(); i += 1) {
         arr.push({ day: i });
@@ -112,22 +111,29 @@ export class GetJobsUseCase {
     });
 
     let totals_days: any = await prisma.$queryRaw`
-      SELECT SUM(A.value) AS totalHour, A.date AS date, extract(day from A.date) as dia from appointments A
+      SELECT SUM(A.value) AS totalHour, extract(day from A.date) as dia from appointments A
       INNER JOIN quarters Q ON Q.id = A.fk_id_quarter
       INNER JOIN jobs J ON J.id = Q.fk_id_job
       WHERE q.month = ${month} AND q.year= ${year}
-      GROUP BY extract(day from A.date), A.date
+      GROUP BY extract(day from A.date)
       ORDER BY extract(day from A.date)
     `
     let tot: any = [];
-
+    let dia: string = '';
+    let dia_res : string = '';
+    let mes : string = '';
+    let mes_res : string = '';
     totals_days.forEach((day: any, index: number) => {
-      
+      mes_res = month_number.toString()
+      mes = mes_res.length === 1 ? `0${month_number}` : mes_res
+      dia_res = day.dia.toString()
+      dia = dia_res.length === 1 ? `0${dia_res}` : dia_res
       if(tot.length === 0) {
         tot.push(day)
         tot[0].id = result_total_days[0]?.id
         tot[0].hour = result_total_days[0]?.valor
         tot[0].totalHour = day.totalhour
+        tot[0].date = `${year}-${mes}-${dia}T00:00:00.000Z`
       }
       else {
         let indice = tot.length;
@@ -138,13 +144,16 @@ export class GetJobsUseCase {
             tot[+day.dia-1].id =  +result_total_days[+day.dia-1]?.id
             tot[+day.dia-1].hour = +result_total_days[+day.dia-1]?.valor
             tot[+day.dia-1].totalhour = +day.totalhour
+            tot[+day.dia-1].date = `${year}-${mes}-${dia}T00:00:00.000Z`
             
           }
           else if (+tot[indice-1].dia !== +day.dia) {
             tot.push(day)
+ 
             tot[indice].id = +result_total_days[+day.dia-1]?.id
             tot[indice].hour = +result_total_days[+day.dia-1]?.valor
             tot[indice].totalhour = +day.totalhour
+            tot[indice].date = `${year}-${mes}-${dia}T00:00:00.000Z`
           }
           
         }
