@@ -21,18 +21,19 @@ function getMonthFromString(mon: string){
 
 function toMonthName(monthNumber: number) {
     const date = new Date();
-    date.setMonth(monthNumber - 1);
+    date.setMonth(monthNumber);
   
-    return date.toLocaleString('en-US', {
-      month: 'long',
+    return date.toLocaleString("en-US", {
+      month: "long"
     });
-}
+  }
+
 
 export class CreateInvoicesUseCase {
     async execute({ date_invoice, value, identification, fk_id_client, description  }: ICreateExpensive) {
+        
         const month = toMonthName(new Date(date_invoice).getUTCMonth());
         const year  = new Date(date_invoice).getUTCFullYear();
-
         const invoiceExist = await prisma.invoices.findFirst({
             where: {
                 identification: identification

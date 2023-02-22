@@ -31,11 +31,11 @@ function getMonthFromString(mon: string, year: number) {
 export class CreateExpensivesUseCase {
     async execute({ date_expensive, payed_for, value, method, identifier, type, status  }: ICreateExpensive) {
         let balanceLastMonthExist: any = {};
-    
+        console.log(date_expensive)
         const month = toMonthName(new Date(date_expensive).getUTCMonth());
         const year  = new Date(date_expensive).getUTCFullYear();
 
-        
+        console.log(month)
         // Verificar o balance do mes atual
         const balanceMonthExist = await prisma.balances.findFirst({
             where: {
