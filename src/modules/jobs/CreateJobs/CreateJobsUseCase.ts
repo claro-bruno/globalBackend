@@ -56,6 +56,10 @@ export class CreateJobsUseCase {
     value_hour
   }: IService) {
     const arrDays = [];
+    let dia: string = '';
+    let dia_res : string = '';
+    let mes : string = '';
+    let mes_res : string = '';
     let arr = [];
     const existJob = await prisma.jobs.findFirst({
       where: {
@@ -113,15 +117,21 @@ export class CreateJobsUseCase {
       });
 
       for (let i = 1; i <= 15; i += 1) {
+        
+        mes_res = (month+1).toString() 
+        mes = mes_res.length === 1 ? `0${mes_res}` : mes_res
+        dia_res = i.toString()
+        dia = dia_res.length === 1 ? `0${dia_res}` : dia_res
+        let dateValue = `${year}-${mes}-${dia}T00:00:00.000Z`
         let dataValue = new Date(year, month, i);
         if (
           arrDays.includes(
             dataValue.toLocaleString("default", { weekday: "long" })
           )
         ) {
-          arr.push({ date: dataValue, value });
+          arr.push({ date: dateValue, value });
         } else {
-          arr.push({ date: dataValue, value: 0 });
+          arr.push({ date: dateValue, value: 0 });
         }
       }
 
@@ -152,15 +162,20 @@ export class CreateJobsUseCase {
     arr = [];
 
     for (let i = 16; i <= last_date.getDate(); i += 1) {
+      mes_res = (month+1).toString() 
+      mes = mes_res.length === 1 ? `0${mes_res}` : mes_res
+      dia_res = i.toString()
+      dia = dia_res.length === 1 ? `0${dia_res}` : dia_res
+      let dateValue = `${year}-${mes}-${dia}T00:00:00.000Z`
       let dataValue = new Date(year, month, i);
       if (
         arrDays.includes(
           dataValue.toLocaleString("default", { weekday: "long" })
         )
       ) {
-        arr.push({ date: dataValue, value });
+        arr.push({ date: dateValue, value });
       } else {
-        arr.push({ date: dataValue, value: 0 });
+        arr.push({ date: dateValue, value: 0 });
       }
     }
 

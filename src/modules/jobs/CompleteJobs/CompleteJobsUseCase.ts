@@ -19,7 +19,7 @@ interface IAppointment {
 }
 
 function getMonthFromString(mon: string) {
-  var d = Date.parse(mon + "1, 2022");
+  var d = Date.parse(mon + "1, 2023");
   if (!isNaN(d)) {
     return new Date(d).getMonth();
   }
@@ -48,6 +48,11 @@ export class CompleteJobsUseCase {
     workedDaysInfos
   }: IServiceComplete) {
     const arr = [] as any;
+    let dia: string = '';
+    let dia_res : string = '';
+    let mes : string = '';
+    let mes_res : string = '';
+
     
     const jobExist = await prisma.jobs.findFirst({
       where: {
@@ -101,19 +106,25 @@ export class CompleteJobsUseCase {
         }
       });
     }
-
-    // const last_date = new Date(year, month, 0);
-    // const inicio = quarter === 1 ? 1 : 16;
-    // // const end = quarter === 1 ? 15 : last_date.getDate();
+    
+    // const last_date = new Date(year, +getMonthFromString(month)+1, 0);
+    // const start = quarter === 1 ? 1 : 16;
+    // const end = quarter === 1 ? 15 : last_date.getDate();
+    
     workedDaysInfos.forEach((info: { dateValue: string }) => {
+      mes_res = (getMonthFromString(month)+1).toString() 
+      mes = mes_res.length === 1 ? `0${mes_res}` : mes_res
+      dia_res = new Date(Object.keys(info)[0]).getUTCDate().toString()
+      dia = dia_res.length === 1 ? `0${dia_res}` : dia_res
+      let dataValue = `${year}-${mes}-${dia}T00:00:00.000Z`
       arr.push({
-        date: new Date(Object.keys(info)[0]),
+        date: dataValue,
         value: +Object.values(info)[0]
       });
       // let appoint: IAppointment = {date: Object.keys(info)[0],value: +Object.values(info)[0]};
       // arr.push(appoint);
     });
-
+   
     await prisma.appointments.deleteMany({
       where: {
         fk_id_quarter: quarterResult.id

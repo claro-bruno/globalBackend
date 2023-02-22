@@ -28,6 +28,13 @@ interface IAppointment {
 export class CreateJobsByMonthUseCase {
     async execute(month: string, year: number) {
         let arr: any = [];
+        let dia: string = '';
+        let dia_res : string = '';
+        let mes : string = '';
+        let mes_res : string = '';
+
+        
+        
         const quartersExists = await prisma.quarters.findMany({
             where: {
                 month: month,
@@ -74,9 +81,13 @@ export class CreateJobsByMonthUseCase {
                     let inicio = 1;
                     let fim = 15;
                     // let fim = order === 1 ? 15 : last_date.getDate();
-
+                    
                     for(let i=inicio; i<= fim; i += 1) {
-                        let dataValue = new Date(year, +getMonthFromString(month), i);
+                        mes_res = (getMonthFromString(month)+1).toString() 
+                        mes = mes_res.length === 1 ? `0${mes_res}` : mes_res
+                        dia_res = i.toString()
+                        dia = dia_res.length === 1 ? `0${dia_res}` : dia_res
+                        let dataValue = `${year}-${mes}-${dia}T00:00:00.000Z`
                         arr.push({ date: dataValue, value: 0 });
                     }
 
@@ -108,7 +119,11 @@ export class CreateJobsByMonthUseCase {
                     fim = last_date.getDate();
 
                     for(let i=inicio; i<= fim; i += 1) {
-                        let dataValue = new Date(year, +getMonthFromString(month), i);
+                        mes_res = (getMonthFromString(month)+1).toString() 
+                        mes = mes_res.length === 1 ? `0${mes_res}` : mes_res
+                        dia_res = i.toString()
+                        dia = dia_res.length === 1 ? `0${dia_res}` : dia_res
+                        let dataValue = `${year}-${mes}-${dia}T00:00:00.000Z`
                         arr.push({ date: dataValue, value: 0 });
                     }
 
