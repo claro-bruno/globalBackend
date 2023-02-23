@@ -22,12 +22,12 @@ function getMonthFromString(mon: string){
 
 function toMonthName(monthNumber: number) {
     const date = new Date();
-    date.setMonth(monthNumber - 1);
+    date.setMonth(monthNumber);
   
-    return date.toLocaleString('en-US', {
-      month: 'long',
+    return date.toLocaleString("en-US", {
+      month: "long"
     });
-}
+  }
 
 export class UpdateInvoicesUseCase {
     async execute({ id, date_invoice, value, identification, description, fk_id_client  }: IUpdateInvoice) {
