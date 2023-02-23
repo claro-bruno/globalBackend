@@ -11,23 +11,22 @@ interface IUpdateInvoice {
     id: number;
 }
 
-function getMonthFromString(mon: string){
-
-    var d = Date.parse(mon + "1, 2022");
-    if(!isNaN(d)){
-        return new Date(d).getMonth();
+function getMonthFromString(mon: string, year: number) {
+    const d = Date.parse(mon + "1, " + year);
+    if (!isNaN(d)) {
+      return new Date(d).getMonth() - 1;
     }
     return -1;
-}
-
-function toMonthName(monthNumber: number) {
-    const date = new Date();
-    date.setMonth(monthNumber - 1);
+  }
   
-    return date.toLocaleString('en-US', {
-      month: 'long',
+  function toMonthName(monthNumber: number) {
+    const date = new Date();
+    date.setMonth(monthNumber);
+  
+    return date.toLocaleString("en-US", {
+      month: "long"
     });
-}
+  }
 
 export class UpdateInvoicesUseCase {
     async execute({ id, date_invoice, value, identification, description, fk_id_client  }: IUpdateInvoice) {
