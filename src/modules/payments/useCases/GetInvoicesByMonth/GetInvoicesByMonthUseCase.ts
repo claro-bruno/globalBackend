@@ -11,6 +11,7 @@ export class GetInvoicesByMonthUseCase {
     async execute({ month, year } : IGetInvoices) {
 
         const result = await prisma.invoices.findMany({
+            orderBy: [{ date_at: 'asc'}],
             where: {
                 month,
                 year

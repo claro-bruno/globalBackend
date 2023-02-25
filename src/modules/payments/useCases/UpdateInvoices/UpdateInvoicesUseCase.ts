@@ -46,13 +46,15 @@ export class UpdateInvoicesUseCase {
             }
          });
          
-         if(invoiceAlreadyExist) {
+         if(!invoiceExist) {
+            throw new AppError('Invoice does not exists', 400)
+        }
+        
+         if(invoiceAlreadyExist && invoiceAlreadyExist?.identification !== identification) {
              throw new AppError('Invoice already exists', 400)
          }
  
-         if(!invoiceExist) {
-             throw new AppError('Invoice does not exists', 400)
-         }
+         
 
         const date = new Date(date_invoice);
         await prisma.invoices.update({
