@@ -126,7 +126,7 @@ model Contractors {
   telephone                  String
   created_at                 DateTime              @default(now())
   fk_id_account              Int?                  @unique
-  fk_id_client_contractor    Int?                  @unique
+  fk_id_client_contractor    Int?
   ein                        String?
   address                    Adresseses[]
   account                    Accounts?             @relation(fields: [fk_id_account], references: [id])
@@ -149,7 +149,7 @@ model ClientsContractors {
   phone               String?
   address             String?
   status              Status                @default(ACTIVE)
-  Contractors         Contractors?
+  Contractors         Contractors[]
   InvoicesContractors InvoicesContractors[]
 
   @@map("clients_contractor")

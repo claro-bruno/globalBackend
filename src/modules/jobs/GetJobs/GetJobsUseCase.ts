@@ -88,15 +88,10 @@ export class GetJobsUseCase {
         value_hour: true,
         status: true,
         others: true,
-        appointment: {
-          select: {
-            date: true,
-            value: true
-          }
-        }
+        appointment: true,
       }
     });
-
+    
     const jobsGrouped = groupBy(
       jobs_quarters,
       (quarter: any) => quarter.fk_id_job
@@ -184,6 +179,7 @@ export class GetJobsUseCase {
 
 
     if (jobs_quarters.length > 0) {
+      
       jobsGrouped.forEach((job: any) => {
         const job_info: any = {};
 
@@ -203,6 +199,9 @@ export class GetJobsUseCase {
         job_info.status = status;
         
         job.forEach((quarter: any) => {
+          quarter.appointment.forEach((ap: any) =>{
+            ap.id = ap.id.toString().split('n')[0] !== '' ? Number(ap.id.toString().split('n')[0]) : ap.id
+          })
           quarter.appointment.sort(function(a:any, b:any) { 
             return a.date.getTime() - b.date.getTime() 
           });
@@ -214,6 +213,7 @@ export class GetJobsUseCase {
         });
 
         job_info.quarter = job;
+       
         result.push(job_info);
       });
 

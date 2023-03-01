@@ -10,7 +10,7 @@ interface IServiceComplete {
   others: number;
   status: string;
   status_payment: string;
-  workedDaysInfos: { dateValue: string }[];
+  // workedDaysInfos: { dateValue: string }[];
 }
 
 interface IAppointment {
@@ -45,7 +45,7 @@ export class CompleteJobsUseCase {
     status,
     status_payment,
     others,
-    workedDaysInfos
+    // workedDaysInfos
   }: IServiceComplete) {
     const arr = [] as any;
     let dia: string = '';
@@ -111,37 +111,37 @@ export class CompleteJobsUseCase {
     // const start = quarter === 1 ? 1 : 16;
     // const end = quarter === 1 ? 15 : last_date.getDate();
     
-    workedDaysInfos.forEach((info: { dateValue: string }) => {
-      mes_res = (getMonthFromString(month)+1).toString() 
-      mes = mes_res.length === 1 ? `0${mes_res}` : mes_res
-      dia_res = new Date(Object.keys(info)[0]).getUTCDate().toString()
-      dia = dia_res.length === 1 ? `0${dia_res}` : dia_res
-      let dataValue = `${year}-${mes}-${dia}T00:00:00.000Z`
-      arr.push({
-        date: dataValue,
-        value: +Object.values(info)[0]
-      });
-      // let appoint: IAppointment = {date: Object.keys(info)[0],value: +Object.values(info)[0]};
-      // arr.push(appoint);
-    });
+    // workedDaysInfos.forEach((info: { dateValue: string }) => {
+    //   mes_res = (getMonthFromString(month)+1).toString() 
+    //   mes = mes_res.length === 1 ? `0${mes_res}` : mes_res
+    //   dia_res = new Date(Object.keys(info)[0]).getUTCDate().toString()
+    //   dia = dia_res.length === 1 ? `0${dia_res}` : dia_res
+    //   let dataValue = `${year}-${mes}-${dia}T00:00:00.000Z`
+    //   arr.push({
+    //     date: dataValue,
+    //     value: +Object.values(info)[0]
+    //   });
+    //   // let appoint: IAppointment = {date: Object.keys(info)[0],value: +Object.values(info)[0]};
+    //   // arr.push(appoint);
+    // });
    
-    await prisma.appointments.deleteMany({
-      where: {
-        fk_id_quarter: quarterResult.id
-      }
-    });
-    if (quarterResult) {
-      await arr.reduce(async (memo: any, { date, value }: IAppointment) => {
-        await memo;
-        await prisma.appointments.create({
-          data: {
-            fk_id_quarter: quarterResult?.id as any,
-            value: +value,
-            date: date
-          }
-        });
-      }, undefined);
-    }
+    // await prisma.appointments.deleteMany({
+    //   where: {
+    //     fk_id_quarter: quarterResult.id
+    //   }
+    // });
+    // if (quarterResult) {
+    //   await arr.reduce(async (memo: any, { date, value }: IAppointment) => {
+    //     await memo;
+    //     await prisma.appointments.create({
+    //       data: {
+    //         fk_id_quarter: quarterResult?.id as any,
+    //         value: +value,
+    //         date: date
+    //       }
+    //     });
+    //   }, undefined);
+    // }
 
     return "Ok";
   }

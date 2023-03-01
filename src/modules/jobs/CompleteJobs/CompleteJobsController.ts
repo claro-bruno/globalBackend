@@ -8,7 +8,7 @@ export class CompleteJobsController {
       month,
       year,
       value_hour,
-      workedDaysInfos,
+      // workedDaysInfos,
       quarter,
       status,
       status_payment,
@@ -24,7 +24,7 @@ export class CompleteJobsController {
       quarter: +quarter,
       status,
       status_payment,
-      workedDaysInfos,
+      // workedDaysInfos,
       others: +others
     });
 
