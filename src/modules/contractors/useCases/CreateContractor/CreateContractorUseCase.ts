@@ -153,7 +153,7 @@ export class CreateContractorUseCase {
       to: email,
       subject: "Welcome to Global Janitorial Services",
       plain: "Registration Account",
-      html: `<strong>Your account has been created with sucess!<br> <br> Your login information: <br> Login: ${username} <br> Password: ${password}</strong>`,
+      html: `<strong>Your account has been created with sucess!<br> <br> Your login information: <br> Login: ${username} <br> Password: ${password}</strong> https://globaljanitorialservicesapp.netlify.app/ `,
 
       headers: { "x-myheader": "test header" }
     };

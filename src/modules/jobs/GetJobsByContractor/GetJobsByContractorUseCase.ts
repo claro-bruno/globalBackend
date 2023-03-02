@@ -130,16 +130,17 @@ export class GetJobsByContractorUseCase {
 			( 
 				SELECT sum(quarters.others) FROM jobs
 				INNER JOIN quarters ON quarters.fk_id_job = jobs.id
-				WHERE quarters.order = 1
+				WHERE quarters.order = 1 AND jobs.fk_id_contractor = ${id} AND quarters.year = ${year} AND quarters.month = ${month} 
 			) AS total_others_1,
 				( 
 				SELECT sum(quarters.others) FROM jobs
 				INNER JOIN quarters ON quarters.fk_id_job = jobs.id
-				WHERE quarters.order = 2
+				WHERE quarters.order = 2 AND jobs.fk_id_contractor = ${id} AND quarters.year = ${year} AND quarters.month = ${month} 
 			) AS total_others_2,
 				( 
 				SELECT sum(quarters.others) FROM jobs
 				INNER JOIN quarters ON quarters.fk_id_job = jobs.id
+        WHERE jobs.fk_id_contractor = ${id} AND quarters.year = ${year} AND quarters.month = ${month}
 			) AS total_others
 
             FROM jobs j
