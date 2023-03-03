@@ -16,7 +16,10 @@ export class GetContractorsUseCase {
                 }
             },
             orderBy: [{
+                status: 'asc',
+            },{
                 first_name: 'asc',
+
             }],
             select: {
                 id: true,
