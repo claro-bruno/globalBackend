@@ -34,7 +34,7 @@ const updateActiveClientContractorController = new UpdateActiveClientContractorC
 
 clientsRoutes.post("/contractor", use(ensureAuthenticate), use(createClientContractorController.handle));
 clientsRoutes.post("/", use(ensureAuthenticate), use(createClientController.handle));
-clientsRoutes.get("/profit", use(ensureAuthenticate), use(getClientsProfitController.handle));
+clientsRoutes.get("/profit", use(getClientsProfitController.handle));
 clientsRoutes.put("/status/:id", use(ensureAuthenticate), use(updateStatusClientController.handle));
 clientsRoutes.put("/contractor/:id", use(ensureAuthenticate), use(updateClientContractorController.handle));
 clientsRoutes.put("/contractor/atual", use(ensureAuthenticate), use(updateActiveClientContractorController.handle));
