@@ -104,7 +104,7 @@ export class GetPaymentsUseCase {
 			WHERE quarters.month = ${month} AND quarters.year = ${year}
             order by jobs.fk_id_contractor ASC
     ;`;
-
+    
     result.forEach((payment: any, index: number) => {
       const pay = payments.find(
         (info: any) => info.fk_id_contractor === payment.fk_id_contractor

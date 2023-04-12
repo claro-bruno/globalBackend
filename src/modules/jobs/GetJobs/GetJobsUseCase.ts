@@ -48,7 +48,10 @@ export class GetJobsUseCase {
       ],
       where: {
         month,
-        year: +year
+        year: +year,
+        jobs: {
+          status: 'ACTIVE',
+        }
       },
       select: {
         jobs: {

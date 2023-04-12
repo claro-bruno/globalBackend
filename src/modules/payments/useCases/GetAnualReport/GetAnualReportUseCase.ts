@@ -39,7 +39,7 @@ export class GetAnualReportUseCase {
                     });
                     
                 }
-                const total_payment = await prisma.payments.aggregate({
+                const total_payment = await prisma.paymentsContractors.aggregate({
                     _sum: {
                         value: true,
                         others: true

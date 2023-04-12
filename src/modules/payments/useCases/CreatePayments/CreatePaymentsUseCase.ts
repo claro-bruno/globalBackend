@@ -29,8 +29,8 @@ function toMonthName(monthNumber: number) {
 
 export class CreatePaymentsUseCase {
   async execute({ contractor_id, month, year, payments }: ICreatePayments) {
-    console.log(contractor_id, month, year, payments);
-    
+    // console.log(contractor_id, month, year, payments);
+    // throw new AppError("method is required!", 401);
     let balanceLastMonthExist: any = {};
 
     const contractorExist = await prisma.contractors.findUnique({
@@ -91,7 +91,7 @@ export class CreatePaymentsUseCase {
       othersValue: value_others,
       othersDescription: description
     } = payments[0];
-
+  
   let valor = value == null ? 0 : value;
   if(valor > 0 && method != "") {
     if (id != '' && id != null) {
@@ -129,7 +129,8 @@ export class CreatePaymentsUseCase {
             value: valor,
             identification: identifier,
             others: +value_others,
-            description
+            description,
+            method
           }
         });
         // if (value_others > 0 && Number(res_pay?.others) === 0) {
@@ -367,7 +368,8 @@ export class CreatePaymentsUseCase {
               value: valor,
               identification: identifier_2,
               others: +value_others_2,
-              description: description_2
+              description: description_2,
+              method: method_2
             }
           });
           
@@ -440,7 +442,7 @@ export class CreatePaymentsUseCase {
           let pay_2 = await prisma.paymentsContractors.create({
             data: {
               value: +valor,
-              method,
+              method: method_2,
               year: +year,
               month,
               quarter: +quarter_2,
