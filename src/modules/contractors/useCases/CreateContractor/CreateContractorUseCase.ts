@@ -68,14 +68,14 @@ export class CreateContractorUseCase {
 
     const birthday = new Date(dob);
     const username =
-      firstName[0].toLowerCase() + lastName + birthday.getFullYear().toString();
+      firstName[0].toLowerCase() + lastName + birthday.getFullYear().toString().trim();
     const password =
       firstName.split(" ")[0].toString() +
       ("0" + (birthday.getMonth() + 1)).slice(-2).toString() +
       ("0" + (birthday.getDate() + 1)).slice(-2).toString();
 
     //criptografar a senha
-    const hashPassword = await hash(password, 10);
+    const hashPassword = await hash(password.trim(), 10);
     //salvar a contractor account
 
     const contractor_account = await prisma.accounts.create({
