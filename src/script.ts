@@ -121,16 +121,16 @@ const setContractors = async() => {
 
 
 
-sendEmail('brighamdossantos@gmail.com')
 sendEmail('Xavierjrodriguezd@gmail.com')
-sendEmail('luisrojas@gmail.com')
-sendEmail('malasmax944@gmail.com')
-sendEmail('milenamunoz@gmail.com')
-sendEmail('Noraperez250622@gmail.com')
-sendEmail('nurielyspuentes22@gmail.com')
-sendEmail('olgaacatitlan@live.com')
-sendEmail('Marthacuevas88@gmail.com')
-sendEmail('Tobiannys@hotmail.com')
-sendEmail('Alvaradotobiangel@gmail.com')
+// sendEmail('Xavierjrodriguezd@gmail.com')
+// sendEmail('luisrojas@gmail.com')
+// sendEmail('malasmax944@gmail.com')
+// sendEmail('milenamunoz@gmail.com')
+// sendEmail('Noraperez250622@gmail.com')
+// sendEmail('nurielyspuentes22@gmail.com')
+// sendEmail('olgaacatitlan@live.com')
+// sendEmail('Marthacuevas88@gmail.com')
+// sendEmail('Tobiannys@hotmail.com')
+// sendEmail('Alvaradotobiangel@gmail.com')
 
 //setContractors()
