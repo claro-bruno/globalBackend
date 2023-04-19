@@ -51,7 +51,7 @@ export class GetAnualReportUseCase {
                         const total: any = typeof info == undefined || info == null ? 0 : info._sum.value;
                         const others: any = typeof info == undefined || info == null ? 0 : info._sum.others;
                         obj.month = info.month;
-                        obj.total = total + others;
+                        obj.total = total;
                         arr.push(obj);
                     });
                     
