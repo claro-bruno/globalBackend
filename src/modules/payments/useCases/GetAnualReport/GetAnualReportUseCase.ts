@@ -5,6 +5,22 @@ interface IGetReport {
     year: number;
 }
 
+const headerTableMonths = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ]
+
+  
 export class GetAnualReportUseCase {
     async execute({ year }: IGetReport) {
         const result: any = [];
@@ -45,14 +61,20 @@ export class GetAnualReportUseCase {
                 });
                 
                 const arr: any = [];
+                // const arr_month_arr: any = [];
                 if(total_payments_by_contractor.length > 0) {
-                    total_payments_by_contractor.forEach((info) => {
+                    headerTableMonths.forEach((info) => {
                         const obj: any = {};
-                        const total: any = typeof info == undefined || info == null ? 0 : info._sum.value;
-                        const others: any = typeof info == undefined || info == null ? 0 : info._sum.others;
-                        obj.month = info.month;
-                        obj.total = total;
-                        arr.push(obj);
+                        const res: any = total_payments_by_contractor.find((res_month) => res_month?.month === info)
+
+                        if(res) {
+                            const total: any = typeof res == undefined || res == null ? 0 : res._sum.value;
+                            const others: any = typeof res == undefined || res == null ? 0 : res._sum.others;
+                            obj.month = info;
+                            obj.total = total;
+                            arr.push(obj);
+                        }
+                       
                     });
                     
                 }

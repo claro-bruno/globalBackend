@@ -154,7 +154,12 @@ export class GetClientsProfitUseCase {
         resultt[`TOTAL_EXPENSES`] = total_despesas;
         resultt[`TOTAL_INVOICES`] = total_invoices;
 
-        
+        let total_amount = 0;
+        let total_ganho = 0;
+        let total_expensive = 0;
+        let total_labour = 0;
+        let total_profit = 0;
+
         if(clients.length > 0) {
             clients.forEach((client: any) => {
                 const info: any = {};
@@ -175,6 +180,11 @@ export class GetClientsProfitUseCase {
                     info.expensive_value = info.ganho != null && total_despesas > 0 ? info.ganho * total_despesas : 0;
                     info.total_labour = labour_info ? labour_info?.total : 0;
                     info.profit = Number(Number(info.amount) - Number(info.expensive_value) - Number(info.total_labour));
+                    total_amount += +info.amount
+                    total_ganho += +info.ganho
+                    total_expensive += +info.expensive_value
+                    total_labour += +info.total_labour
+                    total_profit += +info.profit
                 }
 
                 info.name = client.name;
@@ -189,7 +199,11 @@ export class GetClientsProfitUseCase {
             total_support,
             total_invoices,
             clients: result,
-            
+            total_amount,
+            total_ganho,
+            total_expensive,
+            total_labour,
+            total_profit
         };
 
     }
