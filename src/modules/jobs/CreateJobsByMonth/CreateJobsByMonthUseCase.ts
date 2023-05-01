@@ -65,7 +65,6 @@ export class CreateJobsByMonthUseCase {
                         month: true,
                     }
                 });
-                console.log(last_value[+last_value.length-1]?.value_hour)
                 
                 if(last_value[+last_value.length-1]?.value_hour != undefined) {
                     const last_date = new Date(year, +getMonthFromString(month) + 1, 0);

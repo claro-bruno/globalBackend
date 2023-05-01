@@ -9,6 +9,8 @@ interface IAppointment {
 interface IService {
   id_contractor: number;
   id_client: number;
+  yearFull: number;
+  monthFull: string;
   sunday?: boolean;
   monday?: boolean;
   tuesday?: boolean;
@@ -43,6 +45,8 @@ export class CreateJobsUseCase {
   async execute({
     id_contractor,
     id_client,
+    yearFull,
+    monthFull,
     sunday,
     monday,
     tuesday,
@@ -55,12 +59,18 @@ export class CreateJobsUseCase {
     value,
     value_hour
   }: IService) {
+
     const arrDays = [];
     let dia: string = '';
     let dia_res : string = '';
     let mes : string = '';
     let mes_res : string = '';
     let arr = [];
+
+    let monthNumber = getMonthFromString(monthFull);
+    
+    
+
     const existJob = await prisma.jobs.findFirst({
       where: {
         fk_id_contractor: id_contractor,
@@ -94,8 +104,8 @@ export class CreateJobsUseCase {
       }
     });
     const date = new Date(Date.now());
-    const month = date.getMonth();
-    const year = date.getFullYear();
+    // const month = getMonthFromString(monthFull);
+    // const year = date.getFullYear();
 
     if (sunday) arrDays.push("Sunday");
     if (monday) arrDays.push("Monday");
@@ -110,20 +120,20 @@ export class CreateJobsUseCase {
         data: {
           fk_id_job: job.id,
           value_hour: +value_hour,
-          year,
-          month: toMonthName(month),
+          year: +yearFull,
+          month: monthFull,
           order: 1
         }
       });
 
       for (let i = 1; i <= 15; i += 1) {
         
-        mes_res = (month+1).toString() 
+        mes_res = (monthNumber).toString() 
         mes = mes_res.length === 1 ? `0${mes_res}` : mes_res
         dia_res = i.toString()
         dia = dia_res.length === 1 ? `0${dia_res}` : dia_res
-        let dateValue = `${year}-${mes}-${dia}T00:00:00.000Z`
-        let dataValue = new Date(year, month, i);
+        let dateValue = `${yearFull}-${mes}-${dia}T00:00:00.000Z`
+        let dataValue = new Date(yearFull, monthNumber, i);
         if (
           arrDays.includes(
             dataValue.toLocaleString("default", { weekday: "long" })
@@ -147,14 +157,14 @@ export class CreateJobsUseCase {
       }, undefined);
     }
 
-    const last_date = new Date(year, month + 1, 0);
+    const last_date = new Date(yearFull, monthNumber, 0);
 
     const quarter_2 = await prisma.quarters.create({
       data: {
         fk_id_job: job.id,
         value_hour,
-        year,
-        month: toMonthName(month),
+        year: yearFull,
+        month: monthFull,
         order: 2
       }
     });
@@ -162,12 +172,12 @@ export class CreateJobsUseCase {
     arr = [];
 
     for (let i = 16; i <= last_date.getDate(); i += 1) {
-      mes_res = (month+1).toString() 
+      mes_res = (monthNumber).toString() 
       mes = mes_res.length === 1 ? `0${mes_res}` : mes_res
       dia_res = i.toString()
       dia = dia_res.length === 1 ? `0${dia_res}` : dia_res
-      let dateValue = `${year}-${mes}-${dia}T00:00:00.000Z`
-      let dataValue = new Date(year, month, i);
+      let dateValue = `${yearFull}-${mes}-${dia}T00:00:00.000Z`
+      let dataValue = new Date(yearFull, monthNumber, i);
       if (
         arrDays.includes(
           dataValue.toLocaleString("default", { weekday: "long" })
