@@ -121,7 +121,7 @@ const setContractors = async() => {
 
 
 
-sendEmail('Xavierjrodriguezd@gmail.com')
+sendEmail('wjunegocios@gmail.com')
 // sendEmail('Xavierjrodriguezd@gmail.com')
 // sendEmail('luisrojas@gmail.com')
 // sendEmail('malasmax944@gmail.com')
