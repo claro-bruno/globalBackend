@@ -320,7 +320,8 @@ export class CreatePaymentsUseCase {
     //     }
     // }
 
-    const {
+   
+    let {
       method: method_2,
       id: id_2,
       identifier: identifier_2,
@@ -359,8 +360,8 @@ export class CreatePaymentsUseCase {
         // else {
         //   await prisma.payments.deleteMany({ where: { id: res?.id, NOT: { description: 'others'}} })
         // }
-
-          prisma.paymentsContractors.update({
+          // console.log(description_2,identifier_2)
+          await prisma.paymentsContractors.update({
             where: {
               id: +id_2
             },
@@ -372,6 +373,7 @@ export class CreatePaymentsUseCase {
               method: method_2
             }
           });
+
           
           
           // if (value_others_2 > 0 && res_pay?.others === 0) {
