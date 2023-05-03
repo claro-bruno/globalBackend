@@ -43,15 +43,25 @@ export class GetJobsUseCase {
       orderBy: [
         {
           // fk_id_job: 'asc',
-          id: "asc"
-        }
+          // status: "asc",
+          id: "asc",
+          //
+
+        },
+        //{
+        //   // fk_id_job: 'asc',
+          //status: "asc",
+        //   id: "asc",
+        //   //
+
+        //}
       ],
       where: {
         month,
         year: +year,
-        jobs: {
-          status: 'ACTIVE',
-        }
+        // jobs: {
+        //   status: 'ACTIVE',
+        // }
       },
       select: {
         jobs: {
@@ -95,6 +105,17 @@ export class GetJobsUseCase {
       }
     });
     
+    // jobs_quarters.sort(function (a: any, b: any) {
+    //   if (a.status > b.status) {
+    //     return 1;
+    //   }
+    //   if (a.status < b.status) {
+    //     return -1;
+    //   }
+    //   // a must be equal to b
+    //   return 0;
+    // });
+
     const jobsGrouped = groupBy(
       jobs_quarters,
       (quarter: any) => quarter.fk_id_job
