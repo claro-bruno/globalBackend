@@ -23,7 +23,7 @@ ordersRoutes.post("/", use(ensureAuthenticate), use(createOrderController.handle
 ordersRoutes.put("/invoice", use(ensureAuthenticate), use(udateInvoiceOrderController.handle));
 ordersRoutes.put("/:id", use(ensureAuthenticate), use(updateOrderController.handle));
 ordersRoutes.get("/:id", use(ensureAuthenticate), use(getOrderController.handle));
-ordersRoutes.get("/", use(ensureAuthenticate), use(getOrdersController.handle));
+ordersRoutes.get("/", use(getOrdersController.handle));
 
 
 export { ordersRoutes };
