@@ -35,6 +35,7 @@ model Orders {
   fk_id_client       Int?
   total_hours        Float?
   created_at         DateTime           @default(now())
+  ended_at           DateTime?          @default(now())
   status             Status             @default(PENDING)
   type               String?
   isInvoice          Boolean            @default(false)
@@ -51,6 +52,7 @@ model OrderContractors {
   id               Int         @id @default(autoincrement())
   fk_id_order      Int
   fk_id_contractor Int
+  created_at       DateTime?   @default(now())
   end              String
   start            String
   total            Float

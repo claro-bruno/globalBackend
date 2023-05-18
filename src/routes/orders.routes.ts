@@ -25,4 +25,5 @@ ordersRoutes.put("/:id", use(ensureAuthenticate), use(updateOrderController.hand
 ordersRoutes.get("/:id", use(ensureAuthenticate), use(getOrderController.handle));
 ordersRoutes.get("/", use(ensureAuthenticate), use(getOrdersController.handle));
 
+
 export { ordersRoutes };
