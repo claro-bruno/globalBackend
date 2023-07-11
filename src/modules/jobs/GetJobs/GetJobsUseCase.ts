@@ -88,6 +88,7 @@ export class GetJobsUseCase {
                 first_name: true,
                 middle_name: true,
                 last_name: true,
+                type_pay: true,
                 id: true
               }
             }

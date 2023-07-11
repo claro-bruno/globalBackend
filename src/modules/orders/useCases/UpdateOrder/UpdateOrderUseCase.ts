@@ -9,6 +9,7 @@ interface IUpdateOrder {
     start: string;
     end: string;
     date_at: string;
+    date_at_end: string;
     id: number;
     support?: string;
     collaborators?: string;
@@ -28,11 +29,12 @@ interface IInfo {
     contractor_id?: number;
     start: string;
     end: string;
+    date_at: string;
     total_hours: number;
 }
 
 export class UpdateOrderUseCase {
-    async execute({ id, type, date_at, description, notes, id_client, start, end, support, email, contact, contact_phone, address, isInvoice, total_hours, infos, invoice } : IUpdateOrder): Promise<any>{
+    async execute({ id, type, date_at,date_at_end, description, notes, id_client, start, end, support, email, contact, contact_phone, address, isInvoice, total_hours, infos, invoice } : IUpdateOrder): Promise<any>{
         
         let isInv: boolean = false;
         let invoice_id: string = "";
@@ -72,6 +74,7 @@ export class UpdateOrderUseCase {
                     description,
                     notes,
                     created_at: new Date(date_at),
+                    ended_at: new Date(date_at_end),
                     support,
                     email, 
                     type,
@@ -95,10 +98,12 @@ export class UpdateOrderUseCase {
                 const id_contractor: number = Number(info.contractor_id)       
                 const id_order: number = Number(order.id)    
                 const total: number = Number(info.total_hours) 
+                const date_at = new Date(info.date_at)
                 await prisma.orderContractors.create({
                     data: {
                         fk_id_order: id_order,
                         fk_id_contractor: id_contractor,
+                        created_at: new Date(date_at),
                         start: info.start,
                         end: info.end,
                         total: total

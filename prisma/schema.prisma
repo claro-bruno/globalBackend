@@ -130,6 +130,7 @@ model Contractors {
   fk_id_account              Int?                  @unique
   fk_id_client_contractor    Int?
   ein                        String?
+  type_pay                   String?
   address                    Adresseses[]
   account                    Accounts?             @relation(fields: [fk_id_account], references: [id])
   clientContractor           ClientsContractors?   @relation(fields: [fk_id_client_contractor], references: [id])

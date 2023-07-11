@@ -9,6 +9,7 @@ interface ICreateOrder {
     start: string;
     end: string;
     date_at: string;
+    date_at_end: string;
     support?: string;
     collaborators?: string;
     email: string; 
@@ -26,10 +27,12 @@ interface IInfo {
     start: string;
     end: string;
     total_hours: number;
+    date_at: string;
 }
 
 export class CreateOrderUseCase {
-    async execute({ date_at, description, notes, id_client, start, end, support, email, contact, contact_phone, address, total_hours, type, infos } : ICreateOrder): Promise<any>{
+    async execute({ date_at, date_at_end, description, notes, id_client, start, end, support, email, contact, contact_phone, address, total_hours, type, infos } : ICreateOrder): Promise<any>{
+        
         
 
         //validar se o client existe
@@ -61,6 +64,7 @@ export class CreateOrderUseCase {
                     description,
                     notes,
                     created_at: new Date(date_at),
+                    ended_at: new Date(date_at_end),
                     // collaborators, 
                     support,
                     email, 
@@ -76,13 +80,15 @@ export class CreateOrderUseCase {
                 await memo;
                 const id_contractor: number = Number(info.contractor_id)       
                 const id_order: number = Number(order.id) 
-                const value_order: number = Number(info.total_hours)           
+                const value_order: number = Number(info.total_hours)   
+                const date_at = new Date(info.date_at)  
                 await prisma.orderContractors.create({
                     data: {
                         fk_id_order: id_order,
                         fk_id_contractor: id_contractor,
                         start: info.start,
                         end: info.end,
+                        created_at: new Date(date_at),
                         total: value_order
                     }
                 });
