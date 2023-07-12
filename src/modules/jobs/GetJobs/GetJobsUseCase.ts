@@ -36,7 +36,8 @@ export class GetJobsUseCase {
         });
       }, undefined);
     }
-
+   
+    
     
 
     const jobs_quarters = await prisma.quarters.findMany({
@@ -59,9 +60,9 @@ export class GetJobsUseCase {
       where: {
         month,
         year: +year,
-        // jobs: {
-        //   status: 'ACTIVE',
-        // }
+        jobs: {
+          status: 'ACTIVE',
+        }
       },
       select: {
         jobs: {
