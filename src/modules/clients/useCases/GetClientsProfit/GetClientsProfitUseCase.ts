@@ -185,7 +185,7 @@ export class GetClientsProfitUseCase {
                     total_expensive += +info.expensive_value
                     total_labour += +info.total_labour
                     total_profit += +info.profit
-                    console.log(info)
+                    // console.log(info)
                 }
 
                 info.name = client.name;

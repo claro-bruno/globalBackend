@@ -60,9 +60,9 @@ export class GetJobsUseCase {
       where: {
         month,
         year: +year,
-        jobs: {
-          status: 'ACTIVE',
-        }
+        // jobs: {
+        //   status: 'ACTIVE',
+        // }
       },
       select: {
         jobs: {
