@@ -46,7 +46,7 @@ export class GetClientsProfitUseCase {
             "INSURANCE_TAX",
             "EXTRAS",
             "GLOBAL",
-            "MISC"
+            // "MISC"
         ];
 
         const result: any = [];
@@ -148,7 +148,8 @@ export class GetClientsProfitUseCase {
         const total_expenses = total_exp[0]?.total === null ? 0 : total_exp[0]?.total;
         const total_support = total_supp[0]?.total === null ? 0 : total_supp[0]?.total;
         
-        const total_despesas = Number(total_expenses) + Number(total_support);
+        // const total_despesas = Number(total_expenses) + Number(total_support);
+        const total_despesas = Number(total_expenses);
         const total_invoices = total_invs._sum.value == null ? 0 : total_invs._sum.value;
         resultt[`SUPPORT`] = total_support;
         resultt[`TOTAL_EXPENSES`] = total_despesas;
