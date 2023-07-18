@@ -45,7 +45,7 @@ export class GetClientsProfitUseCase {
             "CHEMICAL_CONSUMABLES",
             "INSURANCE_TAX",
             "EXTRAS",
-            "GLOBAL",
+            // "GLOBAL",
             // "MISC"
         ];
 
@@ -108,7 +108,7 @@ export class GetClientsProfitUseCase {
         
         const total_exp: any = await prisma.$queryRaw`
            SELECT SUM(p.value) AS total FROM payments AS p
-            WHERE p.month = ${month} AND p.year = ${year} AND p.type != 'CONTRACTOR_WORKERS' AND p.type != 'INPUT'
+            WHERE p.month = ${month} AND p.year = ${year} AND p.type != 'CONTRACTOR_WORKERS' AND p.type != 'INPUT' AND p.type != 'GLOBAL' AND p.type != 'MISC'
             ;`;
 
         
