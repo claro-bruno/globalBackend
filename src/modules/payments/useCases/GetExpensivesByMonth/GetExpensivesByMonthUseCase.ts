@@ -51,7 +51,7 @@ export class GetExpensivesByMonthUseCase {
 
 
         const result = await prisma.payments.findMany({
-            orderBy: [{ id: 'asc'}],
+            orderBy: [{ date_at: 'asc'}],
             where: {
                 month,
                 year

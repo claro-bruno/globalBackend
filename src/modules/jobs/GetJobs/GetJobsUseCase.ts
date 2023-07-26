@@ -68,9 +68,9 @@ export class GetJobsUseCase {
           },
           { jobs: { status: 'INACTIVE' } },
         ],
-        // jobs: {
-        //   status: 'ACTIVE',
-        // }
+        jobs: {
+          status: 'ACTIVE',
+        }
       },
       select: {
         jobs: 
@@ -115,7 +115,6 @@ export class GetJobsUseCase {
         appointment: true,
       }
     });
-    // console.log(jobs_quarters)
     // jobs_quarters.sort(function (a: any, b: any) {
     //   if (a.status > b.status) {
     //     return 1;
