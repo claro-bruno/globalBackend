@@ -344,4 +344,5 @@ enum Type {
   EXTRAS
   GLOBAL
   MISC
+  MONEYBACK
 }

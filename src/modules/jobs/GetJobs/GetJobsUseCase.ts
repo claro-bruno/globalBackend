@@ -66,11 +66,13 @@ export class GetJobsUseCase {
               status: 'ACTIVE',
             },
           },
-          { jobs: { status: 'INACTIVE' } },
+          { 
+            jobs: { status: 'INACTIVE' } 
+          },
         ],
-        jobs: {
-          status: 'ACTIVE',
-        }
+        // jobs: {
+        //   status: 'ACTIVE',
+        // }
       },
       select: {
         jobs: 
