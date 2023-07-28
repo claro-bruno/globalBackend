@@ -161,6 +161,7 @@ export class GetClientsProfitUseCase {
         let total_labour = 0;
         let total_profit = 0;
 
+        let aux = 0;
         if(clients.length > 0) {
             clients.forEach((client: any) => {
                 const info: any = {};
@@ -177,8 +178,12 @@ export class GetClientsProfitUseCase {
                 // console.log(invoice_info, labour_info)
                 if(invoice_info) {
                     info.amount = invoice_info._sum.value != null ? invoice_info._sum.value : 0;
-                    info.ganho = invoice_info._sum.value != null && total_invoices > 0 ? invoice_info._sum.value / total_invoices : 0;
-                    info.expensive_value = info.ganho != null && total_despesas > 0 ? info.ganho * total_despesas : 0;
+                    // info.ganho = invoice_info._sum.value != null && total_invoices > 0 ? invoice_info._sum.value / total_invoices : 0;
+                    // info.expensive_value = info.ganho != null && total_despesas > 0 ? info.ganho * total_despesas : 0;
+                    // info.expensive_value = total_despesas > 0 ? total_despesas / (total_invoices * info.amount) : 0;
+                    info.expensive_value = total_despesas > 0 ? total_despesas / total_invoices * info.amount : 0;
+                    info.ganho = invoice_info._sum.value != null && total_invoices > 0 ?  info.expensive_value / info.amount : 0;
+                    // info.ganho = invoice_info._sum.value != null && total_invoices > 0 ? total_despesas / invoice_info._sum.value : 0;
                     info.total_labour = labour_info ? labour_info?.total : 0;
                     info.profit = Number(Number(info.amount) - Number(info.expensive_value) - Number(info.total_labour));
                     total_amount += +info.amount
