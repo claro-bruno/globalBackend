@@ -46,12 +46,13 @@ export class GetExpensivesByMonthUseCase {
             "INSURANCE_TAX",
             "EXTRAS",
             "GLOBAL",
-            "MISC"
+            "MISC",
+            "MONEYBACK"
         ];
 
 
         const result = await prisma.payments.findMany({
-            orderBy: [{ date_at: 'asc'}],
+            orderBy: [{ date_at: 'asc'}, {id: 'asc'}],
             where: {
                 month,
                 year

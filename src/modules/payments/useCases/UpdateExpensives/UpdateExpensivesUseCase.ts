@@ -51,6 +51,7 @@ export class UpdateExpensivesUseCase {
         const month = toMonthName(new Date(date_expensive).getUTCMonth());
         const year  = new Date(date_expensive).getUTCFullYear();
 
+
         // Verificar o balance do mes atual
         const balanceMonthExist = await prisma.balances.findFirst({
             where: {

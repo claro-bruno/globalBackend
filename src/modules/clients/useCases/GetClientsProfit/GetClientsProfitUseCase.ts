@@ -45,6 +45,7 @@ export class GetClientsProfitUseCase {
             "CHEMICAL_CONSUMABLES",
             "INSURANCE_TAX",
             "EXTRAS",
+            "MONEY BACK"
             // "GLOBAL",
             // "MISC"
         ];
