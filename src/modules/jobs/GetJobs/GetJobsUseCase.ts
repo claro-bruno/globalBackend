@@ -40,7 +40,7 @@ export class GetJobsUseCase {
     
     
 
-    const jobs_quarters = await prisma.quarters.findMany({
+    const jobs_quarters: any = await prisma.quarters.findMany({
       orderBy: [
         {
           // fk_id_job: 'asc',
