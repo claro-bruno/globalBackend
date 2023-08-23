@@ -64,6 +64,11 @@ export class GetPaymentsUseCase {
                 where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS' AND pa.year = ${year} AND pa.month = ${month}
             ) AS description_1,
             (
+				SELECT payed 
+                FROM "paymentsContractors" as pa
+                where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS' AND pa.year = ${year} AND pa.month = ${month}
+            ) AS payed_1,
+            (
 				SELECT method 
                 FROM "paymentsContractors" as pa
                 where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS' AND pa.year = ${year} AND pa.month = ${month}
@@ -93,6 +98,12 @@ export class GetPaymentsUseCase {
                 FROM "paymentsContractors" as pa
                 where pa.fk_id_contractor = c.id AND pa.quarter = 2 AND pa.type = 'CONTRACTOR_WORKERS' AND pa.year = ${year} AND pa.month = ${month}
             ) AS description_2,
+            
+            (
+				SELECT payed 
+                FROM "paymentsContractors" as pa
+                where pa.fk_id_contractor = c.id AND pa.quarter = 2 AND pa.type = 'CONTRACTOR_WORKERS' AND pa.year = ${year} AND pa.month = ${month}
+            ) AS payed_2,
             (
 				SELECT method 
                 FROM "paymentsContractors" as pa
@@ -118,6 +129,8 @@ export class GetPaymentsUseCase {
         payment.description_2 = pay.description_2;
         payment.others_1 = payment.others_1;
         payment.others_2 = payment.others_2;
+        payment.payed_1 = pay.payed_1;
+        payment.payed_2 = pay.payed_2;
         payment.method_1 = pay.method_1;
         payment.method_2 = pay.method_2;
         payment.total_1_payment = payment.value_1 - payment.others_1;

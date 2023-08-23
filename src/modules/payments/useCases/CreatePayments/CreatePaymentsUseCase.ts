@@ -29,7 +29,7 @@ function toMonthName(monthNumber: number) {
 
 export class CreatePaymentsUseCase {
   async execute({ contractor_id, month, year, payments }: ICreatePayments) {
-    // console.log(contractor_id, month, year, payments);
+    //console.log(payments);
     // throw new AppError("method is required!", 401);
     let balanceLastMonthExist: any = {};
 
@@ -86,10 +86,12 @@ export class CreatePaymentsUseCase {
       id,
       method,
       identifier,
+      payed: payed_1,
       totalPayment: value,
       quarter,
       othersValue: value_others,
-      othersDescription: description
+      othersDescription: description,
+
     } = payments[0];
   
   let valor = value == null ? 0 : value;
@@ -130,7 +132,8 @@ export class CreatePaymentsUseCase {
             identification: identifier,
             others: +value_others,
             description,
-            method
+            method,
+            payed: +payed_1,
           }
         });
         // if (value_others > 0 && Number(res_pay?.others) === 0) {
@@ -214,6 +217,7 @@ export class CreatePaymentsUseCase {
             type: "CONTRACTOR_WORKERS",
             others: +value_others,
             description,
+            payed: +payed_1,
           }
         });
 
@@ -328,7 +332,8 @@ export class CreatePaymentsUseCase {
       totalPayment: value_2,
       quarter: quarter_2,
       othersValue: value_others_2,
-      othersDescription: description_2
+      othersDescription: description_2,
+      payed: payed_2
     } = payments[1];
     
     valor = value_2 == null ? 0 : value_2;
@@ -370,7 +375,8 @@ export class CreatePaymentsUseCase {
               identification: identifier_2,
               others: +value_others_2,
               description: description_2,
-              method: method_2
+              method: method_2,
+              payed: +payed_2
             }
           });
 
@@ -452,7 +458,8 @@ export class CreatePaymentsUseCase {
               fk_id_contractor: +contractor_id,
               type: "CONTRACTOR_WORKERS",
               others: +value_others_2,
-              description: description_2
+              description: description_2,
+              payed: +payed_2
             }
           });
 

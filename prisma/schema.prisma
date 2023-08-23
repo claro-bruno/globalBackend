@@ -35,15 +35,15 @@ model Orders {
   fk_id_client       Int?
   total_hours        Float?
   created_at         DateTime           @default(now())
-  ended_at           DateTime?          @default(now())
   status             Status             @default(PENDING)
   type               String?
   isInvoice          Boolean            @default(false)
+  invoicesId         Int?
+  ended_at           DateTime?          @default(now())
   client             Clients?           @relation(fields: [fk_id_client], references: [id])
   support_contractor Contractors?       @relation(fields: [fk_support_id], references: [id])
-  ordersContractors  OrderContractors[]
   Invoices           Invoices?          @relation(fields: [invoicesId], references: [id])
-  invoicesId         Int?
+  ordersContractors  OrderContractors[]
 
   @@map("orders")
 }
@@ -52,10 +52,10 @@ model OrderContractors {
   id               Int         @id @default(autoincrement())
   fk_id_order      Int
   fk_id_contractor Int
-  created_at       DateTime?   @default(now())
   end              String
   start            String
   total            Float
+  created_at       DateTime?   @default(now())
   contractor       Contractors @relation(fields: [fk_id_contractor], references: [id])
   order            Orders      @relation(fields: [fk_id_order], references: [id])
 
@@ -196,7 +196,6 @@ model Clients {
   status        Status     @default(ACTIVE)
   account       Accounts?  @relation(fields: [fk_id_account], references: [id])
   Invoices      Invoices[]
-  jobs          Jobs[]
   Orders        Orders[]
   payments      Payments[]
 
@@ -245,24 +244,20 @@ model Jobs {
   saturday         Boolean?    @default(true)
   sunday           Boolean?    @default(false)
   status           Status      @default(ACTIVE)
-  client           Clients     @relation(fields: [fk_id_client], references: [id])
   contractor       Contractors @relation(fields: [fk_id_contractor], references: [id])
-  quarter          Quarters[]
 
   @@map("jobs")
 }
 
 model Quarters {
-  id          Int            @id @default(autoincrement())
-  fk_id_job   Int
-  value_hour  Float
-  year        Int
-  month       String
-  order       Int
-  status      Status         @default(PENDING)
-  others      Float          @default(0)
-  appointment Appointments[]
-  jobs        Jobs           @relation(fields: [fk_id_job], references: [id])
+  id         Int    @id @default(autoincrement())
+  fk_id_job  Int
+  value_hour Float
+  year       Int
+  month      String
+  order      Int
+  status     Status @default(PENDING)
+  others     Float  @default(0)
 
   @@map("quarters")
 }
@@ -273,7 +268,6 @@ model Appointments {
   date          DateTime
   created_at    DateTime @default(now())
   fk_id_quarter Int
-  quarter       Quarters @relation(fields: [fk_id_quarter], references: [id])
 
   @@map("appointments")
 }
@@ -292,6 +286,7 @@ model paymentsContractors {
   identification   String?      @default("")
   fk_id_contractor Int?
   status           Status?
+  payed            Int?         @default(0)
   contractors      Contractors? @relation(fields: [fk_id_contractor], references: [id])
 }
 
