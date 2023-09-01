@@ -104,7 +104,7 @@ export class GetClientsProfitUseCase {
            SELECT SUM(a.value*q.value_hour) AS total FROM jobs AS j
             INNER JOIN quarters AS q ON q.fk_id_job = j.id
             INNER JOIN appointments AS a ON a.fk_id_quarter = q.id
-            WHERE j.fk_id_client = 55 AND q.month = ${month} AND q.year = ${year}
+            WHERE j.fk_id_client = 55 AND q.month = ${month} AND q.year = ${year} AND j.fk_id_client = 80
             ;`;
         
         const total_exp: any = await prisma.$queryRaw`
