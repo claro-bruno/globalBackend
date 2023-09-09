@@ -144,7 +144,14 @@ export class GetClientsProfitUseCase {
                 GROUP BY j.fk_id_client
                 ORDER BY j.fk_id_client ASC
          ;`
- 
+
+        const  total_labour_total: any = await prisma.$queryRaw`
+            SELECT SUM(a.value*q.value_hour) AS total FROM jobs AS j
+                INNER JOIN quarters AS q ON q.fk_id_job = j.id
+                INNER JOIN appointments AS a ON a.fk_id_quarter = q.id
+                INNER JOIN clients AS c ON c.id = j.fk_id_client
+                WHERE q.month = ${month} AND q.year = ${year} AND q.status = 'REVISED'AND j.fk_id_client != 55 AND j.fk_id_client != 80
+        `
 
         const total_expenses = total_exp[0]?.total === null ? 0 : total_exp[0]?.total;
         const total_support = total_supp[0]?.total === null ? 0 : total_supp[0]?.total;
@@ -159,7 +166,8 @@ export class GetClientsProfitUseCase {
         let total_amount = 0;
         let total_ganho = 0;
         let total_expensive = 0;
-        let total_labour = 0;
+        console.log(total_labour_total)
+        let total_labour = total_labour_total ? total_labour_total[0]?.total : 0;
         let total_profit = 0;
 
         let aux = 0;
@@ -190,11 +198,11 @@ export class GetClientsProfitUseCase {
                     total_amount += +info.amount
                     total_ganho += +info.ganho
                     total_expensive += +info.expensive_value
-                    total_labour += +info.total_labour
+                    
                     total_profit += +info.profit
                     // console.log(info)
                 }
-
+                // total_labour += +info.total_labour
                 info.name = client.name;
                 info.fk_id_client = client.fk_id_client;
                 result.push(info);
