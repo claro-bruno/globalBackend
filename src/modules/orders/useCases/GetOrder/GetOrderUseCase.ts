@@ -6,30 +6,30 @@ interface IGetOrder {
 }
 
 export class GetOrderUseCase {
-    async execute({ id } : IGetOrder): Promise<any>{
+    async execute({ id }: IGetOrder): Promise<any> {
         //validar se o client existe
         const orderExist = await prisma.orders.findFirst({
-           where: {
-               id,
-           },
-           include: {
-            ordersContractors: 
-            { 
-                include: 
-                { 
-                    contractor: true 
-                } 
+            where: {
+                id,
             },
-            // invoices: true,
-            client: true
-           }
+            include: {
+                ordersContractors:
+                {
+                    include:
+                    {
+                        contractor: true,
+                    }
+                },
+                // invoices: true,
+                client: true
+            }
         });
 
-        if(!orderExist) {
+        if (!orderExist) {
             throw new AppError('Order does not exists', 401)
         }
 
-      
+
         return orderExist;
     }
 }

@@ -8,12 +8,14 @@ import { paymentsRoutes } from "./payments.routes";
 import { invoicesRoutes } from "./invoices.routes";
 import { expensesRoutes } from "./expenses.routes";
 import { ordersRoutes } from "./orders.routes";
+import { costsRoutes } from "./costs.routes";
 const router = Router();
 
-router.get("/", (request, response) => {
-  response.json("Testando API na AWS");
-});
+// router.get("/", (request, response) => {
+//   response.json("Testando API na AWS");
+// });
 
+router.use("/cost", costsRoutes);
 router.use("/account", accountsRoutes);
 router.use("/contractor", contractorsRoutes);
 router.use("/client", clientsRoutes);
@@ -22,5 +24,6 @@ router.use("/payment", paymentsRoutes);
 router.use("/invoice", invoicesRoutes);
 router.use("/expense", expensesRoutes);
 router.use("/order", ordersRoutes);
+
 
 export { router };

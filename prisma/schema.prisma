@@ -18,6 +18,14 @@ model Totals {
   @@map("totals")
 }
 
+model Costs {
+  id                 Int                @id @default(autoincrement())
+  created_at       DateTime?   @default(now())
+  vcost            Float
+  
+  @@map("costs")
+}
+
 model Orders {
   id                 Int                @id @default(autoincrement())
   start              String
