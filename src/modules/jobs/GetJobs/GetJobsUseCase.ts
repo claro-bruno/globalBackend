@@ -2,7 +2,8 @@ import { prisma } from "../../../database/prismaClient";
 import { AppError } from "../../../middlewares/AppError";
 
 function getMonthFromString(mon: string) {
-  var d = Date.parse(mon + "1, 2023");
+
+  var d = Date.parse(mon + "1, 2024");
   if (!isNaN(d)) {
     return new Date(d).getMonth() + 1;
   }
@@ -14,11 +15,13 @@ export class GetJobsUseCase {
     const result: any = [];
     let arr: any = [];
 
-    const isTotals = await prisma.totals.findFirst({ where: {
-      month,
-      year
+    const isTotals = await prisma.totals.findFirst({
+      where: {
+        month,
+        year
 
-    }})
+      }
+    })
     let month_number = getMonthFromString(month)
     if (!isTotals) {
       const last_date = new Date(year, month_number, 0);
@@ -36,9 +39,9 @@ export class GetJobsUseCase {
         });
       }, undefined);
     }
-   
-    
-    
+
+
+
 
     const jobs_quarters: any = await prisma.quarters.findMany({
       orderBy: [
@@ -51,7 +54,7 @@ export class GetJobsUseCase {
         },
         //{
         //   // fk_id_job: 'asc',
-          //status: "asc",
+        //status: "asc",
         //   id: "asc",
         //   //
 
@@ -66,8 +69,8 @@ export class GetJobsUseCase {
               status: 'ACTIVE',
             },
           },
-          { 
-            jobs: { status: 'INACTIVE' } 
+          {
+            jobs: { status: 'INACTIVE' }
           },
         ],
         // jobs: {
@@ -75,7 +78,7 @@ export class GetJobsUseCase {
         // }
       },
       select: {
-        jobs: 
+        jobs:
         {
           select: {
             status: true,
@@ -132,7 +135,7 @@ export class GetJobsUseCase {
       jobs_quarters,
       (quarter: any) => quarter.fk_id_job
     );
-    
+
     let result_total_days: any = await prisma.totals.findMany({
       orderBy: [{ day: 'asc' }],
       where: {
@@ -151,15 +154,15 @@ export class GetJobsUseCase {
     `
     let tot: any = [];
     let dia: string = '';
-    let dia_res : string = '';
-    let mes : string = '';
-    let mes_res : string = '';
+    let dia_res: string = '';
+    let mes: string = '';
+    let mes_res: string = '';
     totals_days.forEach((day: any, index: number) => {
       mes_res = month_number.toString()
       mes = mes_res.length === 1 ? `0${month_number}` : mes_res
       dia_res = day.dia.toString()
       dia = dia_res.length === 1 ? `0${dia_res}` : dia_res
-      if(tot.length === 0) {
+      if (tot.length === 0) {
         tot.push(day)
         tot[0].id = result_total_days[0]?.id
         tot[0].hour = result_total_days[0]?.valor
@@ -168,31 +171,31 @@ export class GetJobsUseCase {
       }
       else {
         let indice = tot.length;
-        if(indice > 0) {
-          if (+tot[indice-1].dia === +day.dia && +day.totalhour > +tot[indice-1].totalhour) {
+        if (indice > 0) {
+          if (+tot[indice - 1].dia === +day.dia && +day.totalhour > +tot[indice - 1].totalhour) {
             tot.pop()
             tot.push(day)
-            tot[+day.dia-1].id =  +result_total_days[+day.dia-1]?.id
-            tot[+day.dia-1].hour = +result_total_days[+day.dia-1]?.valor
-            tot[+day.dia-1].totalhour = +day.totalhour
-            tot[+day.dia-1].date = `${year}-${mes}-${dia}T00:00:00.000Z`
-            
+            tot[+day.dia - 1].id = +result_total_days[+day.dia - 1]?.id
+            tot[+day.dia - 1].hour = +result_total_days[+day.dia - 1]?.valor
+            tot[+day.dia - 1].totalhour = +day.totalhour
+            tot[+day.dia - 1].date = `${year}-${mes}-${dia}T00:00:00.000Z`
+
           }
-          else if (+tot[indice-1].dia !== +day.dia) {
+          else if (+tot[indice - 1].dia !== +day.dia) {
             tot.push(day)
- 
-            tot[indice].id = +result_total_days[+day.dia-1]?.id
-            tot[indice].hour = +result_total_days[+day.dia-1]?.valor
+
+            tot[indice].id = +result_total_days[+day.dia - 1]?.id
+            tot[indice].hour = +result_total_days[+day.dia - 1]?.valor
             tot[indice].totalhour = +day.totalhour
             tot[indice].date = `${year}-${mes}-${dia}T00:00:00.000Z`
           }
-          
+
         }
       }
-      
+
     })
 
-    
+
     const result_totals: any = await prisma.$queryRaw`
             SELECT 
             q.fk_id_job as id,
@@ -215,7 +218,7 @@ export class GetJobsUseCase {
 
 
     if (jobs_quarters.length > 0) {
-      
+
       jobsGrouped.forEach((job: any) => {
         const job_info: any = {};
 
@@ -225,21 +228,21 @@ export class GetJobsUseCase {
           // client: { name, id: client_id },
           // contractor: { first_name, last_name , id: contractor_id }
         } = job[0].jobs;
-        job_info.id = id; 
+        job_info.id = id;
         job_info.contractor = job[0].jobs.contractor;
         job_info.client = job[0].jobs.client;
-        job_info.name = `${job[0].jobs.contractor.first_name} ${job[0].jobs.contractor.last_name}` ;
+        job_info.name = `${job[0].jobs.contractor.first_name} ${job[0].jobs.contractor.last_name}`;
         // job_info.contractor_id = contractor_id;
         // job_info.client_name = name;
         // job_info.client_id = client_id;
         job_info.status = status;
-        
+
         job.forEach((quarter: any) => {
-          quarter.appointment.forEach((ap: any) =>{
+          quarter.appointment.forEach((ap: any) => {
             ap.id = ap.id.toString().split('n')[0] !== '' ? Number(ap.id.toString().split('n')[0]) : ap.id
           })
-          quarter.appointment.sort(function(a:any, b:any) { 
-            return a.date.getTime() - b.date.getTime() 
+          quarter.appointment.sort(function (a: any, b: any) {
+            return a.date.getTime() - b.date.getTime()
           });
           const totals = result_totals.find(
             (info: any) => info.quarter_id === quarter.id
@@ -249,7 +252,7 @@ export class GetJobsUseCase {
         });
 
         job_info.quarter = job;
-       
+
         result.push(job_info);
       });
 

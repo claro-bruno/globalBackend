@@ -18,7 +18,8 @@ export class GetOrderUseCase {
                     include:
                     {
                         contractor: true,
-                    }
+
+                    },
                 },
                 // invoices: true,
                 client: true

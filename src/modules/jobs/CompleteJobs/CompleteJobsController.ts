@@ -8,12 +8,13 @@ export class CompleteJobsController {
       month,
       year,
       value_hour,
-      // workedDaysInfos,
+      workedDaysInfos,
       quarter,
       status,
       status_payment,
       others
     } = request.body;
+
 
     const completeJobsUseCase = new CompleteJobsUseCase();
     const result = await completeJobsUseCase.execute({
@@ -24,7 +25,7 @@ export class CompleteJobsController {
       quarter: +quarter,
       status,
       status_payment,
-      // workedDaysInfos,
+      workedDaysInfos,
       others: +others
     });
 

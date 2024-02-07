@@ -333,6 +333,7 @@ enum Method {
   RECEIPT
   VENMO
   CARD
+  CASH
 }
 
 enum Type {

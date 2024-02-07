@@ -1,5 +1,5 @@
-import {NextFunction, Request, Response} from "express";
-import {GetOrdersUseCase} from "./GetOrdersUseCase";
+import { NextFunction, Request, Response } from "express";
+import { GetOrdersUseCase } from "./GetOrdersUseCase";
 
 
 export class GetOrdersController {
@@ -9,16 +9,17 @@ export class GetOrdersController {
         // const result = await getOrdersUseCase.execute();
         // console.log(result,'sdasdsa')
         let result: any = [];
-        if(month && year){
+        if (month && year) {
             result = await getOrdersUseCase.execute({
                 year: +year,
                 month: String(month),
-                   
-            });
-            return response.json(result);
-        }
-        return response.json(result); 
 
-        
+            });
+
+
+        }
+        return response.json(result);
+
+
     }
 }

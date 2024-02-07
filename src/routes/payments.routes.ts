@@ -1,7 +1,7 @@
 import { Router } from "express";
-import {use} from "../middlewares/use";
+import { use } from "../middlewares/use";
 
-import {ensureAuthenticate} from "../middlewares/ensureAuthenticate";
+import { ensureAuthenticate } from "../middlewares/ensureAuthenticate";
 import { CreatePaymentsController } from "../modules/payments/useCases/CreatePayments/CreatePaymentsController";
 import { GetPaymentsController } from "../modules/payments/useCases/GetPayments/GetPaymentsController";
 import { GetAnualReportController } from "../modules/payments/useCases/GetAnualReport/GetAnualReportController";
@@ -17,6 +17,7 @@ const getPaymentsController = new GetPaymentsController();
 const getAnualReportController = new GetAnualReportController();
 const getPaymentContractorDetailsController = new GetPaymentContractorDetailsController();
 const getPaymentsContractorsController = new GetPaymentsContractorsController();
+
 
 paymentsRoutes.get("/invoice/:id", use(ensureAuthenticate), use(getPaymentContractorDetailsController.handle));
 paymentsRoutes.post("/contractor", use(ensureAuthenticate), use(createPaymentsController.handle));

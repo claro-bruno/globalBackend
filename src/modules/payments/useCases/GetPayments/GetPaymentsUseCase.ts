@@ -1,8 +1,38 @@
 import { prisma } from "../../../../database/prismaClient";
 import { AppError } from "../../../../middlewares/AppError";
 
+
+function getMonthFromString(mon: string, year: number) {
+  const d = Date.parse(mon + "1, " + year);
+  if (!isNaN(d)) {
+    return new Date(d).getMonth() - 1;
+  }
+  return -1;
+}
+
+function toMonthName(monthNumber: number) {
+  const date = new Date();
+  date.setMonth(monthNumber);
+
+  return date.toLocaleString("en-US", {
+    month: "long"
+  });
+}
+
 export class GetPaymentsUseCase {
   async execute(year: number, month: string) {
+    const year_1: number = month == "January" ? year - 1 : year;
+    const month_1: any = month == "January" ? "December" : toMonthName(getMonthFromString(month, year_1));
+
+    const year_2: number = month_1 == "January" ? year_1 - 1 : year_1;
+    const month_2: any = month_1 == "January" ? "December" : toMonthName(getMonthFromString(month_1, year_2));
+
+    const year_3: number = month_2 == "January" ? year_2 - 1 : year_2;
+    const month_3: any = month_2 == "January" ? "December" : toMonthName(getMonthFromString(month_2, year_3));
+
+    console.log(year, month, year_1, month_1, year_2, month_2, year_3, month_3);
+
+
     const result: any = await prisma.$queryRaw`
         SELECT
             DISTINCT c.id as fk_id_contractor,
@@ -115,7 +145,96 @@ export class GetPaymentsUseCase {
 			WHERE quarters.month = ${month} AND quarters.year = ${year}
             order by jobs.fk_id_contractor ASC
     ;`;
-    
+
+
+    // const payments_1: any = await prisma.$queryRaw`
+    // SELECT 
+    //         DISTINCT jobs.fk_id_contractor,
+    //         (
+    //           SELECT id AS id_1
+    //             FROM "paymentsContractors" as pa
+    //             where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS' AND pa.year = ${year_1} AND pa.month = ${month_1}
+
+    //         )AS id_1,
+    //         (
+
+    // 		SELECT value AS value_1
+    //             FROM "paymentsContractors" as pa
+    //             where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS' AND pa.year = ${year_1} AND pa.month = ${month_1}
+    //         ) AS value_1,
+    //         (
+    // 		SELECT value 
+    //             FROM "paymentsContractors" as pa
+    //             where pa.fk_id_contractor = c.id AND pa.quarter = 2 AND pa.type = 'CONTRACTOR_WORKERS' AND pa.year = ${year_1} AND pa.month = ${month_1}
+    //         ) AS value_2,
+
+    //         FROM jobs
+    //         INNER JOIN quarters ON quarters.fk_id_job = jobs.id
+    //         INNER JOIN contractors AS c ON jobs.fk_id_contractor = c.id
+    // 	WHERE quarters.month = ${month_1} AND quarters.year = ${year_1}
+    //         order by jobs.fk_id_contractor ASC
+    // ;`;
+
+    // const payments_2: any = await prisma.$queryRaw`
+    // SELECT 
+    //         DISTINCT jobs.fk_id_contractor,
+    //         (
+    //           SELECT id AS id_1
+    //             FROM "paymentsContractors" as pa
+    //             where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS' AND pa.year = ${year_2} AND pa.month = ${month_2}
+
+    //         )AS id_1,
+    //         (
+
+    // 		SELECT value AS value_1
+    //             FROM "paymentsContractors" as pa
+    //             where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS' AND pa.year = ${year_2} AND pa.month = ${month_2}
+
+    //         (
+    // 		SELECT value 
+    //             FROM "paymentsContractors" as pa
+    //             where pa.fk_id_contractor = c.id AND pa.quarter = 2 AND pa.type = 'CONTRACTOR_WORKERS' AND pa.year = ${year_2} AND pa.month = ${month_2}
+
+    //         ) AS value_2,
+
+    //         FROM jobs
+    //         INNER JOIN quarters ON quarters.fk_id_job = jobs.id
+    //         INNER JOIN contractors AS c ON jobs.fk_id_contractor = c.id
+    // 	WHERE quarters.month = ${month_2} AND quarters.year = ${year_2}
+    //         order by jobs.fk_id_contractor ASC
+    // ;`;
+
+    // const payments_3: any = await prisma.$queryRaw`
+    // SELECT 
+    //         DISTINCT jobs.fk_id_contractor,
+    //         (
+    //           SELECT id AS id_1
+    //             FROM "paymentsContractors" as pa
+    //             where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS' AND pa.year = ${year_3} AND pa.month = ${month_3}
+
+
+    //         )AS id_1,
+    //         (
+
+    // 		SELECT value AS value_1
+    //             FROM "paymentsContractors" as pa
+    //             where pa.fk_id_contractor = c.id AND pa.quarter = 1 AND pa.type = 'CONTRACTOR_WORKERS' AND pa.year = ${year_3} AND pa.month = ${month_3}
+
+    //         ) AS value_1,
+    //         (
+    // 		SELECT value 
+    //             FROM "paymentsContractors" as pa
+    //             where pa.fk_id_contractor = c.id AND pa.quarter = 2 AND pa.type = 'CONTRACTOR_WORKERS' AND pa.year = ${year_3} AND pa.month = ${month_3}
+
+    //         ) AS value_2,
+
+    //         FROM jobs
+    //         INNER JOIN quarters ON quarters.fk_id_job = jobs.id
+    //         INNER JOIN contractors AS c ON jobs.fk_id_contractor = c.id
+    // 	WHERE quarters.month = ${month_3} AND quarters.year = ${year_3}
+    //         order by jobs.fk_id_contractor ASC
+    // ;`;
+
     result.forEach((payment: any, index: number) => {
       const pay = payments.find(
         (info: any) => info.fk_id_contractor === payment.fk_id_contractor
@@ -159,11 +278,11 @@ export class GetPaymentsUseCase {
             INNER JOIN contractors c ON c.id = j.fk_id_contractor
             WHERE q.year = ${year} AND q.month = ${month} AND q.status = 'REVISED'
             ;`;
-    
+
     // const result_totals_others: any = await prisma.$queryRaw`
     //         SELECT 
     //         sum(case when q.order = 1 then q.others end) total_others_1,
-		// 	      sum(case when q.order = 2 then q.others end) total_others_2
+    // 	      sum(case when q.order = 2 then q.others end) total_others_2
 
     //         FROM jobs j
     //         INNER JOIN quarters q ON q.fk_id_job = j.id
@@ -188,7 +307,7 @@ export class GetPaymentsUseCase {
         total_1_payment: total_1 - total_others_1,
         total_2_payment: total_2 - total_others_2,
         total_month_payment: (total_1 - total_others_1) + (total_2 - total_others_2)
-      } 
+      }
     };
   }
 }
