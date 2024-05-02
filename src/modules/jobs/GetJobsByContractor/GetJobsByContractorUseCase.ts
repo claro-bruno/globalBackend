@@ -24,10 +24,12 @@ export class GetJobsByContractorUseCase {
       where: {
         month,
         year: +year,
+        // status: 'REVISED',
         jobs: {
           fk_id_contractor: +id,
+          // status: 'ACTIVE',
         }
-        
+
       },
       select: {
         jobs: {
@@ -70,7 +72,8 @@ export class GetJobsByContractorUseCase {
         appointment: true,
       }
     });
-    
+
+
     const jobsGrouped = groupBy(
       jobs_quarters,
       (quarter: any) => quarter.fk_id_job
@@ -221,20 +224,23 @@ export class GetJobsByContractorUseCase {
             INNER JOIN quarters q ON q.fk_id_job = j.id
             INNER JOIN appointments ap ON ap.fk_id_quarter = q.id
             INNER JOIN contractors c ON c.id = j.fk_id_contractor
-            WHERE q.year = ${year} AND q.month = ${month} AND j.fk_id_contractor = ${id} AND j.status = 'ACTIVE' AND q.status = 'REVISED'
+            WHERE q.year = ${year} AND q.month = ${month} AND j.fk_id_contractor = ${id} AND q.status = 'REVISED'
             ;`;
-        const results_total_quarter: any = await prisma.$queryRaw`
+
+
+    const results_total_quarter: any = await prisma.$queryRaw`
           SELECT
             sum(ap.value*q.value_hour) as total,
-            sum(ap.value) as total_hours
+            sum(ap.value) as total_hours,
+            q.order as quarter
 
           FROM jobs j
           INNER JOIN quarters q ON q.fk_id_job = j.id
           INNER JOIN appointments ap ON ap.fk_id_quarter = q.id
-          WHERE q.year = ${year} AND q.month = ${month} AND j.fk_id_contractor = ${id} AND j.status = 'ACTIVE' AND q.status = 'REVISED'
+          WHERE q.year = ${year} AND q.month = ${month} AND j.fk_id_contractor = ${id} AND q.status = 'REVISED'
           GROUP BY q.order
+          
     ;`;
-    
     const result_totals: any = await prisma.$queryRaw`
             SELECT 
             q.fk_id_job as id,
@@ -254,9 +260,9 @@ export class GetJobsByContractorUseCase {
             GROUP BY q.id,contractor_name,client_name,j.status
             ORDER BY q.id ASC
             ;`;
-    
+
     if (jobs_quarters.length > 0) {
-      
+
       jobsGrouped.forEach((job: any) => {
         const job_info: any = {};
 
@@ -266,21 +272,21 @@ export class GetJobsByContractorUseCase {
           // client: { name, id: client_id },
           // contractor: { first_name, last_name , id: contractor_id }
         } = job[0].jobs;
-        job_info.id = id; 
+        job_info.id = id;
         job_info.contractor = job[0].jobs.contractor;
         job_info.client = job[0].jobs.client;
-        job_info.name = `${job[0].jobs.contractor.first_name} ${job[0].jobs.contractor.last_name}` ;
+        job_info.name = `${job[0].jobs.contractor.first_name} ${job[0].jobs.contractor.last_name}`;
         // job_info.contractor_id = contractor_id;
         // job_info.client_name = name;
         // job_info.client_id = client_id;
         job_info.status = status;
-        
+
         job.forEach((quarter: any) => {
-          quarter.appointment.forEach((ap: any) =>{
+          quarter.appointment.forEach((ap: any) => {
             ap.id = ap.id.toString().split('n')[0] !== '' ? Number(ap.id.toString().split('n')[0]) : ap.id
           })
-          quarter.appointment.sort(function(a:any, b:any) { 
-            return a.date.getTime() - b.date.getTime() 
+          quarter.appointment.sort(function (a: any, b: any) {
+            return a.date.getTime() - b.date.getTime()
           });
           const totals = result_totals.find(
             (info: any) => info.quarter_id === quarter.id
@@ -290,7 +296,7 @@ export class GetJobsByContractorUseCase {
         });
 
         job_info.quarter = job;
-       
+
         result.push(job_info);
       });
 
@@ -313,67 +319,70 @@ export class GetJobsByContractorUseCase {
         total_others_2
       } = results_total[0];
 
-      const total_1 = results_total_quarter[0] ? results_total_quarter[0].total : 0
-      const total_2 = results_total_quarter[1] ? results_total_quarter[1].total : 0
-      const total_hours_1 = results_total_quarter[0] ? results_total_quarter[0].total_hours : 0
-      const total_hours_2 = results_total_quarter[1] ? results_total_quarter[1].total_hours : 0
+      const total_1 = results_total_quarter[0]?.quarter === 1 ? results_total_quarter[0]?.total : 0
+      const total_2 = results_total_quarter[0]?.quarter === 2 ? results_total_quarter[0]?.total : results_total_quarter[1]?.quarter === 2 ? results_total_quarter[1]?.total : 0
+      const total_hours_1 = results_total_quarter[0]?.quarter === 1 ? results_total_quarter[0]?.total_hours : 0
+      const total_hours_2 = results_total_quarter[0]?.quarter === 2 ? results_total_quarter[0]?.total_hours : results_total_quarter[1]?.quarter === 2 ? results_total_quarter[1]?.total_hours : 0
 
-      
-      return { jobs: result, days: totals_days, totals: {
-        total: total, 
-        total_hours: total_hours, 
-        total_payment: total - total_others,
-        total_1_hours: total_hours_1,
-        total_1_quarter: total_1,
-        total_1_others: total_others_1,
-        total_1_payment: total_1 - total_others_1,
-        total_2_hours: total_hours_2,
-        total_2_quarter: total_2,
-        total_2_others: total_others_2,
-        total_2_payment: total_2 - total_others_2
-      } };
+
+
+      return {
+        jobs: result, days: totals_days, totals: {
+          total: total,
+          total_hours: total_hours,
+          total_payment: total - total_others,
+          total_1_hours: total_hours_1,
+          total_1_quarter: total_1,
+          total_1_others: total_others_1,
+          total_1_payment: total_1 - total_others_1,
+          total_2_hours: total_hours_2,
+          total_2_quarter: total_2,
+          total_2_others: total_others_2,
+          total_2_payment: total_2 - total_others_2
+        }
+      };
     } else {
       return [];
     }
   }
 }
-    
-      
 
 
-               
-      
-      //     jobsGrouped.forEach((job: any) => {
-      //         const job_info: any = {};
 
-      //         const {
-      //             id,
-      //             status
-      //             // client: { name, id: client_id },
-      //             // contractor: { first_name, middle_name, last_name , id: contractor_id }
-      //         } = job[0].jobs;
-      //         job_info.id = id;
-      //         job_info.contractor = job[0].jobs.contractor;
-      //         job_info.client = job[0].jobs.client;
-      //         // job_info.contractor_name = middle_name != undefined ? `${first_name} ${middle_name} ${last_name}` : `${first_name} ${last_name}` ;
-      //         // job_info.contractor_id = contractor_id;
-      //         // job_info.client_name = name;
-      //         // job_info.client_id = client_id;
-      //         job_info.status = status;
 
-      //         job.forEach((quarter: any) => {
-      //             const totals = result_totals.find( (info: any) => info.quarter_id === quarter.id );
-      //             quarter.total = totals.total;
-      //             quarter.total_hours = totals.total_hours;
-      //         });
 
-      //         job_info.quarter = job;
-      //         result.push(job_info);
-      //     });
 
-      
-    
-  
+//     jobsGrouped.forEach((job: any) => {
+//         const job_info: any = {};
+
+//         const {
+//             id,
+//             status
+//             // client: { name, id: client_id },
+//             // contractor: { first_name, middle_name, last_name , id: contractor_id }
+//         } = job[0].jobs;
+//         job_info.id = id;
+//         job_info.contractor = job[0].jobs.contractor;
+//         job_info.client = job[0].jobs.client;
+//         // job_info.contractor_name = middle_name != undefined ? `${first_name} ${middle_name} ${last_name}` : `${first_name} ${last_name}` ;
+//         // job_info.contractor_id = contractor_id;
+//         // job_info.client_name = name;
+//         // job_info.client_id = client_id;
+//         job_info.status = status;
+
+//         job.forEach((quarter: any) => {
+//             const totals = result_totals.find( (info: any) => info.quarter_id === quarter.id );
+//             quarter.total = totals.total;
+//             quarter.total_hours = totals.total_hours;
+//         });
+
+//         job_info.quarter = job;
+//         result.push(job_info);
+//     });
+
+
+
+
 
 
 

@@ -1,5 +1,5 @@
 import { prisma } from "../../../../database/prismaClient";
-import { AppError} from "../../../../middlewares/AppError";
+import { AppError } from "../../../../middlewares/AppError";
 
 interface IUpdateContractor {
     id: number;
@@ -31,26 +31,27 @@ interface ICreateContractorAddress {
 
 export class UpdateContractorUseCase {
     async execute(
-        { id, first_name, middle_name, last_name, email, identification, ein, dob, telephone, urlPrimaryResidencyProof, urlSecondaryResidencyProof, urlDocumentProof, urlProfile, address, city, state, zipcode } : IUpdateContractor,
-   //     { address, city, zipcode, state } : ICreateContractorAddress,
-   //     { address2 = "", city2 = "", zipcode2 = "", state2 = "" } : ICreateContractorAddress | any
-    ): Promise<any>{
+        { id, first_name, middle_name, last_name, email, identification, ein, dob, telephone, urlPrimaryResidencyProof, urlSecondaryResidencyProof, urlDocumentProof, urlProfile, address, city, state, zipcode }: IUpdateContractor,
+        //     { address, city, zipcode, state } : ICreateContractorAddress,
+        //     { address2 = "", city2 = "", zipcode2 = "", state2 = "" } : ICreateContractorAddress | any
+    ): Promise<any> {
         // const role = access == "" ? "CONTRACTOR" : access;
         //validar se o client existe
         const contractorExist = await prisma.contractors.findUnique({
-           where: {
+            where: {
                 id: +id
-           }
+            }
         });
 
-        
-        if(!contractorExist) {
+
+        if (!contractorExist) {
             throw new AppError('Contractor does not exists', 401)
         }
 
-        const profile = urlProfile === '' ? contractorExist.urlProfile: urlProfile;
-        const documentProof = urlDocumentProof === '' ? contractorExist.urlDocumentProof: urlDocumentProof;
-        const primaryResidencyProof = urlPrimaryResidencyProof === '' ? contractorExist.urlPrimaryResidencyProof: urlPrimaryResidencyProof;
+
+        const profile = urlProfile === '' ? contractorExist.urlProfile : urlProfile;
+        const documentProof = urlDocumentProof === '' ? contractorExist.urlDocumentProof : urlDocumentProof;
+        const primaryResidencyProof = urlPrimaryResidencyProof === '' ? contractorExist.urlPrimaryResidencyProof : urlPrimaryResidencyProof;
         //atualizar o contractor
         const contractor = await prisma.contractors.update({
             where: {
@@ -71,7 +72,7 @@ export class UpdateContractorUseCase {
                 telephone,
             }
         });
-        
+
         await prisma.adresseses.deleteMany({
             where: {
                 fk_id_contractor: +id as number,
