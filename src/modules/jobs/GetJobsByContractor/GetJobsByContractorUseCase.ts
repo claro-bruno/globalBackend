@@ -310,7 +310,16 @@ export class GetJobsByContractorUseCase {
         // a must be equal to b
         return 0;
       });
-
+      result.sort(function (a: any, b: any) {
+        if (a.status > b.status) {
+          return 1;
+        }
+        if (a.status < b.status) {
+          return -1;
+        }
+        // a must be equal to b
+        return 0;
+      });
       const {
         total,
         total_hours,
