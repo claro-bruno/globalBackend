@@ -136,6 +136,8 @@ export class GetJobsUseCase {
       (quarter: any) => quarter.fk_id_job
     );
 
+
+
     let result_total_days: any = await prisma.totals.findMany({
       orderBy: [{ day: 'asc' }],
       where: {
@@ -204,7 +206,7 @@ export class GetJobsUseCase {
             q.order,
             CONCAT(c.first_name,' ',c.middle_name,' ',c.last_name) AS contractor_name,
             CONCAT(cl.name) AS client_name,
-            sum(ap.value*q.value_hour) total,
+            ROUND(sum(ap.value*q.value_hour)::numeric, 2) total,
             sum(ap.value) total_hours
             FROM jobs j
             INNER JOIN quarters q ON q.fk_id_job = j.id

@@ -30,7 +30,7 @@ export class GetPaymentsUseCase {
     const year_3: number = month_2 == "January" ? year_2 - 1 : year_2;
     const month_3: any = month_2 == "January" ? "December" : toMonthName(getMonthFromString(month_2, year_3));
 
-    console.log(year, month, year_1, month_1, year_2, month_2, year_3, month_3);
+    // console.log(year, month, year_1, month_1, year_2, month_2, year_3, month_3);
 
 
     const result: any = await prisma.$queryRaw`
@@ -274,10 +274,12 @@ export class GetPaymentsUseCase {
       }
     });
 
+    //ROUND(sum(ap.value*q.value_hour)::numeric, 2),
+
     const result_totals: any = await prisma.$queryRaw`
             SELECT 
-            sum(case when q.order = 1 and q.month = ${month} and q.year = ${year} then ap.value*q.value_hour end) total_1,
-            sum(case when q.order = 2 and q.month = ${month} and q.year = ${year} then ap.value*q.value_hour end) total_2,
+            ROUND(sum(case when q.order = 1 and q.month = 'May' and q.year = 2024 then ap.value*q.value_hour end)::numeric, 2) total_1,
+            ROUND(sum(case when q.order = 2 and q.month = 'May' and q.year = 2024 then ap.value*q.value_hour end)::numeric, 2) total_2,
             ( 
               SELECT sum(quarters.others) FROM jobs
               INNER JOIN quarters ON quarters.fk_id_job = jobs.id
