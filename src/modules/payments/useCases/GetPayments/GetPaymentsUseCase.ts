@@ -39,8 +39,8 @@ export class GetPaymentsUseCase {
             CONCAT(c.first_name,' ',c.middle_name,' ',c.last_name) AS name,
             q.year,
             q.month,
-           sum(case when q.order = 1 then ap.value*q.value_hour end) AS value_1,
-           sum(case when q.order = 2 then ap.value*q.value_hour end) AS value_2,
+            ROUND(sum(case when q.order = 1 then ap.value*q.value_hour end)::numeric, 2) AS value_1,
+            ROUND(sum(case when q.order = 2 then ap.value*q.value_hour end)::numeric, 2) AS value_2,
             (
 				SELECT
 				SUM(quarters.others) FROM jobs
@@ -276,6 +276,7 @@ export class GetPaymentsUseCase {
 
     //ROUND(sum(ap.value*q.value_hour)::numeric, 2),
 
+    /*
     const result_totals: any = await prisma.$queryRaw`
             SELECT 
             ROUND(sum(case when q.order = 1 and q.month = 'May' and q.year = 2024 then ap.value*q.value_hour end)::numeric, 2) total_1,
@@ -296,7 +297,7 @@ export class GetPaymentsUseCase {
             INNER JOIN contractors c ON c.id = j.fk_id_contractor
             WHERE q.year = ${year} AND q.month = ${month} AND q.status = 'REVISED'
             ;`;
-
+            */
     // const result_totals_others: any = await prisma.$queryRaw`
     //         SELECT 
     //         sum(case when q.order = 1 then q.others end) total_others_1,
@@ -307,15 +308,17 @@ export class GetPaymentsUseCase {
     //         WHERE q.year = ${year} AND q.month = ${month} AND q.status = 'REVISED'
     //         ;`;
 
-    let { total_1, total_2, total_others_1, total_others_2 } = result_totals[0];
+    // let { total_1, total_2, total_others_1, total_others_2 } = result_totals[0];
     // let { total_others_1, total_others_2 } = result_totals_others[0];
+    /*
     total_1 = total_1 != null ? total_1 : 0;
     total_others_1 = total_others_1 != null ? total_others_1 : 0;
     total_2 = total_2 != null ? total_2 : 0;
     total_others_2 = total_others_2 != null ? total_others_2 : 0;
-
+            */
     return {
       payments: result,
+      /*
       total: {
         total_1_quarter: total_1,
         total_2_quarter: total_2,
@@ -325,7 +328,7 @@ export class GetPaymentsUseCase {
         total_1_payment: total_1 - total_others_1,
         total_2_payment: total_2 - total_others_2,
         total_month_payment: (total_1 - total_others_1) + (total_2 - total_others_2)
-      }
+      }*/
     };
   }
 }
