@@ -10,7 +10,7 @@ interface IAccountContractor {
 
 export class ResetPasswordContractorUseCase {
   async execute({ email }: IAccountContractor): Promise<any> {
-    
+
     const contractorExist = await prisma.contractors.findFirst({
       where: {
         email,
@@ -34,7 +34,7 @@ export class ResetPasswordContractorUseCase {
       const password =
         contractorExist.first_name.toString() +
         ("0" + (birthday.getMonth() + 1)).slice(-2).toString() +
-        ("0" + (birthday.getDate() + 1)).slice(-2).toString();
+        ("0" + (birthday.getDate())).slice(-2).toString();
 
       // const firstName = contractorExist.first_name.split(" ").toString();
       // console.log(firstName.split(",").toString());

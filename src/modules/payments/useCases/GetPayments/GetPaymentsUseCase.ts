@@ -260,8 +260,8 @@ export class GetPaymentsUseCase {
         payment.payed_2 = pay.payed_2;
         payment.method_1 = pay.method_1;
         payment.method_2 = pay.method_2;
-        payment.total_1_payment = payment.value_1 - payment.others_1;
-        payment.total_2_payment = payment.value_2 - payment.others_2;
+        payment.total_1_payment = payment.value_1;
+        payment.total_2_payment = payment.value_2;
 
         payment.total1_1_payment = pay_1 != undefined ? pay_1.value_1 : 0;
         payment.total1_2_payment = pay_1 != undefined ? pay_1.value_2 : 0;
