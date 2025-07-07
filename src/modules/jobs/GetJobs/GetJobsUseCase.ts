@@ -214,7 +214,7 @@ export class GetJobsUseCase {
             INNER JOIN contractors c ON c.id = j.fk_id_contractor
             INNER JOIN clients cl ON cl.id = j.fk_id_client
             WHERE  q.year = ${year} AND q.month = ${month}
-            GROUP BY q.id,contractor_name,client_name,j.status
+            GROUP BY q.id,contractor_name,client_name,j.status,q.fk_id_job,q.order
             ORDER BY q.id ASC
             ;`;
 
