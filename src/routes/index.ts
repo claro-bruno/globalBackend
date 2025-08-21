@@ -11,9 +11,9 @@ import { ordersRoutes } from "./orders.routes";
 import { costsRoutes } from "./costs.routes";
 const router = Router();
 
-// router.get("/", (request, response) => {
-//   response.json("Testando API na AWS");
-// });
+router.get("/", (request, response) => {
+    response.json("Testando API na AWS");
+});
 
 router.use("/cost", costsRoutes);
 router.use("/account", accountsRoutes);

@@ -8,7 +8,6 @@ import { GetAnualReportController } from "../modules/payments/useCases/GetAnualR
 import { GetPaymentContractorDetailsController } from "../modules/payments/useCases/GetPaymentContractorDetails/GetPaymentContractorDetailsController";
 import { GetPaymentsContractorsController } from "../modules/payments/useCases/GetPaymentsContractors/GetPaymentsContractorsController";
 
-
 const paymentsRoutes = Router();
 
 
@@ -24,7 +23,7 @@ paymentsRoutes.post("/contractor", use(ensureAuthenticate), use(createPaymentsCo
 paymentsRoutes.get("/contractor", use(ensureAuthenticate), use(getPaymentsController.handle));
 paymentsRoutes.get("/report/:year", use(ensureAuthenticate), use(getAnualReportController.handle));
 paymentsRoutes.get("/invoice", use(ensureAuthenticate), use(getPaymentsContractorsController.handle));
-
+paymentsRoutes.get("/invoice/all", use(ensureAuthenticate), use(getPaymentsContractorsController.handle));
 
 
 export { paymentsRoutes };

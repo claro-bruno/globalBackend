@@ -1,13 +1,14 @@
 
-import { prisma} from "../../../../database/prismaClient";
-import { AppError} from "../../../../middlewares/AppError";
+import { prisma } from "../../../../database/prismaClient";
+import { AppError } from "../../../../middlewares/AppError";
 
 interface IGetInvoices {
     year: number;
 }
 
 export class GetInvoicesByYearUseCase {
-    async execute({ year } : IGetInvoices) {
+    async execute({ year }: IGetInvoices) {
+        console.log("TESTETE")
         const result: any = {};
         const arrMonths: any = [
             "January",
@@ -53,7 +54,7 @@ export class GetInvoicesByYearUseCase {
               resultt[`${type}`] = typeof payments_type === 'undefined' || payments_type === null ? 0 : payments_type._sum.value as any;
  
         */
-        arrMonths.forEach((month:string) => {
+        arrMonths.forEach((month: string) => {
             const infoResult: any = {};
             const invoice_info = result_months.find(
                 (info: any) => info.month === month
@@ -69,9 +70,9 @@ export class GetInvoicesByYearUseCase {
         return {
             invoices: result,
             total: {
-              total, 
+                total,
             }
-          };
+        };
 
     }
 }

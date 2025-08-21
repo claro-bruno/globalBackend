@@ -27,6 +27,7 @@ export class ResetPasswordContractorUseCase {
       }
     });
 
+
     if (contractorAccountExist) {
       const birthday = contractorExist.dob;
 
@@ -35,7 +36,6 @@ export class ResetPasswordContractorUseCase {
         contractorExist.first_name.toString() +
         ("0" + (birthday.getMonth() + 1)).slice(-2).toString() +
         ("0" + (birthday.getDate())).slice(-2).toString();
-
       // const firstName = contractorExist.first_name.split(" ").toString();
       // console.log(firstName.split(",").toString());
       // const password = contractorExist.first_name[0].toLowerCase().split(" ")[0].toString() + ("0" + (birthday.getMonth() + 1)).slice(-2).toString() + ("0" + (birthday.getDate())).slice(-2).toString();
@@ -56,7 +56,7 @@ export class ResetPasswordContractorUseCase {
       const hostname = "smtp.gmail.com";
       const username = "globaljanitorialcontact@gmail.com";
       const pass = "oekrrjxmemlnipke";
-
+      console.log(pass)
       const transporter = nodemailer.createTransport({
         host: hostname,
         // port: 993,
@@ -78,6 +78,7 @@ export class ResetPasswordContractorUseCase {
         html: `<strong>Your password account has been reseted to <br> Login: ${contractorAccountExist.username} <br> Password: ${password}</strong>`,
         headers: { "x-myheader": "test header" }
       };
+      console.log(message)
       transporter.sendMail(message);
     }
 

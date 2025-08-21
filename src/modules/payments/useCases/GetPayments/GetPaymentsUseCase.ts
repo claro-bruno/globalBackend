@@ -31,7 +31,10 @@ export class GetPaymentsUseCase {
     const month_3: any = month_2 == "January" ? "December" : toMonthName(getMonthFromString(month_2, year_3));
 
     // console.log(year, month, year_1, month_1, year_2, month_2, year_3, month_3);
-
+    /**
+     *  ROUND(sum(case when q.order = 1 then ap.value*q.value_hour end)::numeric, 3) AS value_1,
+            ROUND(sum(case when q.order = 2 then ap.value*q.value_hour end)::numeric, 3) AS value_2,
+     */
 
     const result: any = await prisma.$queryRaw`
         SELECT
@@ -39,8 +42,8 @@ export class GetPaymentsUseCase {
             CONCAT(c.first_name,' ',c.middle_name,' ',c.last_name) AS name,
             q.year,
             q.month,
-            ROUND(sum(case when q.order = 1 then ap.value*q.value_hour end)::numeric, 2) AS value_1,
-            ROUND(sum(case when q.order = 2 then ap.value*q.value_hour end)::numeric, 2) AS value_2,
+            ROUND(sum(case when q.order = 1 then ap.value*q.value_hour end)::numeric, 3) AS value_1,
+            ROUND(sum(case when q.order = 2 then ap.value*q.value_hour end)::numeric, 3) AS value_2,
             (
 				SELECT
 				SUM(quarters.others) FROM jobs
@@ -230,8 +233,6 @@ export class GetPaymentsUseCase {
     	WHERE quarters.month = ${month_3} AND quarters.year = ${year_3}
             order by jobs.fk_id_contractor ASC
     ;`;
-
-
 
     result.forEach((payment: any, index: number) => {
       const pay = payments.find(

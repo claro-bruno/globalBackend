@@ -19,10 +19,10 @@ model Totals {
 }
 
 model Costs {
-  id                 Int                @id @default(autoincrement())
-  created_at       DateTime?   @default(now())
-  vcost            Float
-  
+  id         Int       @id @default(autoincrement())
+  created_at DateTime? @default(now())
+  vcost      Float
+
   @@map("costs")
 }
 
@@ -50,8 +50,8 @@ model Orders {
   ended_at           DateTime?          @default(now())
   client             Clients?           @relation(fields: [fk_id_client], references: [id])
   support_contractor Contractors?       @relation(fields: [fk_support_id], references: [id])
-  Invoices           Invoices?          @relation(fields: [invoicesId], references: [id])
   ordersContractors  OrderContractors[]
+  invoices           Invoices[]
 
   @@map("orders")
 }
@@ -71,17 +71,25 @@ model OrderContractors {
 }
 
 model Invoices {
-  id             Int      @id @default(autoincrement())
-  date_at        DateTime @default(now())
+  id             Int       @id @default(autoincrement())
+  date_at        DateTime  @default(now())
   value          Float
-  payed_for      String?
   identification String
   description    String?
   month          String
   year           Int
+  taxa           Float?
+  total          Float?
+  total_pago     Float?
+  date_payment   DateTime?
+  method         String?
+  ref            String?
+  fk_id_order    Int?
   fk_id_client   Int?
-  client         Clients? @relation(fields: [fk_id_client], references: [id])
-  orders         Orders[]
+  quarter        Int?
+
+  client Clients? @relation(fields: [fk_id_client], references: [id])
+  order  Orders?  @relation(fields: [fk_id_order], references: [id])
 
   @@map("invoices")
 }

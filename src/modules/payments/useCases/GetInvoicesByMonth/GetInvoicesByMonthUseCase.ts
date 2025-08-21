@@ -1,5 +1,5 @@
 
-import { prisma} from "../../../../database/prismaClient";
+import { prisma } from "../../../../database/prismaClient";
 
 interface IGetInvoices {
     month: string;
@@ -8,29 +8,35 @@ interface IGetInvoices {
 
 
 export class GetInvoicesByMonthUseCase {
-    async execute({ month, year } : IGetInvoices) {
-
+    async execute({ month, year }: IGetInvoices) {
         const result = await prisma.invoices.findMany({
-            orderBy: [{ date_at: 'asc'}],
+            orderBy: [{ date_at: 'asc' }],
             where: {
                 month,
                 year
             },
             select: {
-               id: true,
-               date_at: true,
-               value: true,
-               payed_for: true,
-               identification: true,
-               description: true,
-               month: true,
-               year: true,
-               fk_id_client: true,
-               client: {
-                select: {
-                    name: true,
+                id: true,
+                date_at: true,
+                date_payment: true,
+                method: true,
+                ref: true,
+                value: true,
+                taxa: true,
+                total: true,
+                total_pago: true,
+                quarter: true,
+                identification: true,
+                description: true,
+                month: true,
+                year: true,
+                fk_id_order: true,
+                fk_id_client: true,
+                client: {
+                    select: {
+                        name: true,
+                    }
                 }
-               }
             }
         });
 
@@ -45,11 +51,12 @@ export class GetInvoicesByMonthUseCase {
             }
         });
 
+
         const total = sum_invoices._sum.value == null ? 0 : sum_invoices._sum.value;
         return {
             invoices: result,
             total: {
-              total, 
+                total,
             }
         };
 
