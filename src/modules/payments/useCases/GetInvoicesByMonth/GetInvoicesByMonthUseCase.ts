@@ -42,7 +42,8 @@ export class GetInvoicesByMonthUseCase {
 
         const sum_invoices = await prisma.invoices.aggregate({
             _sum: {
-                value: true
+                total: true,
+                total_pago: true
             },
 
             where: {
@@ -52,11 +53,14 @@ export class GetInvoicesByMonthUseCase {
         });
 
 
-        const total = sum_invoices._sum.value == null ? 0 : sum_invoices._sum.value;
+        const total = sum_invoices._sum.total == null ? 0 : +sum_invoices._sum.total;
+        const total_pago = sum_invoices._sum.total_pago == null ? 0 : +sum_invoices._sum.total_pago;
         return {
             invoices: result,
             total: {
                 total,
+                total_pago,
+                diferenca: +total - +total_pago
             }
         };
 
