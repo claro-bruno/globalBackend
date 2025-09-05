@@ -6,7 +6,7 @@ interface ICreateinvoice {
   date_invoice: Date;
   value: number;
   identification: string;
-  fk_id_client: number;
+  fk_id_client: string;
   description?: string;
   taxa: number;
   total_pago?: number;
@@ -14,6 +14,7 @@ interface ICreateinvoice {
   method?: string;
   ref?: string;
   fk_id_order?: number;
+  fk_id_contractor?: number;
   quarter?: number;
 }
 
@@ -39,30 +40,22 @@ export class CreateInvoicesUseCase {
 
 
 
-  async execute({ date_invoice, value, identification, description, fk_id_client, taxa, quarter, total_pago, date_payment, method, ref, fk_id_order }: ICreateinvoice) {
+  async execute({ date_invoice, value, identification, description, fk_id_client, taxa, total_pago, date_payment, method, ref, fk_id_order, fk_id_contractor }: ICreateinvoice) {
     const month = toMonthName(new Date(date_invoice).getUTCMonth());
     const year = new Date(date_invoice).getUTCFullYear();
-
-    const invoiceExist = await prisma.invoices.findFirst({
-      where: {
-        identification: identification
-      }
-    });
-
-    if (invoiceExist) {
-      throw new AppError('Invoice already exists', 400)
-    }
-
+    const id_client = fk_id_client.split("-");
 
 
     const data_invoice = new Date(date_invoice);
+    const quarter = data_invoice.getDate() > 15 ? 2 : 1;
     const data_pagamento = date_payment ? new Date(date_payment) : undefined;
 
     await prisma.invoices.create({
       data: {
         value: +value,
         date_at: data_invoice,
-        fk_id_client: +fk_id_client,
+        date_log: data_invoice,
+        fk_id_client: +id_client[0].trim(),
         identification,
         description,
         month,
@@ -74,7 +67,8 @@ export class CreateInvoicesUseCase {
         method,
         ref,
         fk_id_order: fk_id_order ? +fk_id_order : undefined,
-        quarter: quarter ? +quarter : undefined
+        quarter: quarter ? +quarter : undefined,
+        fk_id_contractor: fk_id_contractor ? +fk_id_contractor : undefined,
       }
     });
 

@@ -71,25 +71,28 @@ model OrderContractors {
 }
 
 model Invoices {
-  id             Int       @id @default(autoincrement())
-  date_at        DateTime  @default(now())
-  value          Float
-  identification String
-  description    String?
-  month          String
-  year           Int
-  taxa           Float?
-  total          Float?
-  total_pago     Float?
-  date_payment   DateTime?
-  method         String?
-  ref            String?
-  fk_id_order    Int?
-  fk_id_client   Int?
-  quarter        Int?
+  id               Int       @id @default(autoincrement())
+  date_at          DateTime  @default(now())
+  value            Float
+  identification   String
+  description      String?
+  month            String
+  year             Int
+  taxa             Float?
+  total            Float?
+  total_pago       Float?
+  date_payment     DateTime?
+  method           String?
+  ref              String?
+  fk_id_order      Int?
+  fk_id_client     Int?
+  fk_id_contractor Int?
+  quarter          Int?
+  date_log         DateTime? @default(now())
 
-  client Clients? @relation(fields: [fk_id_client], references: [id])
-  order  Orders?  @relation(fields: [fk_id_order], references: [id])
+  client     Clients?     @relation(fields: [fk_id_client], references: [id])
+  order      Orders?      @relation(fields: [fk_id_order], references: [id])
+  contractor Contractors? @relation(fields: [fk_id_contractor], references: [id])
 
   @@map("invoices")
 }
@@ -156,6 +159,7 @@ model Contractors {
   ordersContractors          OrderContractors[]
   payments                   Payments[]
   paymentsContractors        paymentsContractors[]
+  Invoices                   Invoices[]
 
   @@map("contractors")
 }

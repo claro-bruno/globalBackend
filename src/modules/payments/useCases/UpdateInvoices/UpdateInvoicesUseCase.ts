@@ -6,7 +6,7 @@ interface IUpdateInvoice {
     date_invoice: Date;
     value: number;
     identification?: string;
-    fk_id_client: number;
+    fk_id_client: any;
     description?: string;
     id: number;
     taxa: number;
@@ -15,6 +15,7 @@ interface IUpdateInvoice {
     method?: string;
     ref?: string;
     fk_id_order?: number;
+    fk_id_contractor?: number;
     quarter?: number;
 }
 
@@ -36,7 +37,7 @@ function toMonthName(monthNumber: number) {
 }
 
 export class UpdateInvoicesUseCase {
-    async execute({ id, date_invoice, value, identification, description, fk_id_client, taxa, quarter, total_pago, date_payment, method, ref, fk_id_order }: IUpdateInvoice) {
+    async execute({ id, date_invoice, value, identification, description, fk_id_client, taxa, total_pago, date_payment, method, ref, fk_id_order, fk_id_contractor }: IUpdateInvoice) {
 
         const month = toMonthName(new Date(date_invoice).getUTCMonth());
         const year = new Date(date_invoice).getUTCFullYear();
@@ -47,25 +48,24 @@ export class UpdateInvoicesUseCase {
             }
         });
 
-        const invoiceAlreadyExist = await prisma.invoices.findFirst({
-            where: {
-                identification,
-            }
-        });
+
 
         if (!invoiceExist) {
             throw new AppError('Invoice does not exists', 400)
         }
 
-        if (invoiceAlreadyExist && invoiceAlreadyExist?.identification !== identification) {
-            throw new AppError('Invoice already exists', 400)
-        }
+
 
 
 
         const date = new Date(date_invoice);
 
+        const quarter = date.getDate() > 15 ? 2 : 1;
+
+        const id_client = isNaN(fk_id_client) ? fk_id_client.split("-")[0] : fk_id_client;
+
         const data_pagamento = date_payment ? new Date(date_payment) : undefined;
+
 
         await prisma.invoices.update({
             where: {
@@ -74,7 +74,7 @@ export class UpdateInvoicesUseCase {
             data: {
                 value: +value,
                 date_at: date,
-                fk_id_client: +fk_id_client,
+                fk_id_client: +id_client,
                 identification,
                 description,
                 year,
@@ -83,9 +83,11 @@ export class UpdateInvoicesUseCase {
                 total: +value + +taxa,
                 total_pago: typeof total_pago !== "undefined" ? +total_pago : undefined,
                 date_payment: typeof date_payment !== "undefined" ? data_pagamento : undefined,
+                date_log: date,
                 method,
                 ref,
                 fk_id_order: fk_id_order ? +fk_id_order : undefined,
+                fk_id_contractor: fk_id_contractor ? +fk_id_contractor : undefined,
                 quarter: quarter ? +quarter : undefined
             }
         });

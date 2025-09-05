@@ -10,7 +10,7 @@ interface IGetInvoices {
 export class GetInvoicesByMonthUseCase {
     async execute({ month, year }: IGetInvoices) {
         const result = await prisma.invoices.findMany({
-            orderBy: [{ date_at: 'asc' }],
+            orderBy: [{ date_at: 'desc' }],
             where: {
                 month,
                 year
@@ -18,6 +18,7 @@ export class GetInvoicesByMonthUseCase {
             select: {
                 id: true,
                 date_at: true,
+                date_log: true,
                 date_payment: true,
                 method: true,
                 ref: true,
@@ -36,7 +37,15 @@ export class GetInvoicesByMonthUseCase {
                     select: {
                         name: true,
                     }
+                },
+                fk_id_contractor: true,
+                contractor: {
+                    select: {
+                        first_name: true,
+                        last_name: true,
+                    }
                 }
+
             }
         });
 
