@@ -6,10 +6,27 @@ interface IGetInvoices {
     year: number;
 }
 
+function getMonthFromString(mon: string) {
+    var d = Date.parse(mon + "1, 2023");
+    if (!isNaN(d)) {
+        return new Date(d).getMonth() + 1;
+    }
+    return -1;
+}
+
+function toMonthName(monthNumber: number) {
+    const date = new Date();
+    date.setMonth(monthNumber);
+    // console.log(monthNumber)
+    return date.toLocaleString("en-US", {
+        month: "long"
+    });
+}
 
 export class GetInvoicesByMonthUseCase {
     async execute({ month, year }: IGetInvoices) {
-        const result = await prisma.invoices.findMany({
+        let rett: any = []
+        let result = await prisma.invoices.findMany({
             orderBy: [{ date_at: 'desc' }],
             where: {
                 month,
@@ -49,6 +66,24 @@ export class GetInvoicesByMonthUseCase {
             }
         });
 
+        const ress = await prisma.orders.groupBy({
+            by: ['fk_invoice_id'],
+        });
+
+        // console.log(res)
+
+        // res.forEach((i: any) => {
+        //     const dt = new Date(i?.created_at)
+
+        //     const fullYear = dt.getUTCFullYear();
+        //     const fullMonth = dt.getUTCMonth() + 1;
+        //     const fullMonthLiteral = toMonthName(fullMonth - 1);
+        //     if (fullMonthLiteral === month && fullYear === year) {
+        //         rett.push(i)
+        //     }
+
+        // })
+
         const sum_invoices = await prisma.invoices.aggregate({
             _sum: {
                 total: true,
@@ -61,6 +96,9 @@ export class GetInvoicesByMonthUseCase {
             }
         });
 
+        // result.forEach((i: any) => {
+
+        // })
 
         const total = sum_invoices._sum.total == null ? 0 : +sum_invoices._sum.total;
         const total_pago = sum_invoices._sum.total_pago == null ? 0 : +sum_invoices._sum.total_pago;
@@ -72,6 +110,7 @@ export class GetInvoicesByMonthUseCase {
                 diferenca: +total - +total_pago
             }
         };
+
 
     }
 }

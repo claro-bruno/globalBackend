@@ -58,9 +58,9 @@ export class UpdateInvoicesUseCase {
 
 
 
-        const date = new Date(date_invoice);
-
-        const quarter = date.getDate() > 15 ? 2 : 1;
+        const data_log = new Date();
+        const data_invoice = new Date(date_invoice);
+        const quarter = data_invoice.getDate() > 15 ? 2 : 1;
 
         const id_client = isNaN(fk_id_client) ? fk_id_client.split("-")[0] : fk_id_client;
 
@@ -73,7 +73,7 @@ export class UpdateInvoicesUseCase {
             },
             data: {
                 value: +value,
-                date_at: date,
+                date_at: data_invoice,
                 fk_id_client: +id_client,
                 identification,
                 description,
@@ -83,7 +83,7 @@ export class UpdateInvoicesUseCase {
                 total: +value + +taxa,
                 total_pago: typeof total_pago !== "undefined" ? +total_pago : undefined,
                 date_payment: typeof date_payment !== "undefined" ? data_pagamento : undefined,
-                date_log: date,
+                date_log: data_log,
                 method,
                 ref,
                 fk_id_order: fk_id_order ? +fk_id_order : undefined,

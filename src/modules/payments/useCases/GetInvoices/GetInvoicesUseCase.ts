@@ -11,7 +11,6 @@ export class GetInvoicesUseCase {
                 id: true,
                 date_at: true,
                 value: true,
-                payed_for: true,
                 identification: true,
                 description: true,
                 month: true,
