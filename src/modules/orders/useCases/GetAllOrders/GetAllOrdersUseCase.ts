@@ -18,7 +18,6 @@ function getMonthFromString(mon: string) {
 function toMonthName(monthNumber: number) {
   const date = new Date();
   date.setMonth(monthNumber);
-  // console.log(monthNumber)
   return date.toLocaleString("en-US", {
     month: "long"
   });
@@ -27,7 +26,11 @@ function toMonthName(monthNumber: number) {
 export class GetAllOrdersUseCase {
   async execute() {
 
-    const result = await prisma.orders.findMany();
+    const result = await prisma.orders.findMany({
+      where: { id: { gt: 1974 } }
+    }
+
+    );
     return result;
   }
 }

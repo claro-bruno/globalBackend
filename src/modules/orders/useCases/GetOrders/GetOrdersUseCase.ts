@@ -29,10 +29,12 @@ export class GetOrdersUseCase {
 
     let ret: any = []
     let result = await prisma.orders.findMany({
+
       orderBy: [
         {
           id: "asc"
         }],
+
       include: {
 
         ordersContractors:
