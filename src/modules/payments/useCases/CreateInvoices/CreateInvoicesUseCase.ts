@@ -47,7 +47,7 @@ export class CreateInvoicesUseCase {
 
 
     const data_invoice = new Date(date_invoice);
-    console.log(data_invoice);
+
     const quarter = data_invoice.getDate() > 15 ? 2 : 1;
     const data_pagamento = date_payment ? new Date(date_payment) : undefined;
 

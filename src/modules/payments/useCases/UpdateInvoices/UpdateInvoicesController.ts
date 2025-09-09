@@ -6,9 +6,10 @@ export class UpdateInvoicesController {
         const { date_invoice, value, identification, description, id_client, taxa, total_pago, data_pagamento, method, ref, id_order, contractor_id } = request.body;
         const { id } = request.params;
         const updateInvoicesUseCase = new UpdateInvoicesUseCase();
-
+        // console.log(request.body)
         const result = await updateInvoicesUseCase.execute({ date_invoice, value, identification, description, fk_id_client: id_client, id: +id, taxa, total_pago, date_payment: data_pagamento, method, ref, fk_id_order: id_order, fk_id_contractor: contractor_id });
         return response.json(result);
+
 
 
 

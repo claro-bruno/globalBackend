@@ -107,7 +107,7 @@ export class GetInvoicesByMonthUseCase {
             total: {
                 total,
                 total_pago,
-                diferenca: +total - +total_pago
+                diferenca: +total_pago - +total
             }
         };
 
