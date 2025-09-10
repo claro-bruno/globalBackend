@@ -51,6 +51,7 @@ export class CreateInvoicesUseCase {
     const quarter = data_invoice.getDate() > 15 ? 2 : 1;
     const data_pagamento = date_payment ? new Date(date_payment) : undefined;
 
+    //console.log(date_invoice, value, identification, description, fk_id_client, taxa, total_pago, date_payment, method, ref, fk_id_order, fk_id_contractor)
     await prisma.invoices.create({
       data: {
         value: +value,

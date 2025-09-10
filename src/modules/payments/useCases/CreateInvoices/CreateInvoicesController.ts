@@ -10,9 +10,12 @@ export class CreateInvoicesController {
         const createInvoicesUseCase = new CreateInvoicesUseCase();
         const taxaNumber = Number(taxa);
 
-        const result = await createInvoicesUseCase.execute({ date_invoice, value, identification, description, fk_id_client: id_client, taxa: taxaNumber, total_pago, date_payment, method, ref, fk_id_order: id_order, fk_id_contractor: contractor_id });
-        return response.json(result);
+        // console.log(request.body);
 
+
+        const result = await createInvoicesUseCase.execute({ date_invoice, value, identification, description, fk_id_client: id_client, taxa: taxaNumber, total_pago, date_payment, method, ref, fk_id_order: id_order, fk_id_contractor: contractor_id });
+        // return response.json(result);
+        return response.status(201).send();
 
 
     }
