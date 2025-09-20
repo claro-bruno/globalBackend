@@ -59,15 +59,15 @@ export class CreateInvoicesUseCase {
       throw new AppError('Invoice exists', 400)
     }
 
-    const orderExist = await prisma.orders.findFirst({
-      where: {
-        id: fk_id_order,
-      }
-    });
+    // const orderExist = await prisma.orders.findFirst({
+    //   where: {
+    //     id: fk_id_order,
+    //   }
+    // });
 
-    if (!orderExist) {
-      throw new AppError('Order does not exists', 400)
-    }
+    // if (!orderExist) {
+    //   throw new AppError('Order does not exists', 400)
+    // }
 
     const data_invoice = new Date(date_invoice);
 
