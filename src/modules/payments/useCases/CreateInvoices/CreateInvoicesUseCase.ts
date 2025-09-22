@@ -46,15 +46,15 @@ export class CreateInvoicesUseCase {
     const id_client = fk_id_client.split("-");
 
 
-    const invoiceExist = await prisma.invoices.findFirst({
-      where: {
-        identification,
-      }
-    });
+    // const invoiceExist = await prisma.invoices.findFirst({
+    //   where: {
+    //     identification,
+    //   }
+    // });
 
-    if (invoiceExist) {
-      throw new AppError('Invoice exists', 400)
-    }
+    // if (invoiceExist) {
+    //   throw new AppError('Invoice exists', 400)
+    // }
 
 
     if (Number(fk_id_order) > 0) {
