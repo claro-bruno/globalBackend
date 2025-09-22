@@ -8,7 +8,7 @@ export class UpdateInvoicesController {
         const updateInvoicesUseCase = new UpdateInvoicesUseCase();
         const taxaNumber = Number(taxa);
         // console.log(request.body)
-        const result = await updateInvoicesUseCase.execute({ date_invoice, value, identification, description, fk_id_client: id_client, id: +id, taxa: taxaNumber, total_pago, date_payment: data_pagamento, method, ref, fk_id_order: id_order, fk_id_contractor: contractor_id });
+        const result = await updateInvoicesUseCase.execute({ date_invoice, value, identification, description, fk_id_client: id_client, id: +id, taxa: taxaNumber, total_pago, date_payment: data_pagamento, method, ref, fk_id_order: +id_order, fk_id_contractor: contractor_id });
         return response.json(result);
 
 
