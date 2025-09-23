@@ -25,46 +25,92 @@ function toMonthName(monthNumber: number) {
 
 export class GetInvoicesByMonthUseCase {
     async execute({ month, year }: IGetInvoices) {
-        let rett: any = []
-        let result = await prisma.invoices.findMany({
-            orderBy: [{ date_at: 'desc' }],
-            where: {
-                month,
-                year
-            },
-            select: {
-                id: true,
-                date_at: true,
-                date_log: true,
-                date_payment: true,
-                method: true,
-                ref: true,
-                value: true,
-                taxa: true,
-                total: true,
-                total_pago: true,
-                quarter: true,
-                identification: true,
-                description: true,
-                month: true,
-                year: true,
-                fk_id_order: true,
-                fk_id_client: true,
-                client: {
-                    select: {
-                        name: true,
-                    }
-                },
-                fk_id_contractor: true,
-                contractor: {
-                    select: {
-                        first_name: true,
-                        last_name: true,
-                    }
-                }
 
-            }
-        });
+
+        let rett: any = []
+        let result: any = []
+
+        if (month && year) {
+            result = await prisma.invoices.findMany({
+                orderBy: [{ date_at: 'desc' }],
+                where: {
+                    month,
+                    year
+                },
+                select: {
+                    id: true,
+                    date_at: true,
+                    date_log: true,
+                    date_payment: true,
+                    method: true,
+                    ref: true,
+                    value: true,
+                    taxa: true,
+                    total: true,
+                    total_pago: true,
+                    quarter: true,
+                    identification: true,
+                    description: true,
+                    month: true,
+                    year: true,
+                    fk_id_order: true,
+                    fk_id_client: true,
+                    client: {
+                        select: {
+                            name: true,
+                        }
+                    },
+                    fk_id_contractor: true,
+                    contractor: {
+                        select: {
+                            first_name: true,
+                            last_name: true,
+                        }
+                    }
+
+                }
+            });
+        } else if (year) {
+            result = await prisma.invoices.findMany({
+                orderBy: [{ date_at: 'desc' }],
+                where: {
+                    year
+                },
+                select: {
+                    id: true,
+                    date_at: true,
+                    date_log: true,
+                    date_payment: true,
+                    method: true,
+                    ref: true,
+                    value: true,
+                    taxa: true,
+                    total: true,
+                    total_pago: true,
+                    quarter: true,
+                    identification: true,
+                    description: true,
+                    month: true,
+                    year: true,
+                    fk_id_order: true,
+                    fk_id_client: true,
+                    client: {
+                        select: {
+                            name: true,
+                        }
+                    },
+                    fk_id_contractor: true,
+                    contractor: {
+                        select: {
+                            first_name: true,
+                            last_name: true,
+                        }
+                    }
+
+                }
+            });
+        }
+
 
         const ress = await prisma.orders.groupBy({
             by: ['fk_invoice_id'],
