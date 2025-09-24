@@ -55,17 +55,17 @@ export class UpdateInvoicesUseCase {
             throw new AppError('Invoice does not exists', 400)
         }
 
-        if (Number(fk_id_order) > 0) {
-            const orderExist = await prisma.orders.findFirst({
-                where: {
-                    id: fk_id_order,
-                }
-            });
+        // if (Number(fk_id_order) > 0) {
+        //     const orderExist = await prisma.orders.findFirst({
+        //         where: {
+        //             id: fk_id_order,
+        //         }
+        //     });
 
-            if (!orderExist) {
-                throw new AppError('Order does not exists', 400)
-            }
-        }
+        //     if (!orderExist) {
+        //         throw new AppError('Order does not exists', 400)
+        //     }
+        // }
 
 
 
