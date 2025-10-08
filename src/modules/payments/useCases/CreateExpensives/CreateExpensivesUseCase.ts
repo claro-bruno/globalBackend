@@ -42,14 +42,15 @@ export class CreateExpensivesUseCase {
 
 
 
-        console.log(month, year, value, category);
+
 
         await prisma.payments.create({
             data: {
                 value: +value,
                 year: +year,
                 month: String(month),
-                category: String(category)
+                category: String(category),
+                description: description ? String(description) : '',
             }
         });
 
