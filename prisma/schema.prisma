@@ -98,25 +98,12 @@ model Invoices {
 }
 
 model Payments {
-  id                  Int                   @id @default(autoincrement())
-  value               Float
-  others              Float?
-  method              Method?
-  year                Int
-  month               String
-  date_at             DateTime              @default(now())
-  type                Type
-  description         String?
-  payed_for           String?
-  quarter             Int?
-  pay_id              Int?
-  identification      String                @default("")
-  fk_id_contractor    Int?
-  fk_id_client        Int?
-  status              Status?
-  InvoicesContractors InvoicesContractors[]
-  client              Clients?              @relation(fields: [fk_id_client], references: [id])
-  contractor          Contractors?          @relation(fields: [fk_id_contractor], references: [id])
+  id          Int     @id @default(autoincrement())
+  value       Float
+  category    String
+  description String?
+  month       String
+  year        Int
 
   @@map("payments")
 }
@@ -131,8 +118,8 @@ model Balances {
 }
 
 model Contractors {
-  id                         Int                   @id @default(autoincrement())
-  email                      String                @unique
+  id                         Int          @id @default(autoincrement())
+  email                      String       @unique
   first_name                 String
   middle_name                String?
   last_name                  String
@@ -140,59 +127,27 @@ model Contractors {
   urlDocumentProof           String?
   urlPrimaryResidencyProof   String?
   urlSecondaryResidencyProof String?
-  status                     Status                @default(ACTIVE)
+  status                     Status       @default(ACTIVE)
   acceptTerms                Boolean
   identification             String
   dob                        DateTime
   telephone                  String
-  created_at                 DateTime              @default(now())
-  fk_id_account              Int?                  @unique
+  created_at                 DateTime     @default(now())
+  fk_id_account              Int?         @unique
   fk_id_client_contractor    Int?
   ein                        String?
   type_pay                   String?
   address                    Adresseses[]
-  account                    Accounts?             @relation(fields: [fk_id_account], references: [id])
-  clientContractor           ClientsContractors?   @relation(fields: [fk_id_client_contractor], references: [id])
-  InvoicesContractors        InvoicesContractors[]
-  jobs                       Jobs[]
-  ordersSupport              Orders[]
-  ordersContractors          OrderContractors[]
-  payments                   Payments[]
-  paymentsContractors        paymentsContractors[]
-  Invoices                   Invoices[]
+  account                    Accounts?    @relation(fields: [fk_id_account], references: [id])
+
+  jobs              Jobs[]
+  ordersSupport     Orders[]
+  ordersContractors OrderContractors[]
+
+  paymentsContractors paymentsContractors[]
+  Invoices            Invoices[]
 
   @@map("contractors")
-}
-
-model ClientsContractors {
-  id                  Int                   @id @default(autoincrement())
-  name                String
-  created_at          DateTime              @default(now())
-  identification      String
-  phone               String?
-  address             String?
-  status              Status                @default(ACTIVE)
-  Contractors         Contractors[]
-  InvoicesContractors InvoicesContractors[]
-
-  @@map("clients_contractor")
-}
-
-model InvoicesContractors {
-  id                      Int                @id @default(autoincrement())
-  fk_id_payment           Int
-  fk_id_contractor        Int
-  created_at              DateTime           @default(now())
-  month                   String
-  year                    Int
-  quarter                 Int
-  total                   Float?
-  fk_id_contractor_client Int
-  clientsContractor       ClientsContractors @relation(fields: [fk_id_contractor_client], references: [id])
-  contractor              Contractors        @relation(fields: [fk_id_contractor], references: [id])
-  payment                 Payments           @relation(fields: [fk_id_payment], references: [id])
-
-  @@map("invoices_contractor")
 }
 
 model Clients {
@@ -217,8 +172,8 @@ model Clients {
   account       Accounts?  @relation(fields: [fk_id_account], references: [id])
   Invoices      Invoices[]
   Orders        Orders[]
-  payments      Payments[]
-  Jobs          Jobs[]
+
+  Jobs Jobs[]
 
   @@map("clients")
 }
