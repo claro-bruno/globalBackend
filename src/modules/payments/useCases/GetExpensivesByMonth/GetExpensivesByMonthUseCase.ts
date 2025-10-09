@@ -59,6 +59,11 @@ export class GetExpensivesByMonthUseCase {
             "Utilites"
         ];
 
+        const total_exp: any = await prisma.$queryRaw`
+           SELECT SUM(p.value) AS total FROM payments AS p
+            WHERE p.month = ${month} AND p.year = ${year}
+            ;`;
+
 
         const result = await prisma.payments.findMany({
             orderBy: [{ id: 'asc' }],
@@ -100,7 +105,7 @@ export class GetExpensivesByMonthUseCase {
 
 
         return {
-            // total: resultt,
+            total_expenses: total_exp[0].total || 0,
             monthReports: result,
         };
 
