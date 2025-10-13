@@ -261,9 +261,9 @@ export class GetClientsProfitUseCase {
         // resultt[`SUPPORT`] = total_support;
         // resultt[`TOTAL_EXPENSES`] = total_despesas;
         // resultt[`TOTAL_INVOICES`] = total_invoices;
-        let total_profit_without_support = +total_invoices - (+total_labour + +total_expenses);
-        let total_profit_with_support = +total_invoices - (+total_labour + +total_support + +total_expenses);
-        let real_profit_percentage = total_profit_with_support / total_invoices;
+        let total_profit_without_expenses = +total_invoices - (+total_labour + +total_support);
+        let total_profit_with_expenses = +total_invoices - (+total_labour + +total_support + +total_expenses);
+        let real_profit_percentage = total_profit_with_expenses / total_invoices;
 
 
         const result_expenses: any = [];
@@ -337,8 +337,8 @@ export class GetClientsProfitUseCase {
             total_pago,
             total_horas,
             custo_hora,
-            total_profit_without_support,
-            total_profit_with_support,
+            total_profit_without_expenses,
+            total_profit_with_expenses,
             real_profit_percentage,
             total_invoices,
             total_expenses,

@@ -117,6 +117,19 @@ model Balances {
   @@map("balances")
 }
 
+model salesTracker {
+  id         Int      @id @default(autoincrement())
+  contact    String?
+  email      String?
+  phone      String?
+  region     String?
+  status     String?
+  bid        String?
+  created_at DateTime @default(now())
+
+  @@map("salesTracker")
+}
+
 model Contractors {
   id                         Int          @id @default(autoincrement())
   email                      String       @unique
