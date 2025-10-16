@@ -158,6 +158,25 @@ export class GetClientsProfitUseCase {
                 ORDER BY j.fk_id_client ASC
          ;`
 
+        const total_labour_by_client_1: any = await prisma.$queryRaw`
+            SELECT j.fk_id_client, SUM(a.value*q.value_hour) AS total FROM jobs AS j
+                INNER JOIN quarters AS q ON q.fk_id_job = j.id
+                INNER JOIN appointments AS a ON a.fk_id_quarter = q.id
+                INNER JOIN clients AS c ON c.id = j.fk_id_client
+                WHERE q.month = ${month} AND q.year = ${year} AND q.status = 'REVISED' AND q.order = 1
+                GROUP BY j.fk_id_client
+                ORDER BY j.fk_id_client ASC
+         ;`
+        const total_labour_by_client_2: any = await prisma.$queryRaw`
+            SELECT j.fk_id_client, SUM(a.value*q.value_hour) AS total FROM jobs AS j
+                INNER JOIN quarters AS q ON q.fk_id_job = j.id
+                INNER JOIN appointments AS a ON a.fk_id_quarter = q.id
+                INNER JOIN clients AS c ON c.id = j.fk_id_client
+                WHERE q.month = ${month} AND q.year = ${year} AND q.status = 'REVISED' AND q.order = 2
+                GROUP BY j.fk_id_client
+                ORDER BY j.fk_id_client ASC
+         ;`
+
 
         const total_labour_total_total: any = await prisma.$queryRaw`
             SELECT SUM(a.value*q.value_hour) AS total, SUM(a.value) AS total_horas FROM jobs AS j
@@ -166,6 +185,23 @@ export class GetClientsProfitUseCase {
                 INNER JOIN clients AS c ON c.id = j.fk_id_client
                 WHERE q.month = ${month} AND q.year = ${year} AND q.status = 'REVISED'
         `
+        const total_labour_total_total_1: any = await prisma.$queryRaw`
+            SELECT SUM(a.value*q.value_hour) AS total  FROM jobs AS j
+                INNER JOIN quarters AS q ON q.fk_id_job = j.id
+                INNER JOIN appointments AS a ON a.fk_id_quarter = q.id
+                INNER JOIN clients AS c ON c.id = j.fk_id_client
+                WHERE q.month = ${month} AND q.year = ${year} AND q.status = 'REVISED' AND q.order = 1
+        `
+
+        const total_labour_total_total_2: any = await prisma.$queryRaw`
+            SELECT SUM(a.value*q.value_hour) AS total FROM jobs AS j
+                INNER JOIN quarters AS q ON q.fk_id_job = j.id
+                INNER JOIN appointments AS a ON a.fk_id_quarter = q.id
+                INNER JOIN clients AS c ON c.id = j.fk_id_client
+                WHERE q.month = ${month} AND q.year = ${year} AND q.status = 'REVISED' AND q.order = 2
+        `
+
+
         const total_labour_total: any = await prisma.$queryRaw`
             SELECT SUM(a.value*q.value_hour) AS total, SUM(a.value) AS total_horas FROM jobs AS j
                 INNER JOIN quarters AS q ON q.fk_id_job = j.id
@@ -240,7 +276,8 @@ export class GetClientsProfitUseCase {
         let total_labour = total_labour_total ? total_labour_total[0]?.total : 0;
         let total_labour_1 = total_labour_1_grouped ? total_labour_1_grouped[0]?.total : 0;
         let total_labour_2 = total_labour_2_grouped ? total_labour_2_grouped[0]?.total : 0;
-
+        let total_labour_1_all = total_labour_total_total_1 ? total_labour_total_total_1[0]?.total : 0;
+        let total_labour_2_all = total_labour_total_total_2 ? total_labour_total_total_2[0]?.total : 0;
 
         // let total_horas = total_labour_total ? total_labour_total[0]?.total_horas : 0;
         // let total_horas_1 = total_labour_1_grouped ? total_labour_1_grouped[0]?.total_horas : 0;
@@ -290,12 +327,24 @@ export class GetClientsProfitUseCase {
                     (information: any) => information.fk_id_client === client.fk_id_client
                 );
 
+                const labour_info_1 = total_labour_by_client_1.find(
+                    (information: any) => information.fk_id_client === client.fk_id_client
+                );
+
+                const labour_info_2 = total_labour_by_client_2.find(
+                    (information: any) => information.fk_id_client === client.fk_id_client
+                );
+
 
 
                 if (invoice_info) {
                     info.taxa = invoice_info._sum.taxa != null ? invoice_info._sum.taxa : 0;
                     info.amount = invoice_info._sum.value != null ? invoice_info._sum.value + info.taxa : 0;
                     info.total_labour = labour_info ? labour_info?.total : 0;
+                    info.total_labour = labour_info ? labour_info?.total : 0;
+                    info.total_labour_1 = labour_info_1 ? labour_info_1?.total : 0;
+                    info.total_labour_2 = labour_info_2 ? labour_info_2?.total : 0;
+
                     // info.ganho = invoice_info._sum.value != null && total_invoices > 0 ? invoice_info._sum.value / total_invoices : 0;
                     // info.expensive_value = info.ganho != null && total_despesas > 0 ? info.ganho * total_despesas : 0;
                     // info.expensive_value = total_despesas > 0 ? total_despesas / (total_invoices * info.amount) : 0;
@@ -333,7 +382,9 @@ export class GetClientsProfitUseCase {
             total_support_office_2,
             total_labour,
             total_labour_1,
+            total_labour_1_all,
             total_labour_2,
+            total_labour_2_all,
             total_pago,
             total_horas,
             custo_hora,

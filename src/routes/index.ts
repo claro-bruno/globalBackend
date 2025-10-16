@@ -9,6 +9,7 @@ import { invoicesRoutes } from "./invoices.routes";
 import { expensesRoutes } from "./expenses.routes";
 import { ordersRoutes } from "./orders.routes";
 import { costsRoutes } from "./costs.routes";
+import { salesRoutes } from "./sales.routes";
 const router = Router();
 
 router.get("/", (request, response) => {
@@ -24,6 +25,7 @@ router.use("/payment", paymentsRoutes);
 router.use("/invoice", invoicesRoutes);
 router.use("/expense", expensesRoutes);
 router.use("/order", ordersRoutes);
+router.use("/sales", salesRoutes);
 
 
 export { router };

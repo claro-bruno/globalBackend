@@ -118,14 +118,19 @@ model Balances {
 }
 
 model salesTracker {
-  id         Int      @id @default(autoincrement())
-  contact    String?
-  email      String?
-  phone      String?
-  region     String?
-  status     String?
-  bid        String?
-  created_at DateTime @default(now())
+  id               Int      @id @default(autoincrement())
+  contact          String?
+  email            String?
+  phone            String?
+  region           String?
+  status           String?
+  bid              String?
+  month            String?
+  year             Int?
+  created_at       DateTime @default(now())
+  fk_id_contractor Int?
+
+  contractor Contractors? @relation(fields: [fk_id_contractor], references: [id])
 
   @@map("salesTracker")
 }
@@ -159,6 +164,7 @@ model Contractors {
 
   paymentsContractors paymentsContractors[]
   Invoices            Invoices[]
+  salesTracker        salesTracker[]
 
   @@map("contractors")
 }
