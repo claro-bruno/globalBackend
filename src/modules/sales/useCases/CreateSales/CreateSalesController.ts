@@ -4,20 +4,23 @@ import { CreateSalesUseCase } from "./CreateSalesUseCase";
 
 export class CreateSalesController {
     async handle(request: Request, response: Response, next: NextFunction): Promise<Response> {
-        const { contact, email, phone, region, status, bid, contractor, month, year, date_sales } = request.body;
+        const { name, contact, email, phone, region, status, bid, contractor_id, month, year, date_at } = request.body;
+
         const createSalesUseCase = new CreateSalesUseCase();
         const result = await createSalesUseCase.execute({
+            name,
             contact,
             email,
             phone,
             region,
             status,
             bid,
-            contractor,
+            contractor_id,
             month,
             year,
-            date_sales
+            date_at
         });
+
         return response.json(result);
     }
 }

@@ -29,7 +29,7 @@ export class GetAllSalesByMonthUseCase {
 
 
 
-        const result = await prisma.salesTracker.findMany({
+        const result = await prisma.sales.findMany({
             orderBy: [{ created_at: 'desc' }],
 
             select: {

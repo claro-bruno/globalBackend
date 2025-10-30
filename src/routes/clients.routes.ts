@@ -1,15 +1,16 @@
 import { Router } from "express";
-import {ensureAuthenticate} from "../middlewares/ensureAuthenticate";
-import {use} from "../middlewares/use";
+import { ensureAuthenticate } from "../middlewares/ensureAuthenticate";
+import { use } from "../middlewares/use";
 
-import {CreateClientController} from "../modules/clients/useCases/CreateClient/CreateClientController";
-import {GetClientsController} from "../modules/clients/useCases/GetClients/GetClientsController";
-import {GetClientController} from "../modules/clients/useCases/GetClient/GetClientController";
-import {UpdateClientController} from "../modules/clients/useCases/UpdateClient/UpdateClientController";
+import { CreateClientController } from "../modules/clients/useCases/CreateClient/CreateClientController";
+import { GetClientsController } from "../modules/clients/useCases/GetClients/GetClientsController";
+import { GetClientController } from "../modules/clients/useCases/GetClient/GetClientController";
+import { UpdateClientController } from "../modules/clients/useCases/UpdateClient/UpdateClientController";
 import {
     UpdateStatusClientController
 } from "../modules/clients/useCases/UpdateStatusClient/UpdateStatusClientController";
 import { GetClientsProfitController } from "../modules/clients/useCases/GetClientsProfit/GetClientsProfitController";
+import { GetClientsProfitAnnualController } from "../modules/clients/useCases/GetClientsProfitAnnual/GetClientsProfitAnnualController";
 import { CreateClientContractorController } from "../modules/clients/useCases/CreateClientContractor/CreateClientContractorController";
 import { UpdateClientContractorController } from "../modules/clients/useCases/UpdateClientContractor/UpdateClientContractorController";
 import { GetClientsContractorController } from "../modules/clients/useCases/GetClientsContractor /GetClientsContractorController";
@@ -25,6 +26,7 @@ const getClientController = new GetClientController();
 const updateClientController = new UpdateClientController();
 const updateStatusClientController = new UpdateStatusClientController();
 const getClientsProfitController = new GetClientsProfitController();
+const getClientsProfitAnnualController = new GetClientsProfitAnnualController();
 
 const createClientContractorController = new CreateClientContractorController();
 const updateClientContractorController = new UpdateClientContractorController();
@@ -35,6 +37,7 @@ const updateActiveClientContractorController = new UpdateActiveClientContractorC
 clientsRoutes.post("/contractor", use(ensureAuthenticate), use(createClientContractorController.handle));
 clientsRoutes.post("/", use(ensureAuthenticate), use(createClientController.handle));
 clientsRoutes.get("/profit", use(getClientsProfitController.handle));
+clientsRoutes.get("/profit/annual", use(getClientsProfitAnnualController.handle));
 clientsRoutes.put("/status/:id", use(ensureAuthenticate), use(updateStatusClientController.handle));
 clientsRoutes.put("/contractor/:id", use(ensureAuthenticate), use(updateClientContractorController.handle));
 clientsRoutes.put("/contractor/atual", use(ensureAuthenticate), use(updateActiveClientContractorController.handle));

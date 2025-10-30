@@ -14,6 +14,7 @@ interface ISales {
     year?: number;
     date_sales: Date;
     id: number;
+    name?: string;
 }
 
 function toMonthName(monthNumber: number) {
@@ -26,10 +27,10 @@ function toMonthName(monthNumber: number) {
 }
 
 export class UpdateSalesUseCase {
-    async execute({ contact, email, phone, region, status, bid, contractor, date_sales, id }: ISales): Promise<any> {
+    async execute({ name, contact, email, phone, region, status, bid, contractor, date_sales, id }: ISales): Promise<any> {
 
 
-        const salesExist = await prisma.salesTracker.findFirst({
+        const salesExist = await prisma.sales.findFirst({
             where: {
                 id,
             }
@@ -47,12 +48,13 @@ export class UpdateSalesUseCase {
 
         const data_venda = date_sales ? new Date(date_sales) : undefined;
 
-        const sales = await prisma.salesTracker.update({
+        const sales = await prisma.sales.update({
 
             where: {
                 id,
             },
             data: {
+                name,
                 contact,
                 email,
                 phone,

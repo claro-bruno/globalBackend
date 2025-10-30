@@ -6,7 +6,7 @@ export class GetAllSalesByMonthController {
     async handle(request: Request, response: Response, next: NextFunction) {
 
 
-
+        console.log('GetAllSalesByMonthController');
 
 
         const getAllSalesByMonthUseCase = new GetAllSalesByMonthUseCase();

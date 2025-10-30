@@ -31,13 +31,14 @@ export class GetSalesByMonthUseCase {
         let result: any = []
 
         if (month && year) {
-            result = await prisma.salesTracker.findMany({
+            result = await prisma.sales.findMany({
                 orderBy: [{ created_at: 'desc' }],
                 where: {
                     month,
                     year
                 },
                 select: {
+                    name: true,
                     id: true,
                     contact: true,
                     email: true,
@@ -59,7 +60,7 @@ export class GetSalesByMonthUseCase {
                 }
             });
         } else if (year) {
-            result = await prisma.salesTracker.findMany({
+            result = await prisma.sales.findMany({
                 orderBy: [{ created_at: 'desc' }],
                 where: {
                     year
