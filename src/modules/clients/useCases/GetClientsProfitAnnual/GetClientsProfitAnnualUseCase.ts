@@ -350,6 +350,7 @@ export class GetClientsProfitAnnualUseCase {
             );
 
             info.total_labour = labour_info ? labour_info?.total : 0;
+            info.total_horas = labour_info ? labour_info?.total_horas : 0;
 
             const labour_info_1 = total_labour_by_month_1.find(
                 (information: any) => information.month === info.month
@@ -396,6 +397,7 @@ export class GetClientsProfitAnnualUseCase {
             info.ganho = info.total_invoice > 0 ? info.total_labour / info.total_invoice : 0;
             info.profit = Number(Number(info.total_invoice) - Number(info.total_labour) - Number(info.total_expense));
             info.profit_perc = info.total_invoice > 0 ? info.profit / info.total_invoice : 0;
+            info.custo_hora = info.total_horas > 0 && info.total_labour > 0 ? +info.total_labour / +info.total_horas : 0;
         })
 
 
