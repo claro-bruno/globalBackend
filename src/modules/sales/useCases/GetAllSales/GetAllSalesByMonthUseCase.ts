@@ -43,6 +43,7 @@ export class GetAllSalesByMonthUseCase {
                 bid: true,
                 month: true,
                 year: true,
+                description: true,
                 fk_id_contractor: true,
                 contractor: {
                     select: {

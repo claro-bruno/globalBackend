@@ -15,6 +15,7 @@ interface ISales {
     date_sales: Date;
     id: number;
     name?: string;
+    description?: string;
 }
 
 function toMonthName(monthNumber: number) {
@@ -27,7 +28,7 @@ function toMonthName(monthNumber: number) {
 }
 
 export class UpdateSalesUseCase {
-    async execute({ name, contact, email, phone, region, status, bid, contractor, date_sales, id }: ISales): Promise<any> {
+    async execute({ name, contact, email, phone, region, status, bid, contractor, date_sales, id, description }: ISales): Promise<any> {
 
 
         const salesExist = await prisma.sales.findFirst({
@@ -38,7 +39,6 @@ export class UpdateSalesUseCase {
 
 
 
-
         if (!salesExist) {
             throw new AppError('Sales does not exists', 400)
         }
@@ -46,7 +46,7 @@ export class UpdateSalesUseCase {
         const month = toMonthName(new Date(date_sales).getUTCMonth());
         const year = new Date(date_sales).getUTCFullYear();
 
-        const data_venda = date_sales ? new Date(date_sales) : undefined;
+        const data_venda = new Date(date_sales);
 
         const sales = await prisma.sales.update({
 
@@ -64,7 +64,8 @@ export class UpdateSalesUseCase {
                 fk_id_contractor: +contractor,
                 created_at: data_venda,
                 month,
-                year
+                year,
+                description
             }
         });
         return sales;

@@ -14,6 +14,7 @@ interface ISales {
     month?: string;
     year?: number;
     date_at: Date;
+    description?: string;
 }
 
 function toMonthName(monthNumber: number) {
@@ -27,7 +28,7 @@ function toMonthName(monthNumber: number) {
 
 
 export class CreateSalesUseCase {
-    async execute({ name, contact, email, phone, region, status, bid, contractor_id, date_at }: ISales): Promise<any> {
+    async execute({ name, contact, email, phone, region, status, bid, contractor_id, date_at, description }: ISales): Promise<any> {
 
 
 
@@ -51,7 +52,8 @@ export class CreateSalesUseCase {
                 phone,
                 region,
                 status,
-                bid
+                bid,
+                description
 
             }
         });

@@ -127,6 +127,7 @@ model sales {
   status           String?
   bid              String?
   month            String?
+  description      String?
   year             Int?
   created_at       DateTime? @default(now())
   fk_id_contractor Int?
