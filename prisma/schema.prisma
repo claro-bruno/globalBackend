@@ -137,6 +137,68 @@ model sales {
   @@map("sales")
 }
 
+model Materials {
+  id                    Int                     @id @default(autoincrement())
+  name                  String
+  description           String?
+  unit_cost             Float
+  created_at            DateTime                @default(now())
+  url_image             String?
+  status                String?                 @default("ACTIVE")
+  materialsTransactions materialsTransactions[]
+
+  @@map("materials")
+}
+
+model Inventories {
+  id                      Int                       @id @default(autoincrement())
+  name                    String
+  description             String?
+  unit_cost               Float
+  created_at              DateTime                  @default(now())
+  url_image               String?
+  status                  String?                   @default("ACTIVE")
+  inventoriesTransactions inventoriesTransactions[]
+
+  @@map("inventories")
+}
+
+model materialsTransactions {
+  id             Int        @id @default(autoincrement())
+  created_at     DateTime   @default(now())
+  fk_id_material Int?
+  quantity       Float
+  total_cost     Float?
+  fk_id_output   Int?
+  fk_id_input    Int?
+  description    String?
+  month          String?
+  year           Int?
+  material       Materials? @relation(fields: [fk_id_material], references: [id])
+  output         Clients?   @relation(fields: [fk_id_output], references: [id], name: "materialsTransactionsOutput")
+  input          Clients?   @relation(fields: [fk_id_input], references: [id], name: "materialsTransactionsInput")
+
+  @@map("materialsTransactions")
+}
+
+model inventoriesTransactions {
+  id              Int      @id @default(autoincrement())
+  created_at      DateTime @default(now())
+  fk_id_inventory Int?
+  quantity        Float
+  total_cost      Float?
+  fk_id_client    Int?
+  sequence        Int?
+  description     String?
+  year            Int?
+  month           Int?
+
+  inventory Inventories? @relation(fields: [fk_id_inventory], references: [id])
+  client    Clients?     @relation(fields: [fk_id_client], references: [id])
+
+  @@map("inventoriesTransactions")
+}
+
 model Contractors {
   id                         Int          @id @default(autoincrement())
   email                      String       @unique
@@ -194,7 +256,10 @@ model Clients {
   Invoices      Invoices[]
   Orders        Orders[]
 
-  Jobs Jobs[]
+  Jobs                        Jobs[]
+  materialsTransactionsInput  materialsTransactions[]   @relation(name: "materialsTransactionsInput")
+  materialsTransactionsOutput materialsTransactions[]   @relation(name: "materialsTransactionsOutput")
+  inventoriesTransactions     inventoriesTransactions[]
 
   @@map("clients")
 }
