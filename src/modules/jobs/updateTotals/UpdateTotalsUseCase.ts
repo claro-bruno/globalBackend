@@ -13,20 +13,19 @@ interface ITotal {
 
 
 export class UpdateTotalsUseCase {
-    async execute({ 
-        day, 
-        valor, 
-        month, 
+    async execute({
+        day,
+        valor,
+        month,
         year
-    }: ITotal) 
-    {
+    }: ITotal) {
         const existTotal = await prisma.totals.findFirst({
             where: {
                 day
             }
         });
 
-        if(!existTotal) {
+        if (!existTotal) {
             throw new AppError("Total does not exist");
         }
 

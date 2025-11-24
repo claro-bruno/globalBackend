@@ -8,12 +8,15 @@ interface IUpdateInventory {
     description?: string;
     unit_cost: number;
     url_image?: string;
+    status?: string;
+    created_at?: Date;
+
 }
 
 
 
 export class UpdateInventoriesUseCase {
-    async execute({ id, name, description, unit_cost, url_image }: IUpdateInventory) {
+    async execute({ id, name, description, unit_cost, url_image, status, created_at }: IUpdateInventory) {
 
 
 
@@ -47,7 +50,9 @@ export class UpdateInventoriesUseCase {
                 name,
                 description,
                 unit_cost,
-                url_image
+                url_image,
+                status,
+                created_at
             }
         });
 

@@ -25,10 +25,10 @@ interface IService {
 
 
 export class UpdateJobsUseCase {
-    async execute({ 
-        id, 
-        id_contractor, 
-        id_client, 
+    async execute({
+        id,
+        id_contractor,
+        id_client,
         sunday,
         monday,
         tuesday,
@@ -37,16 +37,15 @@ export class UpdateJobsUseCase {
         friday,
         saturday,
         start,
-        end 
-    }: IService) 
-    {
+        end
+    }: IService) {
         const existJob = await prisma.jobs.findFirst({
             where: {
                 id
             }
         });
 
-        if(!existJob) {
+        if (!existJob) {
             throw new AppError("Job does not exist");
         }
 
@@ -57,10 +56,9 @@ export class UpdateJobsUseCase {
                 status: 'ACTIVE'
             }
         });
-        
-        if(!alreadyExistsJobs || (existJob.fk_id_client === id_client && existJob.fk_id_contractor === id_contractor))
-        {
-            
+
+        if (!alreadyExistsJobs || (existJob.fk_id_client === id_client && existJob.fk_id_contractor === id_contractor)) {
+
             const start_value = start === null || !start || start === '' ? '' : start;
             const end_value = end === null || !end || end === '' ? '' : end;
             await prisma.jobs.update({
@@ -70,23 +68,23 @@ export class UpdateJobsUseCase {
                 data: {
                     fk_id_contractor: id_contractor,
                     fk_id_client: id_client,
-                    monday : monday as boolean,
+                    monday: monday as boolean,
                     sunday: sunday as boolean,
                     tuesday: tuesday as boolean,
                     wednesday: wednesday as boolean,
                     thursday: thursday as boolean,
                     friday: friday as boolean,
                     saturday: saturday as boolean,
-                    start: start_value, 
+                    start: start_value,
                     end: end_value
                 }
             });
             return 'Ok';
         }
-        else if(alreadyExistsJobs){
+        else if (alreadyExistsJobs) {
             throw new AppError("Job already exists");
-            
-            
+
+
         }
     }
 }

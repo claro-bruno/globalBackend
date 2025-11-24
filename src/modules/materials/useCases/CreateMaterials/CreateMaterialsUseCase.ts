@@ -7,6 +7,7 @@ interface ICreateMaterial {
   description?: string;
   unit_cost: number;
   url_image?: string;
+  status?: string;
 }
 
 function getMonthFromString(mon: string, year: number) {
@@ -31,9 +32,7 @@ export class CreateMaterialsUseCase {
 
 
 
-  async execute({ name, description, unit_cost, url_image }: ICreateMaterial) {
-
-
+  async execute({ name, description, unit_cost, url_image, status }: ICreateMaterial) {
 
 
     await prisma.materials.create({
@@ -41,7 +40,8 @@ export class CreateMaterialsUseCase {
         name,
         description,
         unit_cost,
-        url_image
+        url_image,
+        status
       }
     });
 

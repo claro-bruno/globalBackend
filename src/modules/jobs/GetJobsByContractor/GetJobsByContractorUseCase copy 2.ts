@@ -4,10 +4,10 @@ import { AppError } from "../../../middlewares/AppError";
 
 export class GetJobsByContractorUseCase_main {
     async execute(id: number, year: number, month: string) {
-        
-        
+
+
         let quarter: any = [];
-        
+
         const jobs: any = await prisma.$queryRaw`
             SELECT 
             j.id,
@@ -51,7 +51,7 @@ export class GetJobsByContractorUseCase_main {
             WHERE q.year = ${year} AND q.month = ${month} AND j.fk_id_contractor = ${id} AND j.status = 'ACTIVE'
             ORDER BY q.fk_id_job, q.id,ap.date
             ;`
-        
+
         const result_totals: any = await prisma.$queryRaw`
             SELECT 
             q.fk_id_job as id,
@@ -72,7 +72,7 @@ export class GetJobsByContractorUseCase_main {
             ORDER BY q.id ASC
             ;`
 
-            const results_total: any = await prisma.$queryRaw`
+        const results_total: any = await prisma.$queryRaw`
             SELECT 
             sum(ap.value*q.value_hour) total,
             sum(ap.value) total_hours,
@@ -86,20 +86,20 @@ export class GetJobsByContractorUseCase_main {
             INNER JOIN contractors c ON c.id = j.fk_id_contractor
             WHERE q.year = ${year} AND q.month = ${month} AND j.fk_id_contractor = ${id} AND j.status = 'ACTIVE'
             ;`
-            
-            const { total, total_hours, total_1, total_2, total_hours_1, total_hours_2 } = results_total[0];
+
+        const { total, total_hours, total_1, total_2, total_hours_1, total_hours_2 } = results_total[0];
 
         const resultGrouped = groupBy(result, (job: any) => job.id);
-        
-        if(jobs.length > 0) {
+
+        if (jobs.length > 0) {
             jobs.forEach((job: any) => {
                 quarter = [];
                 let job_info = resultGrouped.get(job.id);
                 let quarterGrouped = groupBy(job_info, (quarter: any) => quarter.order);
-                
+
                 let first_quarter_info = quarterGrouped.get(1);
-                if(first_quarter_info) {
-                    const results = result_totals.find( (info: any) => info.quarter_id === first_quarter_info[0].quarter_id );
+                if (first_quarter_info) {
+                    const results = result_totals.find((info: any) => info.quarter_id === first_quarter_info[0].quarter_id);
                     const first = {
                         total: results.total,
                         total_hours: results.total_hours,
@@ -116,9 +116,9 @@ export class GetJobsByContractorUseCase_main {
                     quarter.push(first);
                 }
                 let second_quarter_info = quarterGrouped.get(2);
-                if(second_quarter_info) {
-                    const results = result_totals.find( (info: any) => info.quarter_id === second_quarter_info[0].quarter_id );
-                    const second = { 
+                if (second_quarter_info) {
+                    const results = result_totals.find((info: any) => info.quarter_id === second_quarter_info[0].quarter_id);
+                    const second = {
                         total: results.total,
                         total_hours: results.total_hours,
                         order: second_quarter_info[0].order,
@@ -136,20 +136,20 @@ export class GetJobsByContractorUseCase_main {
                 job.quarter = quarter;
             });
 
-            return {contractor_jobs: jobs, totals:[{ total: total, total_hours: total_hours },{ total_1hours: total_hours_1, total_1quarter: total_1 },{ total_2hours: total_hours_2 ,total_2quarter: total_2 }]};
+            return { contractor_jobs: jobs, totals: [{ total: total, total_hours: total_hours }, { total_1hours: total_hours_1, total_1quarter: total_1 }, { total_2hours: total_hours_2, total_2quarter: total_2 }] };
 
         } else {
-            return {contractor_jobs:[], totals:[{ total: 0, total_hours: 0 },{ total_1hours: 0, total_1quarter: 0 },{ total_2hours: 0 ,total_2quarter: 0 }]};
+            return { contractor_jobs: [], totals: [{ total: 0, total_hours: 0 }, { total_1hours: 0, total_1quarter: 0 }, { total_2hours: 0, total_2quarter: 0 }] };
 
         }
-        
-        
 
-        
-       
-        
 
-        
+
+
+
+
+
+
 
 
 
@@ -160,13 +160,13 @@ export class GetJobsByContractorUseCase_main {
 function groupBy(list: any, keyGetter: any) {
     const map = new Map();
     list.forEach((item: any) => {
-         const key = keyGetter(item);
-         const collection = map.get(key);
-         if (!collection) {
-             map.set(key, [item]);
-         } else {
-             collection.push(item);
-         }
+        const key = keyGetter(item);
+        const collection = map.get(key);
+        if (!collection) {
+            map.set(key, [item]);
+        } else {
+            collection.push(item);
+        }
     });
     return map;
 }

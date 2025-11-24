@@ -1,8 +1,8 @@
 
-import { prisma} from "../../../../database/prismaClient";
+import { prisma } from "../../../../database/prismaClient";
 import { compare } from "bcrypt";
 import { sign } from "jsonwebtoken";
-import { AppError} from "../../../../middlewares/AppError";
+import { AppError } from "../../../../middlewares/AppError";
 export class GetContractorsUseCase {
     async execute() {
         return prisma.contractors.findMany({
@@ -17,7 +17,7 @@ export class GetContractorsUseCase {
             },
             orderBy: [{
                 status: 'asc',
-            },{
+            }, {
                 first_name: 'asc',
 
             }],
@@ -29,7 +29,7 @@ export class GetContractorsUseCase {
                 last_name: true,
                 urlProfile: true,
                 urlDocumentProof: true,
-                urlPrimaryResidencyProof:true,
+                urlPrimaryResidencyProof: true,
                 urlSecondaryResidencyProof: true,
                 status: true,
                 identification: true,

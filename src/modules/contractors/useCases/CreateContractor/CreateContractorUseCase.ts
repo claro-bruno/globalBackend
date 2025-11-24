@@ -43,7 +43,7 @@ export class CreateContractorUseCase {
       urlSecondaryResidencyProof,
       urlDocumentProof,
       urlProfile,
-      access="CONTRACTOR",
+      access = "CONTRACTOR",
     }: ICreateContractor,
     { address, city, zipcode, state }: ICreateContractorAddress,
     {
@@ -53,7 +53,7 @@ export class CreateContractorUseCase {
       state2 = ""
     }: ICreateContractorAddress | any
   ): Promise<any> {
-    
+
     const role = access == "" ? "CONTRACTOR" : access;
     // validar se o contractor existe
     const contractorExist = await prisma.contractors.findUnique({
@@ -84,7 +84,7 @@ export class CreateContractorUseCase {
         password: hashPassword,
         access: "CONTRACTOR",
         status: "ACTIVE"
-        
+
       }
     });
 
@@ -121,14 +121,14 @@ export class CreateContractorUseCase {
     const addr2 =
       address2 != ""
         ? await prisma.adresseses.create({
-            data: {
-              address: address2,
-              city: city2,
-              zipcode: zipcode2,
-              state: state2,
-              fk_id_contractor: contractor.id
-            }
-          })
+          data: {
+            address: address2,
+            city: city2,
+            zipcode: zipcode2,
+            state: state2,
+            fk_id_contractor: contractor.id
+          }
+        })
         : undefined;
 
     const hostname = "smtp.gmail.com";

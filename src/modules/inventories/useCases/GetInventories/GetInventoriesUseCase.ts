@@ -14,6 +14,7 @@ export class GetInventoriesUseCase {
                 description: true,
                 unit_cost: true,
                 url_image: true,
+                status: true
             }
         });
         return result;

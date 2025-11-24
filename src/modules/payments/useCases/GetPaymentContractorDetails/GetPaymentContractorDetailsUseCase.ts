@@ -4,9 +4,9 @@ import { AppError } from "../../../../middlewares/AppError";
 export class GetPaymentContractorDetailsUseCase {
   async execute(id: number) {
 
-    const result_payment = await prisma.payments.findUnique({ where: { id} })
-    if(result_payment) {
-      const { year, month, quarter, fk_id_contractor, value, others }  = result_payment;
+    const result_payment = await prisma.payments.findUnique({ where: { id } })
+    if (result_payment) {
+      const { year, month, quarter, fk_id_contractor, value, others } = result_payment;
 
       const result: any = await prisma.$queryRaw`
         SELECT
@@ -25,23 +25,23 @@ export class GetPaymentContractorDetailsUseCase {
         ;`;
 
       const result_contractor = await prisma.contractors.findUnique(
-        { 
-          where: {id},
+        {
+          where: { id },
           include: {
             clientContractor: true,
           }
         },
       );
-      
+
       return {
         data_invoice: result,
         data_contractor: result_contractor,
         totals: {
-          total: value, 
+          total: value,
           total_others: others
         }
       }
-    } 
+    }
     return [];
   }
 }

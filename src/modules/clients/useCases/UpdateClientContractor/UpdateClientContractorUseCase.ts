@@ -10,15 +10,15 @@ interface IClientContractor {
 }
 
 export class UpdateClientContractorUseCase {
-    async execute({ id, name, identification, phone, address } : IClientContractor): Promise<any>{
+    async execute({ id, name, identification, phone, address }: IClientContractor): Promise<any> {
         //validar se o client existe
         const clientContractorExist = await prisma.clientsContractors.findUnique({
-           where: {
-            id
-           }
+            where: {
+                id
+            }
         });
 
-        if(!clientContractorExist) {
+        if (!clientContractorExist) {
             throw new AppError('Client Contractor does not exists', 401)
         }
 
@@ -35,7 +35,7 @@ export class UpdateClientContractorUseCase {
             }
         });
 
-        
+
 
 
         return client_contractor;

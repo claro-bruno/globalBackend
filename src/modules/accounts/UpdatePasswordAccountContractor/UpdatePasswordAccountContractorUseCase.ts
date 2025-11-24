@@ -1,6 +1,6 @@
-import {prisma} from "../../../database/prismaClient";
-import {AppError} from "../../../middlewares/AppError";
-import {hash} from "bcrypt";
+import { prisma } from "../../../database/prismaClient";
+import { AppError } from "../../../middlewares/AppError";
+import { hash } from "bcrypt";
 
 
 interface IAccountContractor {
@@ -11,10 +11,10 @@ interface IAccountContractor {
 }
 
 export class UpdatePasswordAccountContractorUseCase {
-    async execute({ id, idToken, account_id, password  }  : IAccountContractor): Promise<any>{
+    async execute({ id, idToken, account_id, password }: IAccountContractor): Promise<any> {
 
-        console.log(id,idToken);
-        if(id!=idToken) throw new AppError('Invalid Request', 401)
+        console.log(id, idToken);
+        if (id != idToken) throw new AppError('Invalid Request', 401)
 
         const contractorExist = await prisma.contractors.findFirst({
             where: {
@@ -25,7 +25,7 @@ export class UpdatePasswordAccountContractorUseCase {
 
 
 
-        if(!contractorExist) {
+        if (!contractorExist) {
             throw new AppError('Contractor does not exists', 401)
         }
 

@@ -1,6 +1,6 @@
 import { prisma } from "../../../../database/prismaClient";
 import { AppError } from "../../../../middlewares/AppError";
-import {hash} from "bcrypt";
+import { hash } from "bcrypt";
 
 interface ICompany {
     name: string;
@@ -20,15 +20,15 @@ interface ICompany {
 }
 
 export class CreateClientUseCase {
-    async execute({ name, monday, sunday, tuesday, wednesday, thursday, friday, saturday, start, end, contact, contact_phone, address, email } : ICompany): Promise<any>{
+    async execute({ name, monday, sunday, tuesday, wednesday, thursday, friday, saturday, start, end, contact, contact_phone, address, email }: ICompany): Promise<any> {
         //validar se o client existe
         const clientExist = await prisma.clients.findFirst({
-           where: {
-               name
-           }
+            where: {
+                name
+            }
         });
 
-        if(clientExist) {
+        if (clientExist) {
             throw new AppError('Client already exists', 401)
         }
 

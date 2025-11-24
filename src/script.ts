@@ -3,48 +3,48 @@ import nodemailer from "nodemailer";
 import { AppError } from "../src/middlewares/AppError";
 import { hash } from "bcrypt";
 
-const sendEmail = async(email: string) => {
-    const contractorExist = await prisma.contractors.findFirst({
-        where: {
-          email,
-          status: "ACTIVE"
-        }
-      });
-      if (!contractorExist) {
-        throw new AppError("Email does not exists", 401);
+const sendEmail = async (email: string) => {
+  const contractorExist = await prisma.contractors.findFirst({
+    where: {
+      email,
+      status: "ACTIVE"
+    }
+  });
+  if (!contractorExist) {
+    throw new AppError("Email does not exists", 401);
+  }
+
+  const contractorAccountExist = await prisma.accounts.findFirst({
+    where: {
+      id: contractorExist.fk_id_account as any
+    }
+  });
+
+  if (contractorAccountExist) {
+    const birthday = contractorExist.dob;
+
+    // const username = contractorExist.first_name[0].toLowerCase() + contractorExist.last_name + birthday.getFullYear().toString();
+    const password =
+      contractorExist.first_name.toString() +
+      ("0" + (birthday.getMonth() + 1)).slice(-2).toString() +
+      ("0" + (birthday.getDate() + 1)).slice(-2).toString();
+
+    // const firstName = contractorExist.first_name.split(" ").toString();
+    // console.log(firstName.split(",").toString());
+    // const password = contractorExist.first_name[0].toLowerCase().split(" ")[0].toString() + ("0" + (birthday.getMonth() + 1)).slice(-2).toString() + ("0" + (birthday.getDate())).slice(-2).toString();
+
+    //criptografar a senha
+    const hashPassword = await hash(password, 10);
+
+    await prisma.accounts.update({
+      where: {
+        id: contractorAccountExist.id as any
+      },
+      data: {
+        resetPassword: true,
+        password: hashPassword
       }
-  
-      const contractorAccountExist = await prisma.accounts.findFirst({
-        where: {
-          id: contractorExist.fk_id_account as any
-        }
-      });
-  
-      if (contractorAccountExist) {
-        const birthday = contractorExist.dob;
-  
-        // const username = contractorExist.first_name[0].toLowerCase() + contractorExist.last_name + birthday.getFullYear().toString();
-        const password =
-          contractorExist.first_name.toString() +
-          ("0" + (birthday.getMonth() + 1)).slice(-2).toString() +
-          ("0" + (birthday.getDate() + 1)).slice(-2).toString();
-  
-        // const firstName = contractorExist.first_name.split(" ").toString();
-        // console.log(firstName.split(",").toString());
-        // const password = contractorExist.first_name[0].toLowerCase().split(" ")[0].toString() + ("0" + (birthday.getMonth() + 1)).slice(-2).toString() + ("0" + (birthday.getDate())).slice(-2).toString();
-  
-        //criptografar a senha
-        const hashPassword = await hash(password, 10);
-  
-        await prisma.accounts.update({
-          where: {
-            id: contractorAccountExist.id as any
-          },
-          data: {
-            resetPassword: true,
-            password: hashPassword
-          }
-        });
+    });
     // const contractors  = await prisma.contractors.findMany({
     //     where: {
     //         status: 'ACTIVE'
@@ -64,16 +64,16 @@ const sendEmail = async(email: string) => {
     const pass = "oekrrjxmemlnipke";
 
     const transporter = nodemailer.createTransport({
-        host: hostname,
-        // port: 993,
-        port: 587,
-        // secure: false,
-        requireTLS: true,
-        auth: {
+      host: hostname,
+      // port: 993,
+      port: 587,
+      // secure: false,
+      requireTLS: true,
+      auth: {
         user: username,
         pass: pass
-        },
-        logger: true
+      },
+      logger: true
     });
     const text = `<strong>Account Info Account <br></strong><br> 
     Your Login: ${contractorAccountExist.username}<br>
@@ -83,21 +83,21 @@ const sendEmail = async(email: string) => {
 
     Thanks.`;
     const message = {
-        from: '"Global Janitorial Servives Support" <noreplay@globaljanitorialservices.com>',
-        to: email,
-        cc: 'giovanna@globaljanitorialservices.com',
-        // cco: emails,
-        subject: "Account Global",
-        plain: "Accout Info Account",
-        html: text,
-        headers: { "x-myheader": "test header" }
+      from: '"Global Janitorial Servives Support" <noreplay@globaljanitorialservices.com>',
+      to: email,
+      cc: 'giovanna@globaljanitorialservices.com',
+      // cco: emails,
+      subject: "Account Global",
+      plain: "Accout Info Account",
+      html: text,
+      headers: { "x-myheader": "test header" }
     };
     transporter.sendMail(message);
-}
+  }
 }
 
 
-const setContractors = async() => {
+const setContractors = async () => {
   const contractors = await prisma.contractors.findMany({
     where: {
       status: "ACTIVE",
@@ -112,7 +112,7 @@ const setContractors = async() => {
 
   await contractors.reduce(async (memo: any, info) => {
     await memo;
-    setTimeout(function() {
+    setTimeout(function () {
       sendEmail(info?.email)
     }, 45000)
   }, undefined);

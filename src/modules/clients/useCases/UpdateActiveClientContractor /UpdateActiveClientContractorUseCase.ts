@@ -7,28 +7,28 @@ interface IClientContractor {
 }
 
 export class UpdateActiveClientContractorUseCase {
-    async execute({ contrator_id, client_contractor_id } : IClientContractor): Promise<any>{
+    async execute({ contrator_id, client_contractor_id }: IClientContractor): Promise<any> {
         //validar se o client existe
         const clientContractorExist = await prisma.clientsContractors.findUnique({
-           where: {
-            id: client_contractor_id
-           }
+            where: {
+                id: client_contractor_id
+            }
         });
 
-        if(!clientContractorExist) {
+        if (!clientContractorExist) {
             throw new AppError('Client Contractor does not exists', 401)
         }
 
         //validar se o contractor existe
         const contractorExist = await prisma.contractors.findUnique({
             where: {
-             id: contrator_id
+                id: contrator_id
             }
-         });
- 
-         if(!contractorExist) {
-             throw new AppError('Contractor does not exists', 401)
-         }
+        });
+
+        if (!contractorExist) {
+            throw new AppError('Contractor does not exists', 401)
+        }
 
 
         const client_contractor = await prisma.contractors.update({
@@ -40,7 +40,7 @@ export class UpdateActiveClientContractorUseCase {
             }
         });
 
-        
+
 
 
         return 'Ok';

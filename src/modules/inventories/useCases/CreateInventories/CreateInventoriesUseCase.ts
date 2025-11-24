@@ -7,6 +7,7 @@ interface ICreateInventory {
   description?: string;
   unit_cost: number;
   url_image?: string;
+  status?: string;
 }
 
 function getMonthFromString(mon: string, year: number) {
@@ -31,7 +32,7 @@ export class CreateInventoriesUseCase {
 
 
 
-  async execute({ name, description, unit_cost, url_image }: ICreateInventory) {
+  async execute({ name, description, unit_cost, url_image, status }: ICreateInventory) {
 
 
 
@@ -41,7 +42,8 @@ export class CreateInventoriesUseCase {
         name,
         description,
         unit_cost,
-        url_image
+        url_image,
+        status
       }
     });
 

@@ -62,14 +62,14 @@ export class CreateJobsUseCase {
 
     const arrDays = [];
     let dia: string = '';
-    let dia_res : string = '';
-    let mes : string = '';
-    let mes_res : string = '';
+    let dia_res: string = '';
+    let mes: string = '';
+    let mes_res: string = '';
     let arr = [];
 
     let monthNumber = getMonthFromString(monthFull);
-    
-    
+
+
 
     const existJob = await prisma.jobs.findFirst({
       where: {
@@ -79,7 +79,7 @@ export class CreateJobsUseCase {
       }
     });
 
-    if(!id_contractor || !id_client || value === null || !value_hour ) {
+    if (!id_contractor || !id_client || value === null || !value_hour) {
       throw new AppError("Invalid Data");
     }
     // if (existJob) {
@@ -92,15 +92,15 @@ export class CreateJobsUseCase {
       data: {
         fk_id_contractor: id_contractor,
         fk_id_client: id_client,
-        monday : monday as boolean,
+        monday: monday as boolean,
         sunday: sunday as boolean,
         tuesday: tuesday as boolean,
         wednesday: wednesday as boolean,
         thursday: thursday as boolean,
         friday: friday as boolean,
         saturday: saturday as boolean,
-        start: start_value, 
-        end: end_value, 
+        start: start_value,
+        end: end_value,
       }
     });
     const date = new Date(Date.now());
@@ -127,8 +127,8 @@ export class CreateJobsUseCase {
       });
 
       for (let i = 1; i <= 15; i += 1) {
-        
-        mes_res = (monthNumber).toString() 
+
+        mes_res = (monthNumber).toString()
         mes = mes_res.length === 1 ? `0${mes_res}` : mes_res
         dia_res = i.toString()
         dia = dia_res.length === 1 ? `0${dia_res}` : dia_res
@@ -172,7 +172,7 @@ export class CreateJobsUseCase {
     arr = [];
 
     for (let i = 16; i <= last_date.getDate(); i += 1) {
-      mes_res = (monthNumber).toString() 
+      mes_res = (monthNumber).toString()
       mes = mes_res.length === 1 ? `0${mes_res}` : mes_res
       dia_res = i.toString()
       dia = dia_res.length === 1 ? `0${dia_res}` : dia_res

@@ -1,8 +1,8 @@
 
-import { prisma} from "../../../../database/prismaClient";
+import { prisma } from "../../../../database/prismaClient";
 import { compare } from "bcrypt";
 import { sign } from "jsonwebtoken";
-import { AppError} from "../../../../middlewares/AppError";
+import { AppError } from "../../../../middlewares/AppError";
 export class GetClientUseCase {
     async execute(id: number) {
 
@@ -13,7 +13,7 @@ export class GetClientUseCase {
             },
         });
 
-        if(!client) {
+        if (!client) {
             throw new AppError("Client does not exists");
         }
 

@@ -1,6 +1,6 @@
 
-import { prisma} from "../../../../database/prismaClient";
-import { AppError} from "../../../../middlewares/AppError";
+import { prisma } from "../../../../database/prismaClient";
+import { AppError } from "../../../../middlewares/AppError";
 export class GetClientContractorUseCase {
     async execute(id: number) {
 
@@ -10,7 +10,7 @@ export class GetClientContractorUseCase {
             },
         });
 
-        if(!client_contractor) {
+        if (!client_contractor) {
             throw new AppError("Client Contractor does not exists");
         }
 

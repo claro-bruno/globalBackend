@@ -11,18 +11,17 @@ interface IAp {
 
 
 export class UpdateApUseCase {
-    async execute({ 
-        id, 
+    async execute({
+        id,
         value
-    }: IAp) 
-    {
+    }: IAp) {
         const existAp = await prisma.appointments.findFirst({
             where: {
                 id
             }
         });
 
-        if(!existAp) {
+        if (!existAp) {
             throw new AppError("Ap does not exist");
         }
 

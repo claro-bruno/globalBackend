@@ -1,5 +1,5 @@
 import { prisma } from "../../../../database/prismaClient";
-import { AppError} from "../../../../middlewares/AppError";
+import { AppError } from "../../../../middlewares/AppError";
 
 interface IUpdateCompany {
     id: number;
@@ -22,15 +22,15 @@ interface IUpdateCompany {
 
 
 export class UpdateClientUseCase {
-    async execute({ id, name, sunday, monday, tuesday, wednesday, thursday, friday, saturday, start, end, status, contact, contact_phone, address, email  }  : IUpdateCompany): Promise<any>{
+    async execute({ id, name, sunday, monday, tuesday, wednesday, thursday, friday, saturday, start, end, status, contact, contact_phone, address, email }: IUpdateCompany): Promise<any> {
         //validar se o client existe
         const clientExist = await prisma.clients.findFirst({
-           where: {
-               id
-           }
+            where: {
+                id
+            }
         });
 
-        if(!clientExist) {
+        if (!clientExist) {
             throw new AppError('Client does not exists', 401)
         }
         //salvar o client
@@ -42,17 +42,17 @@ export class UpdateClientUseCase {
                 name,
                 sunday,
                 monday,
-                tuesday, 
+                tuesday,
                 wednesday,
                 thursday,
-                friday, 
+                friday,
                 saturday,
                 start,
                 end,
                 status: status as any,
                 contact,
                 contact_phone,
-                address, 
+                address,
                 email
             }
         });

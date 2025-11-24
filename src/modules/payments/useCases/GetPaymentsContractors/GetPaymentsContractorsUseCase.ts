@@ -16,7 +16,7 @@ export class GetPaymentsContractorsUseCase {
       where: {
         month,
         year
-      }, 
+      },
       select: {
         id: true,
         quarter: true,
@@ -26,7 +26,7 @@ export class GetPaymentsContractorsUseCase {
             first_name: true,
             middle_name: true,
             last_name: true,
-            clientContractor: { 
+            clientContractor: {
               select: {
                 identification: true,
                 name: true,

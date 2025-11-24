@@ -56,7 +56,8 @@ export class GetExpensivesByMonthUseCase {
             "Taxes and Licences",
             "Travel",
             "Uniform",
-            "Utilites"
+            "Utilites",
+            "Extra"
         ];
 
         const total_exp: any = await prisma.$queryRaw`

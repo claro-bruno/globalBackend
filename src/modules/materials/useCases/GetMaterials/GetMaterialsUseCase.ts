@@ -13,6 +13,7 @@ export class GetMaterialsUseCase {
                 name: true,
                 description: true,
                 unit_cost: true,
+                status: true,
                 url_image: true,
             }
         });

@@ -39,7 +39,7 @@ export class UpdateAccountContractorUseCase {
           status: status as any,
         }
       });
-      if(contractorAccountExist) {
+      if (contractorAccountExist) {
         await prisma.accounts.update({
           where: {
             id: contractorAccountExist.id as any
@@ -51,7 +51,7 @@ export class UpdateAccountContractorUseCase {
           }
         });
       }
-      
+
 
       // const hostname = "smtp.gmail.com";
       // const username_ = "globaljanitorialcontact@gmail.com";

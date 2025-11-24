@@ -1,10 +1,10 @@
 
-import { prisma} from "../../../../database/prismaClient";
+import { prisma } from "../../../../database/prismaClient";
 import { compare } from "bcrypt";
 import { sign } from "jsonwebtoken";
-import { AppError} from "../../../../middlewares/AppError";
+import { AppError } from "../../../../middlewares/AppError";
 export class RemoveClientUseCase {
-    async execute(id:number) {
+    async execute(id: number) {
 
         const clientExist = await prisma.clients.findFirst({
             where: {
@@ -12,7 +12,7 @@ export class RemoveClientUseCase {
             }
         });
 
-        if(!clientExist) {
+        if (!clientExist) {
             throw new AppError("Client does not exists");
         }
 

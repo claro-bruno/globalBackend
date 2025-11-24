@@ -2,7 +2,7 @@
 import { prisma } from "../../../database/prismaClient";
 import { AppError } from "../../../middlewares/AppError";
 export class GetJobsByClientUseCase {
-    async execute(id:number) {
+    async execute(id: number) {
 
         const jobs = await prisma.jobs.findMany({
             where: {

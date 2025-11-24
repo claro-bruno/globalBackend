@@ -8,16 +8,18 @@ interface IUpdateMaterial {
     description?: string;
     unit_cost: number;
     url_image?: string;
+    status?: string;
+    created_at?: Date;
 }
 
 
 
 export class UpdateMaterialsUseCase {
-    async execute({ id, name, description, unit_cost, url_image }: IUpdateMaterial) {
+    async execute({ id, name, description, unit_cost, url_image, status, created_at }: IUpdateMaterial) {
 
 
 
-        const materialExist = await prisma.invoices.findFirst({
+        const materialExist = await prisma.materials.findFirst({
             where: {
                 id,
             }
@@ -34,11 +36,6 @@ export class UpdateMaterialsUseCase {
 
 
 
-
-
-
-
-
         await prisma.materials.update({
             where: {
                 id,
@@ -46,8 +43,10 @@ export class UpdateMaterialsUseCase {
             data: {
                 name,
                 description,
-                unit_cost,
-                url_image
+                unit_cost: +unit_cost,
+                url_image,
+                // created_at,
+                status,
             }
         });
 

@@ -2,10 +2,10 @@
 import { prisma } from "../../../database/prismaClient";
 import { AppError } from "../../../middlewares/AppError";
 
-function getMonthFromString(mon: string){
+function getMonthFromString(mon: string) {
 
     var d = Date.parse(mon + "1, 2022");
-    if(!isNaN(d)){
+    if (!isNaN(d)) {
         return new Date(d).getMonth() + 1;
     }
     return -1;
@@ -14,11 +14,11 @@ function getMonthFromString(mon: string){
 function toMonthName(monthNumber: number) {
     const date = new Date();
     date.setMonth(monthNumber);
-  
+
     return date.toLocaleString('en-US', {
-      month: 'long',
+        month: 'long',
     });
-  }
+}
 
 
 interface IAppointment {
@@ -44,13 +44,13 @@ export class GetJobsByContractorUseCase {
             },
         });
 
-        if(quarterExists.length == 0 && actualMonth == month) {
-        // if(quarterExists.length == 0) {
-    
+        if (quarterExists.length == 0 && actualMonth == month) {
+            // if(quarterExists.length == 0) {
+
             const activeJobss = await prisma.jobs.findMany({
                 where: {
                     status: 'ACTIVE',
-                    
+
                 }
             });
 
@@ -68,8 +68,8 @@ export class GetJobsByContractorUseCase {
                         value_hour: true
                     }
                 });
-                
-                if(last_value?.value_hour != undefined) {
+
+                if (last_value?.value_hour != undefined) {
                     let quarterCreated = await prisma.quarters.create({
                         data: {
                             fk_id_job: +job.id,
@@ -84,7 +84,7 @@ export class GetJobsByContractorUseCase {
                     const inicio = order === 1 ? 1 : 16;
                     const fim = order === 1 ? 15 : last_date.getDate();
 
-                    for(let i=inicio; i<= fim; i += 1) {
+                    for (let i = inicio; i <= fim; i += 1) {
                         let dataValue = new Date(year, +getMonthFromString(month), i);
                         arr.push({ date: dataValue, value: 0 });
                     }
@@ -98,18 +98,18 @@ export class GetJobsByContractorUseCase {
                                 date: date
                             }
                         });
-            
+
                     }, undefined);
-                    
+
                 }
 
 
-                
 
-                
-    
+
+
+
             }, undefined);
-            
+
             activeJobs = await prisma.jobs.findMany({
                 orderBy: [{
                     id: 'asc'
@@ -120,12 +120,12 @@ export class GetJobsByContractorUseCase {
                 },
                 select: {
                     id: true,
-        
+
                     client: {
-                        select: 
+                        select:
                         {
                             name: true,
-                            id: true, 
+                            id: true,
                         }
                     },
                     status: true,
@@ -135,11 +135,11 @@ export class GetJobsByContractorUseCase {
                             middle_name: true,
                             last_name: true,
                             id: true,
-                         }
+                        }
                     },
                 }
             });
-    
+
             activeQuarters = await prisma.quarters.findMany({
                 orderBy: [{
                     id: 'asc'
@@ -158,19 +158,19 @@ export class GetJobsByContractorUseCase {
                     month: true,
                     year: true,
                     value_hour: true,
-                    appointment: 
+                    appointment:
                     {
-                        select: 
+                        select:
                         {
                             date: true,
                             value: true,
                         }
                     }
                 }
-    
-    
+
+
             });
-            
+
         } else {
             activeJobs = await prisma.jobs.findMany({
                 orderBy: [{
@@ -182,12 +182,12 @@ export class GetJobsByContractorUseCase {
                 },
                 select: {
                     id: true,
-        
+
                     client: {
-                        select: 
+                        select:
                         {
                             name: true,
-                            id: true, 
+                            id: true,
                         }
                     },
                     status: true,
@@ -197,11 +197,11 @@ export class GetJobsByContractorUseCase {
                             middle_name: true,
                             last_name: true,
                             id: true,
-                         }
+                        }
                     },
                 }
             });
-    
+
             activeQuarters = await prisma.quarters.findMany({
                 orderBy: [{
                     id: 'asc'
@@ -220,17 +220,17 @@ export class GetJobsByContractorUseCase {
                     month: true,
                     year: true,
                     value_hour: true,
-                    appointment: 
+                    appointment:
                     {
-                        select: 
+                        select:
                         {
                             date: true,
                             value: true,
                         }
                     }
                 }
-    
-    
+
+
             });
         }
 
@@ -244,7 +244,7 @@ export class GetJobsByContractorUseCase {
         //     },
         //     select: {
         //         id: true,
-    
+
         //         client: {
         //             select: 
         //             {
@@ -294,9 +294,9 @@ export class GetJobsByContractorUseCase {
 
 
         // });
-        if(activeQuarters.length > 0) {
+        if (activeQuarters.length > 0) {
             const quartersGrouped = groupBy(activeQuarters, (quarter: any) => quarter.fk_id_job);
-        
+
             activeJobs.forEach((job: any) => {
                 let quarter_info = quartersGrouped.get(job.id);
                 job.quarter = quarter_info;
@@ -304,56 +304,56 @@ export class GetJobsByContractorUseCase {
             });
 
             let total = 0;
-        
+
             let total_horas = 0;
             let total_horas_1 = 0;
             let total_horas_2 = 0;
-            
+
             let total_1quarter = 0;
             let total_2quarter = 0;
-            activeJobs.forEach((job: any)=>{
+            activeJobs.forEach((job: any) => {
                 let total_hours = 0;
-                job.quarter.forEach((quarter: any)=>{
-                    
-                    
+                job.quarter.forEach((quarter: any) => {
+
+
                     // total_horas_1 = 0;
                     // total_horas_2 = 0;
 
                     // quarter.appointment.forEach((appointment: any)=>{
                     //     total_hours += appointment.value;
                     // });
-                let total_hours = quarter.appointment.reduce((acc: number, curr: any) => acc  += curr.value, 0);
-                quarter.total_hours = total_hours;
-                quarter.total = total_hours * quarter.value_hour;
-                if(quarter.order === 1) {
+                    let total_hours = quarter.appointment.reduce((acc: number, curr: any) => acc += curr.value, 0);
+                    quarter.total_hours = total_hours;
+                    quarter.total = total_hours * quarter.value_hour;
+                    if (quarter.order === 1) {
                         // const valor_hora = quarter.appointment.reduce((acc: number, curr: any) => acc  += curr.value
 
                         // , 0);
-                    total_horas_1 += total_hours;
-                    total_1quarter += total_hours * quarter.value_hour;
-                }
-                    
-                if(quarter.order === 2) {
+                        total_horas_1 += total_hours;
+                        total_1quarter += total_hours * quarter.value_hour;
+                    }
+
+                    if (quarter.order === 2) {
                         // const valor_hora = quarter.appointment.reduce((acc: number, curr: any) => acc  += curr.value
 
                         // , 0);
-                    total_horas_2 += total_hours;
-                    total_2quarter += total_hours * quarter.value_hour;
-                } 
-                        
-                total += total_hours * quarter.value_hour;
-                total_horas += total_hours;
+                        total_horas_2 += total_hours;
+                        total_2quarter += total_hours * quarter.value_hour;
+                    }
+
+                    total += total_hours * quarter.value_hour;
+                    total_horas += total_hours;
                     // total_horas = 0;
-                total_hours = 0;
+                    total_hours = 0;
+                });
             });
-            });
-            return {contractor_jobs:activeJobs, totals:[{ total, total_hours: total_horas },{ total_1hours: total_horas_1, total_1quarter },{ total_2hours: total_horas_2 ,total_2quarter }]};
+            return { contractor_jobs: activeJobs, totals: [{ total, total_hours: total_horas }, { total_1hours: total_horas_1, total_1quarter }, { total_2hours: total_horas_2, total_2quarter }] };
 
         } else {
-            return {contractor_jobs:[], totals:[{ total: 0, total_hours: 0 },{ total_1hours: 0, total_1quarter: 0 },{ total_2hours: 0 ,total_2quarter: 0 }]};
+            return { contractor_jobs: [], totals: [{ total: 0, total_hours: 0 }, { total_1hours: 0, total_1quarter: 0 }, { total_2hours: 0, total_2quarter: 0 }] };
 
         }
-        
+
 
         // let jobs =  await prisma.jobs.findMany({
         //     where: {
@@ -373,7 +373,7 @@ export class GetJobsByContractorUseCase {
         //     select: {
         //         id: true,
         //         client: {
-                    
+
         //             select: 
         //             {
         //                 name: true,
@@ -404,7 +404,7 @@ export class GetJobsByContractorUseCase {
         //                     }
         //                 }
         //             },
-                    
+
         //         }
         //     }
         // });
@@ -415,8 +415,8 @@ export class GetJobsByContractorUseCase {
         //     });
         //     job.quarter = result;
         // });
-        
-        
+
+
 
 
 
@@ -426,13 +426,13 @@ export class GetJobsByContractorUseCase {
 function groupBy(list: any, keyGetter: any) {
     const map = new Map();
     list.forEach((item: any) => {
-         const key = keyGetter(item);
-         const collection = map.get(key);
-         if (!collection) {
-             map.set(key, [item]);
-         } else {
-             collection.push(item);
-         }
+        const key = keyGetter(item);
+        const collection = map.get(key);
+        if (!collection) {
+            map.set(key, [item]);
+        } else {
+            collection.push(item);
+        }
     });
     return map;
 }

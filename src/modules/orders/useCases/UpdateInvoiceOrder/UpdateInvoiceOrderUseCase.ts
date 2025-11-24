@@ -8,24 +8,24 @@ interface IUpdateOrder {
 
 
 export class UpdateInvoiceOrderUseCase {
-    async execute({ id, invoice } : IUpdateOrder): Promise<any>{
-        
-       
+    async execute({ id, invoice }: IUpdateOrder): Promise<any> {
+
+
         //validar se o client existe
         const orderExist = await prisma.orders.findFirst({
-           where: {
-               id,
-           }
+            where: {
+                id,
+            }
         });
 
-        if(!orderExist || invoice==='') {
+        if (!orderExist || invoice === '') {
             throw new AppError('Order does not exists', 401)
         }
-        
-        
 
-       
-        
+
+
+
+
         await prisma.orders.update({
             where: {
                 id,
@@ -34,16 +34,16 @@ export class UpdateInvoiceOrderUseCase {
                 fk_invoice_id: invoice
             }
         });
-        
-        
-           
-    
-           
-            
+
+
+
+
+
+
         return 'ok';
 
     }
-        
-        
-        
+
+
+
 }

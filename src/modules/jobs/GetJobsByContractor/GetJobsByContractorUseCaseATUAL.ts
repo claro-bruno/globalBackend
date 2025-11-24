@@ -150,7 +150,7 @@ export class GetJobsByContractorUseCase {
             INNER JOIN contractors c ON c.id = j.fk_id_contractor
             WHERE q.year = ${year} AND q.month = ${month} AND j.fk_id_contractor = ${id} AND j.status = 'ACTIVE' AND q.status = 'REVISED'
             ;`;
-        const results_total_quarter: any = await prisma.$queryRaw`
+    const results_total_quarter: any = await prisma.$queryRaw`
           SELECT
             sum(ap.value*q.value_hour) as total,
             sum(ap.value) as total_hours
@@ -161,9 +161,9 @@ export class GetJobsByContractorUseCase {
           WHERE q.year = ${year} AND q.month = ${month} AND j.fk_id_contractor = ${id} AND j.status = 'ACTIVE' AND q.status = 'REVISED'
           GROUP BY q.order
     ;`;
-    
-    
-      
+
+
+
 
     if (result.length > 0 && results_total_quarter.length > 0) {
 
@@ -171,7 +171,7 @@ export class GetJobsByContractorUseCase {
       const total_2 = results_total_quarter[1] ? results_total_quarter[1].total : 0
       const total_hours_1 = results_total_quarter[0] ? results_total_quarter[0].total_hours : 0
       const total_hours_2 = results_total_quarter[1] ? results_total_quarter[1].total_hours : 0
-         
+
       const {
         total,
         total_hours,
@@ -210,8 +210,8 @@ export class GetJobsByContractorUseCase {
       return {
         contractor_jobs: result,
         totals: {
-          total: total, 
-          total_hours: total_hours, 
+          total: total,
+          total_hours: total_hours,
           total_payment: total - total_others,
           total_1_hours: total_hours_1,
           total_1_quarter: total_1,

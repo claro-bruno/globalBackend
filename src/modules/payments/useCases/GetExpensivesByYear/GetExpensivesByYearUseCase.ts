@@ -6,7 +6,7 @@ interface IGetExpensives {
 }
 
 export class GetExpensivesByMonthUseCase {
-    async execute({ year }:IGetExpensives) {
+    async execute({ year }: IGetExpensives) {
         let result: any = [];
 
         const arrTypes: any = [
@@ -156,8 +156,8 @@ export class GetExpensivesByMonthUseCase {
         arrTypes.forEach((type: string) => {
             const payments_type = resTypes.find(
                 (info: any) => info.type === type
-              );
-              resultt[`${type}`] = typeof payments_type === 'undefined' || payments_type === null ? 0 : payments_type._sum.value as any;
+            );
+            resultt[`${type}`] = typeof payments_type === 'undefined' || payments_type === null ? 0 : payments_type._sum.value as any;
 
         });
 
@@ -170,7 +170,7 @@ export class GetExpensivesByMonthUseCase {
                 (info: any) => info.month === infoMonth
             );
 
-            
+
             const retorno = await prisma.payments.groupBy({
                 by: ['type'],
                 _sum: {
@@ -184,7 +184,7 @@ export class GetExpensivesByMonthUseCase {
 
             let month_result: any = [];
             // let objMonth: any = {};
-            if(retorno.length > 0) {
+            if (retorno.length > 0) {
                 arrTypes.forEach((element: string) => {
                     const objMonth: any = {};
                     const result_each_month = retorno.find(
@@ -208,7 +208,7 @@ export class GetExpensivesByMonthUseCase {
                         type: 'VAN_FUEL_OIL',
                         value: 0
                     },
-                    
+
                     {
                         type: 'FUEL_OIL',
                         value: 0
@@ -225,7 +225,7 @@ export class GetExpensivesByMonthUseCase {
                         type: 'UNIFORM',
                         value: 0
                     },
-                    
+
                     {
                         type: 'REPAIRS_MAINTENANCE',
                         value: 0
@@ -250,7 +250,7 @@ export class GetExpensivesByMonthUseCase {
                         type: 'CHEMICAL_CONSUMABLES',
                         value: 0
                     },
-                    
+
                     {
                         type: 'INSURANCE_TAX',
                         value: 0
@@ -258,7 +258,7 @@ export class GetExpensivesByMonthUseCase {
 
                     {
                         type: 'EXTRAS',
-                        value: 0 
+                        value: 0
                     },
                     {
                         type: 'GLOBAL',
@@ -267,7 +267,7 @@ export class GetExpensivesByMonthUseCase {
                 ];
             }
 
-            
+
             res.month = month_result;
             res.total = typeof result_month === 'undefined' || result_month === null ? 0 : result_month._sum.value as any;
 
@@ -278,7 +278,7 @@ export class GetExpensivesByMonthUseCase {
         const total_input = sumInput._sum.value == null ? 0 : sumInput._sum.value;
         const total_output = sumOutput._sum.value == null ? 0 : sumOutput._sum.value;
         const total_contractor = sumContractorsWorkers._sum.value == null ? 0 : sumContractorsWorkers._sum.value;
-        
+
 
         return {
             total: resultt,
@@ -290,6 +290,6 @@ export class GetExpensivesByMonthUseCase {
 
 
 
-       
+
     }
 }

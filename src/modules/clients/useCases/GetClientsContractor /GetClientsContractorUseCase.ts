@@ -1,6 +1,6 @@
 
-import { prisma} from "../../../../database/prismaClient";
-import { AppError} from "../../../../middlewares/AppError";
+import { prisma } from "../../../../database/prismaClient";
+import { AppError } from "../../../../middlewares/AppError";
 export class GetClientsContractorUseCase {
     async execute() {
         return prisma.contractors.findMany({
