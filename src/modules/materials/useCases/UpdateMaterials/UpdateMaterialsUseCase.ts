@@ -9,7 +9,7 @@ interface IUpdateMaterial {
     unit_cost: number;
     url_image?: string;
     status?: string;
-    created_at?: Date;
+    created_at: Date;
 }
 
 
@@ -34,7 +34,7 @@ export class UpdateMaterialsUseCase {
 
 
 
-
+        const data_material = new Date(created_at);
 
         await prisma.materials.update({
             where: {
@@ -45,7 +45,7 @@ export class UpdateMaterialsUseCase {
                 description,
                 unit_cost: +unit_cost,
                 url_image,
-                // created_at,
+                created_at: data_material,
                 status,
             }
         });

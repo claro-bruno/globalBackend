@@ -9,7 +9,7 @@ interface IUpdateInventory {
     unit_cost: number;
     url_image?: string;
     status?: string;
-    created_at?: Date;
+    created_at: Date;
 
 }
 
@@ -29,10 +29,12 @@ export class UpdateInventoriesUseCase {
 
 
 
+
         if (!inventoryExist) {
             throw new AppError('inventory does not exists', 400)
         }
 
+        const data_inventoty = new Date(created_at);
 
 
 
@@ -52,7 +54,7 @@ export class UpdateInventoriesUseCase {
                 unit_cost,
                 url_image,
                 status,
-                created_at
+                created_at: data_inventoty
             }
         });
 

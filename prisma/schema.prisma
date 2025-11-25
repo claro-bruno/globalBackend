@@ -164,9 +164,24 @@ model Inventories {
   url_image   String?
   status      String?  @default("ACTIVE")
 
-  inventoriesTransactions inventoriesTransactions[]
+  inventoriesSequences InventoriesSequence[]
 
   @@map("inventories")
+}
+
+model InventoriesSequence {
+  id              Int      @id @default(autoincrement())
+  seq             Int
+  ref             String
+  year            Int
+  month           Int
+  fk_id_inventory Int?
+  created_at      DateTime @default(now())
+
+  inventories             Inventories?              @relation(fields: [fk_id_inventory], references: [id])
+  inventoriesTransactions inventoriesTransactions[]
+
+  @@map("inventoriesSequence")
 }
 
 model materialsTransactions {
@@ -188,19 +203,19 @@ model materialsTransactions {
 }
 
 model inventoriesTransactions {
-  id              Int      @id @default(autoincrement())
-  created_at      DateTime @default(now())
-  fk_id_inventory Int?
-  quantity        Float
-  total_cost      Float?
-  fk_id_client    Int?
-  sequence        Int?
-  description     String?
-  year            Int?
-  month           Int?
+  id                       Int      @id @default(autoincrement())
+  created_at               DateTime @default(now())
+  fk_id_inventory_sequence Int?
+  quantity                 Float
+  total_cost               Float?
+  fk_id_client             Int?
+  sequence                 Int?
+  description              String?
+  year                     Int?
+  month                    Int?
 
-  inventory Inventories? @relation(fields: [fk_id_inventory], references: [id])
-  client    Clients?     @relation(fields: [fk_id_client], references: [id])
+  inventorySequence InventoriesSequence? @relation(fields: [fk_id_inventory_sequence], references: [id])
+  client            Clients?             @relation(fields: [fk_id_client], references: [id])
 
   @@map("inventoriesTransactions")
 }
