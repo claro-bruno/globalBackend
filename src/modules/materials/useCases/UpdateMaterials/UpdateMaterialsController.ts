@@ -12,6 +12,7 @@ export class UpdateMaterialsController {
 
         const result = await updateMaterialsUseCase.execute({ id: +id, name, description, unit_cost: +cost, url_image, status, created_at: date_at });
         return response.json(result);
+        //açgp
 
 
 
