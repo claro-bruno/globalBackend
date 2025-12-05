@@ -3,12 +3,11 @@ import { prisma } from "../../../../database/prismaClient";
 import { AppError } from "../../../../middlewares/AppError";
 
 interface ICreateTransactionsMaterial {
-  fk_id_material: number;
-  total_cost: number;
+  fk_id_material: string;
   quantity: number;
-  fk_id_output?: number;
-  fk_id_input?: number;
-  description?: string;
+  fk_id_output: string;
+  fk_id_input: string;
+  description: string;
   created_at: Date;
 }
 
@@ -30,22 +29,46 @@ function toMonthName(monthNumber: number) {
 }
 
 export class CreateTransactionsMaterialsUseCase {
-  async execute({ fk_id_material, quantity, total_cost, fk_id_input, fk_id_output, description, created_at }: ICreateTransactionsMaterial): Promise<any> {
+  async execute({ fk_id_material, quantity, fk_id_input, fk_id_output, description, created_at }: ICreateTransactionsMaterial): Promise<any> {
+
+    const id = Number(fk_id_material.split("-")[0]);
 
     const data_transaction = new Date(created_at);
 
 
+
+
+
+
+
+    const input_id = fk_id_input.split("-")[0];
+    const output_id = Number(fk_id_output.split("-")[0]);
     const month = toMonthName(new Date(data_transaction).getUTCMonth());
     const year = new Date(data_transaction).getUTCFullYear();
+
+    // const cost = material?.unit_cost || 0;
+    // const total = quantity * cost;
+
+
+    const res = await prisma.materials.findFirst({
+      where: {
+        id
+      }
+    });
+
+
+
+    const cost = res?.unit_cost || 0;
+    const total = quantity * cost;
 
 
     await prisma.materialsTransactions.create({
       data: {
-        fk_id_material,
-        quantity,
-        total_cost,
-        fk_id_input,
-        fk_id_output,
+        fk_id_material: +id,
+        quantity: +quantity,
+        total_cost: +total,
+        fk_id_input: +input_id,
+        fk_id_output: output_id,
         description,
         created_at: data_transaction,
         month,

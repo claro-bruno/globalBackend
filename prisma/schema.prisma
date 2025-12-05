@@ -177,11 +177,24 @@ model InventoriesSequence {
   month           Int
   fk_id_inventory Int?
   created_at      DateTime @default(now())
+  status          String?  @default("active")
 
   inventories             Inventories?              @relation(fields: [fk_id_inventory], references: [id])
   inventoriesTransactions inventoriesTransactions[]
+  logInventories          logInventories[]
 
   @@map("inventoriesSequence")
+}
+
+model logInventories {
+  id                       Int                  @id @default(autoincrement())
+  fk_id_inventory_sequence Int?
+  previous_status          String
+  new_status               String
+  created_at               DateTime             @default(now())
+  inventorySequence        InventoriesSequence? @relation(fields: [fk_id_inventory_sequence], references: [id])
+
+  @@map("logInventories")
 }
 
 model materialsTransactions {
@@ -206,13 +219,8 @@ model inventoriesTransactions {
   id                       Int      @id @default(autoincrement())
   created_at               DateTime @default(now())
   fk_id_inventory_sequence Int?
-  quantity                 Float
-  total_cost               Float?
   fk_id_client             Int?
-  sequence                 Int?
   description              String?
-  year                     Int?
-  month                    Int?
 
   inventorySequence InventoriesSequence? @relation(fields: [fk_id_inventory_sequence], references: [id])
   client            Clients?             @relation(fields: [fk_id_client], references: [id])

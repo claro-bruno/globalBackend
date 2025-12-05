@@ -7,6 +7,9 @@ export class GetTransactionsInventoriesController {
         const getTransactionsInventoriesUseCase = new GetTransactionsInventoriesUseCase();
         const result = await getTransactionsInventoriesUseCase.execute();
 
+
+
+
         return response.json(result);
 
     }

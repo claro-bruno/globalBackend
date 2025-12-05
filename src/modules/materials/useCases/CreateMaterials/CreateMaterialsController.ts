@@ -10,7 +10,6 @@ export class CreateMaterialsController {
         const createMaterialsUseCase = new CreateMaterialsUseCase();
 
 
-
         const result = await createMaterialsUseCase.execute({ name, description, unit_cost: +unit_cost, url_image, status });
         // return response.json(result);
         return response.status(201).send();

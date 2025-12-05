@@ -20,7 +20,8 @@ const createTransactionsMaterialsController = new CreateTransactionsMaterialsCon
 const updateTransactionsMaterialsController = new UpdateTransactionsMaterialsController();
 const getTransactionsMaterialsController = new GetTransactionsMaterialsController();
 
-materialsRoutes.post("/transations", use(ensureAuthenticate), use(createTransactionsMaterialsController.handle));
+//materialsRoutes.post("/transations", use(ensureAuthenticate), use(createTransactionsMaterialsController.handle));
+materialsRoutes.post("/transactions", use(ensureAuthenticate), use(createTransactionsMaterialsController.handle));
 materialsRoutes.post("/", use(ensureAuthenticate), use(createMaterialsController.handle));
 
 // expensesRoutes.get("/:id", use(ensureAuthenticate), use(getExpensiveController.handle));
@@ -30,7 +31,6 @@ materialsRoutes.get("/", use(ensureAuthenticate), use(getMaterialsController.han
 
 // salesRoutes.get("/all", use(ensureAuthenticate), use(getAllSalesController.handle));
 materialsRoutes.put("/transactions/:id", use(ensureAuthenticate), use(updateTransactionsMaterialsController.handle));
-
 materialsRoutes.put("/:id", use(ensureAuthenticate), use(updateMaterialsController.handle));
 
 export { materialsRoutes };

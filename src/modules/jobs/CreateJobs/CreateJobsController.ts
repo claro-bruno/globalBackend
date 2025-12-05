@@ -7,6 +7,7 @@ export class CreateJobsController {
         const { id_client, id_contractor, year, month, sunday, monday, tuesday, wednesday, thursday, friday, saturday, hours, start, end, value_hour } = request.body;
         const createJobsUseCase = new CreateJobsUseCase();
 
+
         const result = await createJobsUseCase.execute({
             id_contractor: +id_contractor,
             id_client: +id_client,

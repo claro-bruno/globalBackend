@@ -17,6 +17,7 @@ export class GetInventoriesUseCase {
                 status: true
             }
         });
+
         return result;
 
 

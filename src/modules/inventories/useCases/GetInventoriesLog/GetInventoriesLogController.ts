@@ -1,14 +1,13 @@
 import { NextFunction, Request, Response } from "express";
-import { GetInventoriesUseCase } from "./GetInventoriesUseCase";
+import { GetInventoriesLogUseCase } from "./GetInventoriesLogUseCase";
 
-export class GetInventoriesController {
+export class GetInventoriesLogController {
     async handle(request: Request, response: Response, next: NextFunction) {
 
-        const getInventoriesUseCase = new GetInventoriesUseCase();
+        const getInventoriesUseCase = new GetInventoriesLogUseCase();
         const result = await getInventoriesUseCase.execute();
 
         return response.json(result);
-        // return response.json({ message: "GetInventoriesController" });
 
     }
 }

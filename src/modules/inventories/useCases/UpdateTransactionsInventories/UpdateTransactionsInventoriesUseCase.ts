@@ -4,11 +4,10 @@ import { AppError } from "../../../../middlewares/AppError";
 
 interface IUpdateTransactionInventory {
     id: number;
-    fk_id_inventory: number;
-    total_cost: number;
-    quantity: number;
-    fk_id_client?: number;
-    sequence?: number;
+    fk_id_inventory_sequence: string;
+
+    fk_id_client: string;
+
     description?: string;
     created_at: Date;
 }
@@ -31,11 +30,10 @@ function toMonthName(monthNumber: number) {
 }
 
 export class UpdateTransactionsInventoriesUseCase {
-    async execute({ id, quantity, total_cost, fk_id_client, fk_id_inventory, description, created_at, sequence }: IUpdateTransactionInventory) {
+    async execute({ id, fk_id_client, fk_id_inventory_sequence, description, created_at }: IUpdateTransactionInventory) {
 
 
-
-        const transactionInventoryExist = await prisma.invoices.findFirst({
+        const transactionInventoryExist = await prisma.inventoriesTransactions.findFirst({
             where: {
                 id,
             }
@@ -50,15 +48,14 @@ export class UpdateTransactionsInventoriesUseCase {
 
 
 
+
         const data_transaction = new Date(created_at);
 
 
-        const month = new Date(data_transaction).getUTCMonth();
-        const year = new Date(data_transaction).getUTCFullYear();
 
 
-
-
+        const id_equipament = Number(fk_id_inventory_sequence.split("-")[0]);
+        const id_client = Number(fk_id_client.split("-")[0]);
 
 
 
@@ -67,15 +64,11 @@ export class UpdateTransactionsInventoriesUseCase {
                 id,
             },
             data: {
-                quantity,
-                total_cost,
-                fk_id_inventory,
-                fk_id_client,
+                fk_id_inventory_sequence: id_equipament,
+                fk_id_client: id_client,
                 description,
-                sequence,
                 created_at: data_transaction,
-                month,
-                year
+
             }
         });
 

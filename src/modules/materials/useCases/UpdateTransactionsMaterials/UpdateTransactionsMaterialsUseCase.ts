@@ -35,7 +35,7 @@ export class UpdateTransactionsMaterialsUseCase {
 
 
 
-        const transactionMaterialExist = await prisma.invoices.findFirst({
+        const transactionMaterialExist = await prisma.materialsTransactions.findFirst({
             where: {
                 id,
             }
