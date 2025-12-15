@@ -5,7 +5,7 @@ import { prisma } from "../../../../database/prismaClient";
 export class GetInventoriesUseCase {
     async execute() {
         const result = await prisma.inventories.findMany({
-            orderBy: [{ name: 'asc' }],
+            orderBy: [{ id: 'desc' }],
 
             select: {
                 id: true,

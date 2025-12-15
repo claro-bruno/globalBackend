@@ -11,7 +11,7 @@ export class CreateInventoriesSequenceController {
 
 
         console.log(request.body, 'create inventories sequence controller');
-        const result = await createMaterialsSequenceUseCase.execute({ created_at, seq, fk_id_inventory });
+        const result = await createMaterialsSequenceUseCase.execute({ created_at, fk_id_inventory });
         // return response.json(result);
         return response.status(201).send();
 

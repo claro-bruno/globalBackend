@@ -4,7 +4,6 @@ import { AppError } from "../../../../middlewares/AppError";
 
 interface ICreateInventory {
   created_at: Date;
-  seq: number;
   fk_id_inventory: number;
 }
 
@@ -30,15 +29,27 @@ export class CreateInventoriesSequenceUseCase {
 
 
 
-  async execute({ created_at, seq, fk_id_inventory }: ICreateInventory) {
+  async execute({ created_at, fk_id_inventory }: ICreateInventory) {
 
 
 
 
     const date_inventory = new Date(created_at);
 
-    const reference = `${date_inventory.toLocaleDateString('en', { year: '2-digit' })}-${date_inventory.getMonth() + 1}-${fk_id_inventory}-${seq}`;
 
+
+
+    const inventoryCount = await prisma.inventoriesSequence.aggregate({
+      _count: {
+        id: true,
+      },
+      where: {
+        fk_id_inventory: +fk_id_inventory,
+      },
+    });
+
+    const seq = (inventoryCount._count.id || 0) + 1;
+    const reference = `${date_inventory.toLocaleDateString('en', { year: '2-digit' })}-${date_inventory.getMonth() + 1}-${fk_id_inventory}-${seq}`;
 
     const inventoryExist = await prisma.inventoriesSequence.findFirst({
       where: {
@@ -51,7 +62,7 @@ export class CreateInventoriesSequenceUseCase {
     }
 
 
-    await prisma.inventoriesSequence.create({
+    const res = await prisma.inventoriesSequence.create({
       data: {
         seq: +seq,
         ref: reference,
@@ -61,6 +72,15 @@ export class CreateInventoriesSequenceUseCase {
         month: date_inventory.getMonth() + 1,
       }
     });
+
+    await prisma.logInventories.create({
+      data: {
+        fk_id_inventory_sequence: res.id,
+        previous_status: '',
+        new_status: 'active',
+        created_at: new Date()
+      }
+    })
 
 
 

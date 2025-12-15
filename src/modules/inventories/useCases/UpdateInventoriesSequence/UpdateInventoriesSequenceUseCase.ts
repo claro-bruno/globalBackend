@@ -5,7 +5,6 @@ import { AppError } from "../../../../middlewares/AppError";
 interface IUpdateInventory {
   id: number;
   created_at: Date;
-  seq: number;
   fk_id_inventory: number;
   status: string;
 }
@@ -32,13 +31,14 @@ export class UpdateInventoriesSequenceUseCase {
 
 
 
-  async execute({ id, created_at, seq, fk_id_inventory, status }: IUpdateInventory) {
+  async execute({ id, created_at, fk_id_inventory, status }: IUpdateInventory) {
 
 
-    console.log(id, created_at, seq, fk_id_inventory, status)
+    console.log(id, created_at, fk_id_inventory, status)
 
     const date_inventory = new Date(created_at);
-    const reference = `${date_inventory.toLocaleDateString('en', { year: '2-digit' })}-${date_inventory.getMonth() + 1}-${fk_id_inventory}-${seq}`;
+    // const reference = `${date_inventory.toLocaleDateString('en', { year: '2-digit' })}-${date_inventory.getMonth() + 1}-${fk_id_inventory}-${seq}`;
+
 
 
     const inventoryExist = await prisma.inventoriesSequence.findFirst({
@@ -55,12 +55,22 @@ export class UpdateInventoriesSequenceUseCase {
       throw new AppError('inventory does not exists', 400)
     }
 
+    let inventoryCount;
+    if (inventoryExist.fk_id_inventory !== +fk_id_inventory) {
+      inventoryCount = await prisma.inventoriesSequence.aggregate({
+        _count: {
+          id: true,
+        },
+        where: {
+          fk_id_inventory: +fk_id_inventory,
+        },
+      });
 
-    const inventoryLogExist = await prisma.inventoriesSequence.findFirst({
-      where: {
-        ref: reference,
-      }
-    });
+    }
+
+    const seq = (inventoryCount?._count?.id || 0) + 1;
+    const ref = `${date_inventory.toLocaleDateString('en', { year: '2-digit' })}-${date_inventory.getMonth() + 1}-${fk_id_inventory}-${seq}`;
+
 
     // console.log(inventoryLogExist)
 
@@ -87,7 +97,7 @@ export class UpdateInventoriesSequenceUseCase {
       },
       data: {
         seq: +seq,
-        ref: reference,
+        ref: ref,
         year: date_inventory.getFullYear(),
         created_at: date_inventory,
         fk_id_inventory: +fk_id_inventory,

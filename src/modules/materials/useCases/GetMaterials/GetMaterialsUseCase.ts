@@ -5,7 +5,7 @@ import { prisma } from "../../../../database/prismaClient";
 export class GetMaterialsUseCase {
     async execute() {
         const result = await prisma.materials.findMany({
-            orderBy: [{ name: 'asc' }],
+            orderBy: [{ id: 'desc' }],
 
             select: {
                 id: true,
@@ -16,6 +16,7 @@ export class GetMaterialsUseCase {
                 status: true,
                 url_image: true,
             }
+
         });
         return result;
 
