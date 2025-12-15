@@ -5,7 +5,7 @@ import { prisma } from "../../../../database/prismaClient";
 export class GetMaterialsUseCase {
     async execute() {
         const result = await prisma.materials.findMany({
-            orderBy: [{ id: 'desc' }],
+            orderBy: [{ id: 'asc' }],
 
             select: {
                 id: true,
