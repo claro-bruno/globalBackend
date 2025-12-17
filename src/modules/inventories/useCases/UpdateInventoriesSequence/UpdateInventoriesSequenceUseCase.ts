@@ -7,6 +7,7 @@ interface IUpdateInventory {
   created_at: Date;
   fk_id_inventory: number;
   status: string;
+  fk_user: number;
 }
 
 function getMonthFromString(mon: string, year: number) {
@@ -31,7 +32,7 @@ export class UpdateInventoriesSequenceUseCase {
 
 
 
-  async execute({ id, created_at, fk_id_inventory, status }: IUpdateInventory) {
+  async execute({ id, created_at, fk_id_inventory, status, fk_user }: IUpdateInventory) {
 
 
     console.log(id, created_at, fk_id_inventory, status)
@@ -102,7 +103,9 @@ export class UpdateInventoriesSequenceUseCase {
         created_at: date_inventory,
         fk_id_inventory: +fk_id_inventory,
         month: date_inventory.getMonth() + 1,
-        status: status
+        status: status,
+        fk_user: +fk_user,
+        alter_at: new Date(),
       }
     });
 

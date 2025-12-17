@@ -178,8 +178,11 @@ model InventoriesSequence {
   fk_id_inventory Int?
   created_at      DateTime @default(now())
   status          String?  @default("active")
+  fk_user         Int?
+  alter_at        DateTime @default(now())
 
   inventories             Inventories?              @relation(fields: [fk_id_inventory], references: [id])
+  users                   Contractors?              @relation(fields: [fk_user], references: [id])
   inventoriesTransactions inventoriesTransactions[]
   logInventories          logInventories[]
 
@@ -255,9 +258,10 @@ model Contractors {
   ordersSupport     Orders[]
   ordersContractors OrderContractors[]
 
-  paymentsContractors paymentsContractors[]
-  Invoices            Invoices[]
-  sales               sales[]
+  paymentsContractors  paymentsContractors[]
+  Invoices             Invoices[]
+  sales                sales[]
+  inventoriesSequences InventoriesSequence[]
 
   @@map("contractors")
 }

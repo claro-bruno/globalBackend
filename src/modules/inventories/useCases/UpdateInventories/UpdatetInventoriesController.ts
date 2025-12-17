@@ -8,8 +8,6 @@ export class UpdateInventoriesController {
         const updateInventoriesUseCase = new UpdateInventoriesUseCase();
         const cost = Number(unit_cost);
 
-
-        console.log(name, description, unit_cost, url_image, status, created_at)
         const result = await updateInventoriesUseCase.execute({ id: +id, name, description, unit_cost: +cost, url_image, status, created_at });
         return response.json(result);
 

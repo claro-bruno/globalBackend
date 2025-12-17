@@ -5,6 +5,7 @@ import { AppError } from "../../../../middlewares/AppError";
 interface ICreateInventory {
   created_at: Date;
   fk_id_inventory: number;
+  fk_user: number;
 }
 
 function getMonthFromString(mon: string, year: number) {
@@ -29,7 +30,7 @@ export class CreateInventoriesSequenceUseCase {
 
 
 
-  async execute({ created_at, fk_id_inventory }: ICreateInventory) {
+  async execute({ created_at, fk_id_inventory, fk_user }: ICreateInventory) {
 
 
 
@@ -70,6 +71,8 @@ export class CreateInventoriesSequenceUseCase {
         created_at: date_inventory,
         fk_id_inventory: +fk_id_inventory,
         month: date_inventory.getMonth() + 1,
+        fk_user: +fk_user,
+        alter_at: new Date(),
       }
     });
 

@@ -16,6 +16,12 @@ export class GetInventoriesSequenceUseCase {
                 status: true,
                 fk_id_inventory: true,
                 created_at: true,
+                fk_user: true,
+                users: {
+                    select: {
+                        first_name: true
+                    },
+                },
                 inventories: {
                     select: {
                         name: true,
@@ -23,7 +29,6 @@ export class GetInventoriesSequenceUseCase {
                         unit_cost: true,
                         url_image: true,
                         status: true
-
                     }
                 },
             }
