@@ -35,12 +35,11 @@ export class UpdateInventoriesSequenceUseCase {
   async execute({ id, created_at, fk_id_inventory, status, fk_user }: IUpdateInventory) {
 
 
-    console.log(id, created_at, fk_id_inventory, status)
 
     const date_inventory = new Date(created_at);
     // const reference = `${date_inventory.toLocaleDateString('en', { year: '2-digit' })}-${date_inventory.getMonth() + 1}-${fk_id_inventory}-${seq}`;
 
-
+    // console.log('update inventories sequence use case');
 
     const inventoryExist = await prisma.inventoriesSequence.findFirst({
       where: {

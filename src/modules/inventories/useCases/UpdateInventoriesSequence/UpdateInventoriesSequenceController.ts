@@ -8,10 +8,13 @@ export class UpdateInventoriesSequenceController {
 
         const { created_at, fk_id_inventory, status, fk_user } = request.body;
         const { id } = request.params;
+
+        // console.log(request.body, 'update inventories sequence controller');
+
         const updateInventoriesSequenceUseCase = new UpdateInventoriesSequenceUseCase();
-        const id_equipament = Number(fk_id_inventory.split("-")[0]);
+        const id_equipament = isNaN(fk_id_inventory) ? Number(fk_id_inventory.split("-")[0]) : fk_id_inventory;
 
-
+        // console.log('id_equipament', id_equipament);
         const result = await updateInventoriesSequenceUseCase.execute({ id: +id, created_at, fk_id_inventory: +id_equipament, status, fk_user });
         // return response.json(result);
         return response.status(201).send();
