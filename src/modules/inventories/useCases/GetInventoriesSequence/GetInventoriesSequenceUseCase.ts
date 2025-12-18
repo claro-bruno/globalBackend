@@ -13,7 +13,6 @@ export class GetInventoriesSequenceUseCase {
                 ref: true,
                 year: true,
                 month: true,
-                status: true,
                 fk_id_inventory: true,
                 created_at: true,
                 fk_user: true,

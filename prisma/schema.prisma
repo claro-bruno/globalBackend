@@ -177,7 +177,6 @@ model InventoriesSequence {
   month           Int
   fk_id_inventory Int?
   created_at      DateTime @default(now())
-  status          String?  @default("active")
   fk_user         Int?
   alter_at        DateTime @default(now())
 
@@ -201,8 +200,8 @@ model logInventories {
 }
 
 model materialsTransactions {
-  id             Int        @id @default(autoincrement())
-  created_at     DateTime   @default(now())
+  id             Int      @id @default(autoincrement())
+  created_at     DateTime @default(now())
   fk_id_material Int?
   quantity       Float
   total_cost     Float?
@@ -211,9 +210,14 @@ model materialsTransactions {
   description    String?
   month          String?
   year           Int?
-  material       Materials? @relation(fields: [fk_id_material], references: [id])
-  output         Clients?   @relation(fields: [fk_id_output], references: [id], name: "materialsTransactionsOutput")
-  input          Clients?   @relation(fields: [fk_id_input], references: [id], name: "materialsTransactionsInput")
+
+  fk_user  Int?
+  alter_at DateTime @default(now())
+
+  users    Contractors? @relation(fields: [fk_user], references: [id])
+  material Materials?   @relation(fields: [fk_id_material], references: [id])
+  output   Clients?     @relation(fields: [fk_id_output], references: [id], name: "materialsTransactionsOutput")
+  input    Clients?     @relation(fields: [fk_id_input], references: [id], name: "materialsTransactionsInput")
 
   @@map("materialsTransactions")
 }
@@ -224,7 +228,11 @@ model inventoriesTransactions {
   fk_id_inventory_sequence Int?
   fk_id_client             Int?
   description              String?
+  fk_user                  Int?
+  alter_at                 DateTime @default(now())
+  status                   String   @default("active")
 
+  users             Contractors?         @relation(fields: [fk_user], references: [id])
   inventorySequence InventoriesSequence? @relation(fields: [fk_id_inventory_sequence], references: [id])
   client            Clients?             @relation(fields: [fk_id_client], references: [id])
 
@@ -258,10 +266,12 @@ model Contractors {
   ordersSupport     Orders[]
   ordersContractors OrderContractors[]
 
-  paymentsContractors  paymentsContractors[]
-  Invoices             Invoices[]
-  sales                sales[]
-  inventoriesSequences InventoriesSequence[]
+  paymentsContractors     paymentsContractors[]
+  Invoices                Invoices[]
+  sales                   sales[]
+  inventoriesSequences    InventoriesSequence[]
+  inventoriesTransactions inventoriesTransactions[]
+  materialsTransactions   materialsTransactions[]
 
   @@map("contractors")
 }
