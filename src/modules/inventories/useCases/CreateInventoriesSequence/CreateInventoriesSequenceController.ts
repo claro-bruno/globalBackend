@@ -10,7 +10,7 @@ export class CreateInventoriesSequenceController {
         const createMaterialsSequenceUseCase = new CreateInventoriesSequenceUseCase();
         const id_equipament = Number(fk_id_inventory.split("-")[0]);
 
-        const result = await createMaterialsSequenceUseCase.execute({ created_at, fk_id_inventory: +id_equipament, fk_user });
+        const result = await createMaterialsSequenceUseCase.execute({ created_at, fk_id_inventory: +id_equipament, fk_user, seq });
         // return response.json(result);
         return response.status(201).send();
 

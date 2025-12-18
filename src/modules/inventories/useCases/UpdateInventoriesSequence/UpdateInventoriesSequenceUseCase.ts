@@ -8,6 +8,7 @@ interface IUpdateInventory {
   fk_id_inventory: number;
   status: string;
   fk_user: number;
+  seq: number;
 }
 
 function getMonthFromString(mon: string, year: number) {
@@ -32,7 +33,7 @@ export class UpdateInventoriesSequenceUseCase {
 
 
 
-  async execute({ id, created_at, fk_id_inventory, status, fk_user }: IUpdateInventory) {
+  async execute({ id, created_at, fk_id_inventory, status, fk_user, seq }: IUpdateInventory) {
 
 
 
@@ -48,27 +49,35 @@ export class UpdateInventoriesSequenceUseCase {
     });
 
 
-
-
-
     if (!inventoryExist) {
       throw new AppError('inventory does not exists', 400)
     }
 
-    let inventoryCount;
-    if (inventoryExist.fk_id_inventory !== +fk_id_inventory) {
-      inventoryCount = await prisma.inventoriesSequence.aggregate({
-        _count: {
-          id: true,
-        },
-        where: {
-          fk_id_inventory: +fk_id_inventory,
-        },
-      });
+    const sequenceExist = await prisma.inventoriesSequence.findMany({
+      where: {
+        seq: +seq,
+        fk_id_inventory: +fk_id_inventory,
+      }
+    });
 
+    if (sequenceExist.length > 0) {
+      throw new AppError('inventory sequence already exists', 400)
     }
 
-    const seq = (inventoryCount?._count?.id || 0) + 1;
+    // let inventoryCount;
+    // if (inventoryExist.fk_id_inventory !== +fk_id_inventory) {
+    //   inventoryCount = await prisma.inventoriesSequence.aggregate({
+    //     _count: {
+    //       id: true,
+    //     },
+    //     where: {
+    //       fk_id_inventory: +fk_id_inventory,
+    //     },
+    //   });
+
+    // }
+
+    // const seq = (inventoryCount?._count?.id || 0) + 1;
     const ref = `${date_inventory.toLocaleDateString('en', { year: '2-digit' })}-${date_inventory.getMonth() + 1}-${fk_id_inventory}-${seq}`;
 
 
