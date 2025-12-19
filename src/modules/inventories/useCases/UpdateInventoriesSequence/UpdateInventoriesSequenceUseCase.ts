@@ -62,7 +62,7 @@ export class UpdateInventoriesSequenceUseCase {
     });
 
 
-    if (+sequenceExist[0].id !== +id) {
+    if (+sequenceExist.length > 0 && +sequenceExist[0].id !== +id) {
       throw new AppError('inventory sequence already exists', 400)
 
     }
