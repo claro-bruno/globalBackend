@@ -36,6 +36,7 @@ export class UpdateInventoriesSequenceUseCase {
 
 
 
+
     const date_inventory = new Date(created_at);
     // const reference = `${date_inventory.toLocaleDateString('en', { year: '2-digit' })}-${date_inventory.getMonth() + 1}-${fk_id_inventory}-${seq}`;
 
@@ -52,8 +53,6 @@ export class UpdateInventoriesSequenceUseCase {
       throw new AppError('inventory does not exists', 400)
     }
 
-
-
     const sequenceExist = await prisma.inventoriesSequence.findMany({
       where: {
         seq: +seq,
@@ -62,7 +61,9 @@ export class UpdateInventoriesSequenceUseCase {
     });
 
 
-    if (+sequenceExist.length > 0 && +sequenceExist[0].id !== +id) {
+    console.log(sequenceExist, id)
+
+    if (+sequenceExist[0].id !== +id) {
       throw new AppError('inventory sequence already exists', 400)
 
     }

@@ -5,11 +5,11 @@ import { AppError } from "../../../../middlewares/AppError";
 interface IUpdateTransactionInventory {
     id: number;
     fk_id_inventory_sequence: string;
-
     fk_id_client: string;
-
+    fk_user: number;
     description?: string;
     created_at: Date;
+    status: string;
 }
 
 function getMonthFromString(mon: string, year: number) {
@@ -30,7 +30,7 @@ function toMonthName(monthNumber: number) {
 }
 
 export class UpdateTransactionsInventoriesUseCase {
-    async execute({ id, fk_id_client, fk_id_inventory_sequence, description, created_at }: IUpdateTransactionInventory) {
+    async execute({ id, fk_id_client, fk_id_inventory_sequence, description, created_at, fk_user, status }: IUpdateTransactionInventory) {
 
 
         const transactionInventoryExist = await prisma.inventoriesTransactions.findFirst({
@@ -54,20 +54,57 @@ export class UpdateTransactionsInventoriesUseCase {
 
 
 
-        const id_equipament = Number(fk_id_inventory_sequence.split("-")[0]);
+        const ref = (fk_id_inventory_sequence.trim());
         const id_client = Number(fk_id_client.split("-")[0]);
 
 
+        const equipment_data: any = await prisma.inventoriesSequence.findMany({
+            where: {
+                ref,
+            },
+            select: {
+                id: true,
+                fk_id_inventory: true,
+                inventories: {
+                    select: {
+                        id: true,
+                        unit_cost: true,
+                    }
+                }
+            }
+        })
+
+        const id_equipment_sequence = equipment_data[0]?.id
+        const id_equipment: any = equipment_data[0]?.fk_id_inventory
+        const valor: any = equipment_data[0]?.inventories?.unit_cost
+
+        const lastStatus: any = transactionInventoryExist?.status;
+
+        if (lastStatus !== status) {
+            await prisma.logInventories.create({
+                data: {
+                    fk_id_inventory_sequence: id,
+                    previous_status: lastStatus,
+                    new_status: status,
+                    description,
+                    created_at: new Date()
+                }
+            })
+        }
 
         await prisma.inventoriesTransactions.update({
             where: {
                 id,
             },
             data: {
-                fk_id_inventory_sequence: id_equipament,
+                fk_id_inventory_sequence: id,
                 fk_id_client: id_client,
                 description,
                 created_at: data_transaction,
+                status,
+                fk_user: +fk_user,
+                cost: +valor,
+                alter_at: new Date()
 
             }
         });

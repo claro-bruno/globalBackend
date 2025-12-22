@@ -7,6 +7,8 @@ interface ICreateTransactionsInventory {
   fk_id_client: string;
   description?: string;
   created_at: Date;
+  fk_user: number,
+  status?: string;
 }
 function getMonthFromString(mon: string, year: number) {
   const d = Date.parse(mon + "1, " + year);
@@ -26,20 +28,71 @@ function toMonthName(monthNumber: number) {
 }
 
 export class CreateTransactionsInventoriesUseCase {
-  async execute({ fk_id_inventory_sequence, fk_id_client, description, created_at }: ICreateTransactionsInventory): Promise<any> {
+  async execute({ fk_id_inventory_sequence, fk_id_client, description, created_at, fk_user, status }: ICreateTransactionsInventory): Promise<any> {
 
     const data_transaction = new Date(created_at);
 
-    const id_equipament = Number(fk_id_inventory_sequence.split("-")[0]);
+    const ref = (fk_id_inventory_sequence.trim());
     const id_client = Number(fk_id_client.split("-")[0]);
-    await prisma.inventoriesTransactions.create({
-      data: {
-        fk_id_inventory_sequence: +id_equipament,
-        fk_id_client: +id_client,
-        description,
-        created_at: data_transaction,
+
+    const equipment_data = await prisma.inventoriesSequence.findMany({
+      where: {
+        ref,
+      },
+      select: {
+        id: true,
+        fk_id_inventory: true,
+        inventories: {
+          select: {
+            id: true,
+            unit_cost: true,
+          }
+        }
       }
-    });
+    })
+
+
+    if (equipment_data.length > 0) {
+      const id_equipment_sequence = equipment_data[0]?.id
+      const id_equipment: any = equipment_data[0]?.fk_id_inventory
+      // const data_equipament = await prisma.inventories.findMany({
+      //   where: {
+      //     id: +id_equipment,
+      //   },
+      //   select: {
+      //     id: true,
+      //     unit_cost: true,
+      //   }
+      // })
+
+      const valor: any = equipment_data[0]?.inventories?.unit_cost
+
+
+
+      const res: any = await prisma.inventoriesTransactions.create({
+        data: {
+          fk_id_inventory_sequence: +id_equipment_sequence,
+          fk_id_client: +id_client,
+          description,
+          created_at: data_transaction,
+          cost: +valor,
+          fk_user: +fk_user,
+          alter_at: new Date(),
+          status
+
+        }
+      });
+
+      await prisma.logInventories.create({
+        data: {
+          fk_id_inventory_sequence: +res?.id,
+          previous_status: '',
+          description,
+          new_status: 'active',
+          created_at: new Date()
+        }
+      })
+    }
 
 
 

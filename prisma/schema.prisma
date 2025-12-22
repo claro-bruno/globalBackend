@@ -193,6 +193,7 @@ model logInventories {
   fk_id_inventory_sequence Int?
   previous_status          String
   new_status               String
+  description              String?
   created_at               DateTime             @default(now())
   inventorySequence        InventoriesSequence? @relation(fields: [fk_id_inventory_sequence], references: [id])
 
@@ -228,6 +229,7 @@ model inventoriesTransactions {
   fk_id_inventory_sequence Int?
   fk_id_client             Int?
   description              String?
+  cost                     Float?
   fk_user                  Int?
   alter_at                 DateTime @default(now())
   status                   String   @default("active")
