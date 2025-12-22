@@ -10,7 +10,7 @@ export class UpdateInventoriesSequenceController {
         const { id } = request.params;
 
 
-        // console.log(request.body, 'update inventories sequence controller');
+        //console.log(request.body, 'update inventories sequence controller');
 
         const updateInventoriesSequenceUseCase = new UpdateInventoriesSequenceUseCase();
         const id_equipament = isNaN(fk_id_inventory) ? Number(fk_id_inventory.split("-")[0]) : fk_id_inventory;
