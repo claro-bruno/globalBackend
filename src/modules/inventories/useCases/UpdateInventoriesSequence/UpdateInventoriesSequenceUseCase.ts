@@ -35,10 +35,8 @@ export class UpdateInventoriesSequenceUseCase {
   async execute({ id, created_at, fk_id_inventory, fk_user, seq }: IUpdateInventory) {
 
 
-
-
     const date_inventory = new Date(created_at);
-    // const reference = `${date_inventory.toLocaleDateString('en', { year: '2-digit' })}-${date_inventory.getMonth() + 1}-${fk_id_inventory}-${seq}`;
+    //const reference = `${date_inventory.toLocaleDateString('en', { year: '2-digit' })}-${date_inventory.getMonth() + 1}-${fk_id_inventory}-${seq}`;
 
     // console.log('update inventories sequence use case', date_inventory);
 
@@ -85,8 +83,11 @@ export class UpdateInventoriesSequenceUseCase {
     // }
 
     // const seq = (inventoryCount?._count?.id || 0) + 1;
-
+    //console.log(date_inventory)
     const ref = `${date_inventory.toLocaleDateString('en', { year: '2-digit' })}-${date_inventory.getMonth() + 1}-${fk_id_inventory}-${seq}`;
+
+    // console.log(ref)
+
     // console.log(inventoryLogExist)
 
     // if (inventoryLogExist) {
