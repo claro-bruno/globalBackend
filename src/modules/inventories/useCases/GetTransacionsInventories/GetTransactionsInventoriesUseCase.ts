@@ -5,7 +5,7 @@ import { prisma } from "../../../../database/prismaClient";
 export class GetTransactionsInventoriesUseCase {
     async execute() {
         const result = await prisma.inventoriesTransactions.findMany({
-            orderBy: [{ created_at: 'asc' }],
+            orderBy: [{ inventorySequence: { fk_id_inventory: 'asc' } }, { inventorySequence: { seq: 'asc' } }],
 
             select: {
                 id: true,
@@ -29,6 +29,7 @@ export class GetTransactionsInventoriesUseCase {
                 },
                 inventorySequence: {
                     select: {
+                        fk_id_inventory: true,
                         ref: true,
                         inventories: {
                             select: {
