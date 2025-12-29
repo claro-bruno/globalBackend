@@ -33,12 +33,12 @@ export class UpdateTransactionsInventoriesUseCase {
     async execute({ id, fk_id_client, fk_id_inventory_sequence, description, created_at, fk_user, status }: IUpdateTransactionInventory) {
 
 
+        // console.log(id, fk_id_client, fk_id_inventory_sequence, description, created_at, fk_user, status)
         const transactionInventoryExist = await prisma.inventoriesTransactions.findFirst({
             where: {
                 id,
             }
         });
-
 
 
 
@@ -48,19 +48,18 @@ export class UpdateTransactionsInventoriesUseCase {
 
 
 
-
         const data_transaction = new Date(created_at);
 
 
+        // console.log(fk_id_client);
 
-
-        const ref = (fk_id_inventory_sequence.trim());
-        const id_client = Number(fk_id_client.split("-")[0]);
-
+        //const ref = (fk_id_inventory_sequence.trim());
+        const id_client = !isNaN ? Number(fk_id_client.split("-")[0]) : fk_id_client;
+        // console.log('ref', ref);
 
         const equipment_data: any = await prisma.inventoriesSequence.findMany({
             where: {
-                ref,
+                id: +fk_id_inventory_sequence,
             },
             select: {
                 id: true,
@@ -74,38 +73,39 @@ export class UpdateTransactionsInventoriesUseCase {
             }
         })
 
-        const id_equipment_sequence = equipment_data[0]?.id
-        const id_equipment: any = equipment_data[0]?.fk_id_inventory
+
+
+
         const valor: any = equipment_data[0]?.inventories?.unit_cost
 
         const lastStatus: any = transactionInventoryExist?.status;
 
-        if (lastStatus !== status) {
-            await prisma.logInventories.create({
-                data: {
-                    fk_id_inventory_sequence: id,
-                    previous_status: lastStatus,
-                    new_status: status,
-                    description,
-                    created_at: new Date()
-                }
-            })
-        }
+        // if (lastStatus !== status) {
+        //     await prisma.logInventories.create({
+        //         data: {
+        //             fk_id_inventory_sequence: id,
+        //             previous_status: lastStatus,
+        //             new_status: status,
+        //             description,
+        //             created_at: new Date()
+        //         }
+        //     })
+        // }
+
 
         await prisma.inventoriesTransactions.update({
             where: {
                 id,
             },
             data: {
-                fk_id_inventory_sequence: id,
-                fk_id_client: id_client,
+                fk_id_inventory_sequence: +fk_id_inventory_sequence,
+                fk_id_client: +id_client,
                 description,
                 created_at: data_transaction,
                 status,
                 fk_user: +fk_user,
                 cost: +valor,
                 alter_at: new Date()
-
             }
         });
 

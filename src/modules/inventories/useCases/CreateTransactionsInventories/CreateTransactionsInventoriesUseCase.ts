@@ -83,15 +83,15 @@ export class CreateTransactionsInventoriesUseCase {
         }
       });
 
-      await prisma.logInventories.create({
-        data: {
-          fk_id_inventory_sequence: +res?.id,
-          previous_status: '',
-          description,
-          new_status: 'active',
-          created_at: new Date()
-        }
-      })
+      // await prisma.logInventories.create({
+      //   data: {
+      //     fk_id_inventory_sequence: +res?.id,
+      //     previous_status: '',
+      //     description,
+      //     new_status: 'active',
+      //     created_at: new Date()
+      //   }
+      // })
     }
 
 

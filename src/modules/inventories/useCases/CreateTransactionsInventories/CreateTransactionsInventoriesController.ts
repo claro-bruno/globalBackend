@@ -9,6 +9,7 @@ export class CreateTransactionsInventoriesController {
 
         const { fk_id_inventory_sequence, fk_id_client, description, created_at, fk_user, status } = request.body;
         const createTransactionsInventoriesUseCase = new CreateTransactionsInventoriesUseCase();
+
         const result = await createTransactionsInventoriesUseCase.execute({
             fk_id_inventory_sequence,
             fk_id_client,

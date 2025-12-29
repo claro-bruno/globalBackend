@@ -84,7 +84,12 @@ export class UpdateInventoriesSequenceUseCase {
 
     // const seq = (inventoryCount?._count?.id || 0) + 1;
     //console.log(date_inventory)
-    const ref = `${date_inventory.toLocaleDateString('en', { year: '2-digit' })}-${date_inventory.getMonth() + 1}-${fk_id_inventory}-${seq}`;
+
+    const mon: any = (date_inventory.getMonth() + 1).toString();
+    const month: any = mon < 10 ? "0" + mon : mon;
+    const sequencia: any = seq < 10 ? ("0" + seq).toString() : seq
+    const inv: any = fk_id_inventory < 10 ? fk_id_inventory.toString().padStart(2, '0') : fk_id_inventory.toString();
+    const reference = `${date_inventory.toLocaleDateString('en', { year: '2-digit' })}-${month}-${inv}-${sequencia}`;
 
     // console.log(ref)
 
@@ -113,7 +118,7 @@ export class UpdateInventoriesSequenceUseCase {
       },
       data: {
         seq: +seq,
-        ref: ref,
+        ref: reference,
         year: date_inventory.getFullYear(),
         created_at: date_inventory,
         fk_id_inventory: +fk_id_inventory,

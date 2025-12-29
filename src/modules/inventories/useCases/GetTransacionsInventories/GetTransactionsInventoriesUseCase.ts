@@ -15,7 +15,7 @@ export class GetTransactionsInventoriesUseCase {
                 description: true,
                 cost: true,
                 fk_user: true,
-
+                status: true,
                 users: {
                     select: {
                         first_name: true,

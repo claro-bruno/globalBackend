@@ -10,7 +10,7 @@ export class CreateInventoriesController {
         const createMaterialsUseCase = new CreateInventoriesUseCase();
 
 
-        const result = await createMaterialsUseCase.execute({ name, description, unit_cost: +unit_cost, url_image, status });
+        const result = await createMaterialsUseCase.execute({ name, description, unit_cost: +unit_cost, url_image, status: 'active' });
         // return response.json(result);
         return response.status(201).send();
 
