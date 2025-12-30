@@ -91,6 +91,7 @@ export class CreateInventoriesSequenceUseCase {
         month: date_inventory.getMonth() + 1,
         fk_user: +fk_user,
         alter_at: new Date(),
+        status: 'unallocated',
       }
     });
 

@@ -16,6 +16,7 @@ export class GetInventoriesSequenceUseCase {
                 fk_id_inventory: true,
                 created_at: true,
                 fk_user: true,
+                status: true,
                 users: {
                     select: {
                         first_name: true

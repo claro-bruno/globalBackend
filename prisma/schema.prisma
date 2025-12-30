@@ -179,6 +179,7 @@ model InventoriesSequence {
   created_at      DateTime @default(now())
   fk_user         Int?
   alter_at        DateTime @default(now())
+  status          String   @default("unallocated")
 
   inventories             Inventories?              @relation(fields: [fk_id_inventory], references: [id])
   users                   Contractors?              @relation(fields: [fk_user], references: [id])

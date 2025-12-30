@@ -33,6 +33,8 @@ export class CreateTransactionsInventoriesUseCase {
     const data_transaction = new Date(created_at);
 
     const ref = (fk_id_inventory_sequence.trim());
+
+
     const id_client = Number(fk_id_client.split("-")[0]);
 
     const equipment_data = await prisma.inventoriesSequence.findMany({
@@ -52,8 +54,25 @@ export class CreateTransactionsInventoriesUseCase {
     })
 
 
+
+
     if (equipment_data.length > 0) {
       const id_equipment_sequence = equipment_data[0]?.id
+
+      const checkTransaction: any = await prisma.inventoriesTransactions.findMany({
+        where: {
+          fk_id_inventory_sequence: Number(id_equipment_sequence),
+
+        }
+      })
+
+
+
+
+      if (checkTransaction.length > 0) {
+        throw new AppError('Reference already exists', 400)
+      }
+
       const id_equipment: any = equipment_data[0]?.fk_id_inventory
       // const data_equipament = await prisma.inventories.findMany({
       //   where: {
@@ -83,15 +102,24 @@ export class CreateTransactionsInventoriesUseCase {
         }
       });
 
-      // await prisma.logInventories.create({
-      //   data: {
-      //     fk_id_inventory_sequence: +res?.id,
-      //     previous_status: '',
-      //     description,
-      //     new_status: 'active',
-      //     created_at: new Date()
-      //   }
-      // })
+      await prisma.inventoriesSequence.update({
+        where: {
+          id: +id_equipment_sequence,
+        },
+        data: {
+          status
+        }
+      })
+
+      await prisma.logInventories.create({
+        data: {
+          fk_id_inventory_sequence: +id_equipment_sequence,
+          previous_status: 'unallocated ',
+          description,
+          new_status: 'allocated ',
+          created_at: new Date()
+        }
+      })
     }
 
 
