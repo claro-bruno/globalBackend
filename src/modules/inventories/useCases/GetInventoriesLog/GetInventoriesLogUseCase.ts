@@ -14,6 +14,13 @@ export class GetInventoriesLogUseCase {
                 description: true,
                 previous_status: true,
                 fk_id_inventory_sequence: true,
+                fk_id_location: true,
+                location: {
+                    select: {
+                        id: true,
+                        name: true,
+                    }
+                },
                 inventorySequence: {
                     select: {
                         ref: true,

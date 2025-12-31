@@ -192,11 +192,13 @@ model InventoriesSequence {
 model logInventories {
   id                       Int                  @id @default(autoincrement())
   fk_id_inventory_sequence Int?
+  fk_id_location           Int?
   previous_status          String
   new_status               String
   description              String?
   created_at               DateTime             @default(now())
   inventorySequence        InventoriesSequence? @relation(fields: [fk_id_inventory_sequence], references: [id])
+  location                 Clients?             @relation(fields: [fk_id_location], references: [id])
 
   @@map("logInventories")
 }
@@ -306,6 +308,7 @@ model Clients {
   materialsTransactionsInput  materialsTransactions[]   @relation(name: "materialsTransactionsInput")
   materialsTransactionsOutput materialsTransactions[]   @relation(name: "materialsTransactionsOutput")
   inventoriesTransactions     inventoriesTransactions[]
+  logInventories              logInventories[]
 
   @@map("clients")
 }
