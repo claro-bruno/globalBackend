@@ -11,6 +11,7 @@ export class GetInventoriesLogUseCase {
                 id: true,
                 created_at: true,
                 new_status: true,
+                description: true,
                 previous_status: true,
                 fk_id_inventory_sequence: true,
                 inventorySequence: {
