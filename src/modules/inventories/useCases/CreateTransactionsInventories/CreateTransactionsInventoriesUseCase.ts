@@ -32,7 +32,7 @@ export class CreateTransactionsInventoriesUseCase {
 
     const data_transaction = new Date(created_at);
 
-    const referencia = fk_id_inventory_sequence.split(" / ")[0];
+    const referencia = fk_id_inventory_sequence.split(" ")[0];
     const ref = (referencia.trim());
 
     const id_client = Number(fk_id_client.split("-")[0]);
