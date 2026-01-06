@@ -32,8 +32,27 @@ function toMonthName(monthNumber: number) {
 export class UpdateTransactionsInventoriesUseCase {
     async execute({ id, fk_id_client, fk_id_inventory_sequence, description, created_at, fk_user, status }: IUpdateTransactionInventory) {
 
+        let id_inventory_sequence: any = '';
+        const id_client = isNaN(fk_id_client as any) ? Number(fk_id_client.split(" - ")[0].trim()) : fk_id_client;
+        if (!isNaN(fk_id_inventory_sequence as any)) {
+            id_inventory_sequence = fk_id_inventory_sequence;
+        } else {
+            const ref = fk_id_inventory_sequence.split(" ")[0].trim();
+            const res = await prisma.inventoriesSequence.findMany({
 
-        // console.log(id, fk_id_client, fk_id_inventory_sequence, description, created_at, fk_user, status)
+                where: {
+                    ref,
+                }
+            });
+            id_inventory_sequence = res[0]?.id;
+        }
+
+
+        // console.log(id_client)
+        //throw new AppError('Testando', 400)
+
+
+
         const transactionInventoryExist = await prisma.inventoriesTransactions.findFirst({
             where: {
                 id,
@@ -51,15 +70,18 @@ export class UpdateTransactionsInventoriesUseCase {
         const data_transaction = new Date(created_at);
 
 
+
         // console.log(fk_id_client);
 
         //const ref = (fk_id_inventory_sequence.trim());
-        const id_client: any = isNaN(fk_id_client as any) ? Number(fk_id_client.split("-")[0]) : fk_id_client;
         // console.log('ref', ref);
+
+        // const id_client = isNaN(fk_id_client) ? Number(fk_id_client.split(" - ")[0].trim()) : fk_id_client;
+
 
         const equipment_data: any = await prisma.inventoriesSequence.findMany({
             where: {
-                id: +fk_id_inventory_sequence,
+                id: +id_inventory_sequence,
             },
             select: {
                 id: true,
@@ -77,25 +99,16 @@ export class UpdateTransactionsInventoriesUseCase {
 
 
         const valor: any = equipment_data[0]?.inventories?.unit_cost
-        const id_fk_inventory_sequence = equipment_data[0]?.id;
+        //const id_fk_inventory_sequence = equipment_data[0]?.id;
         const lastStatus: any = transactionInventoryExist?.status;
 
 
-        await prisma.logInventories.create({
-            data: {
-                fk_id_inventory_sequence: +id_fk_inventory_sequence,
-                previous_status: lastStatus,
-                new_status: status,
-                description,
-                created_at: new Date(),
-                fk_id_location: +id_client,
-            }
-        })
+
 
 
         await prisma.inventoriesSequence.update({
             where: {
-                id: +id_fk_inventory_sequence,
+                id: +id_inventory_sequence,
             },
             data: {
                 status
@@ -107,7 +120,7 @@ export class UpdateTransactionsInventoriesUseCase {
                 id,
             },
             data: {
-                fk_id_inventory_sequence: +fk_id_inventory_sequence,
+                fk_id_inventory_sequence: +id_inventory_sequence,
                 fk_id_client: +id_client,
                 description,
                 created_at: data_transaction,
@@ -118,7 +131,16 @@ export class UpdateTransactionsInventoriesUseCase {
             }
         });
 
-
+        await prisma.logInventories.create({
+            data: {
+                fk_id_inventory_sequence: +id_inventory_sequence,
+                previous_status: lastStatus,
+                new_status: status,
+                description,
+                created_at: data_transaction,
+                fk_id_location: +id_client,
+            }
+        })
 
         return 'Ok';
     }

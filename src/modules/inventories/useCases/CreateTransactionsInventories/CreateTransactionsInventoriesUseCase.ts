@@ -32,10 +32,11 @@ export class CreateTransactionsInventoriesUseCase {
 
     const data_transaction = new Date(created_at);
 
-    const ref = (fk_id_inventory_sequence.trim());
-
+    const referencia = fk_id_inventory_sequence.split(" / ")[0];
+    const ref = (referencia.trim());
 
     const id_client = Number(fk_id_client.split("-")[0]);
+
 
     const equipment_data = await prisma.inventoriesSequence.findMany({
       where: {
@@ -114,10 +115,10 @@ export class CreateTransactionsInventoriesUseCase {
       await prisma.logInventories.create({
         data: {
           fk_id_inventory_sequence: +id_equipment_sequence,
-          previous_status: 'unallocated ',
+          previous_status: 'unallocated',
           description,
-          new_status: 'allocated ',
-          created_at: new Date(),
+          new_status: 'allocated',
+          created_at: data_transaction,
           fk_id_location: +id_client
         }
       })

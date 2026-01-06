@@ -10,6 +10,7 @@ export class UpdateTransactionsInventoriesController {
         // console.log('UpdateTransactionsInventoriesController', request.body);
 
 
+
         const result = await updateTransactionsInventoriesUseCase.execute({ id: +id, fk_id_inventory_sequence, fk_id_client, description, created_at, fk_user: +fk_user, status });
         return response.json(result);
 
