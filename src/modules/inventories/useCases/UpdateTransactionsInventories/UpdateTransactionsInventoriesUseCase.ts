@@ -137,7 +137,7 @@ export class UpdateTransactionsInventoriesUseCase {
                 previous_status: lastStatus,
                 new_status: status,
                 description,
-                created_at: data_transaction,
+                created_at: new Date(),
                 fk_id_location: +id_client,
             }
         })
