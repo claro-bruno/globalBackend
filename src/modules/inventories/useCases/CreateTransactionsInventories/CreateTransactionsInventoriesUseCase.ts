@@ -118,8 +118,10 @@ export class CreateTransactionsInventoriesUseCase {
           previous_status: 'unallocated',
           description,
           new_status: 'allocated',
-          created_at: new Date(),
-          fk_id_location: +id_client
+          alter_at: new Date(),
+          created_at: data_transaction,
+          fk_id_location: +id_client,
+          fk_id_user: +fk_user
         }
       })
     }

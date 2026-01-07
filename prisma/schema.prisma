@@ -197,8 +197,11 @@ model logInventories {
   new_status               String
   description              String?
   created_at               DateTime             @default(now())
+  alter_at                 DateTime             @default(now())
+  fk_id_user               Int?
   inventorySequence        InventoriesSequence? @relation(fields: [fk_id_inventory_sequence], references: [id])
   location                 Clients?             @relation(fields: [fk_id_location], references: [id])
+  user                     Contractors?         @relation(fields: [fk_id_user], references: [id])
 
   @@map("logInventories")
 }
@@ -277,6 +280,7 @@ model Contractors {
   inventoriesSequences    InventoriesSequence[]
   inventoriesTransactions inventoriesTransactions[]
   materialsTransactions   materialsTransactions[]
+  logInventories          logInventories[]
 
   @@map("contractors")
 }
