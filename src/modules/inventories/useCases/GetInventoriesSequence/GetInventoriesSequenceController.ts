@@ -7,6 +7,7 @@ export class GetInventoriesSequenceController {
         const getInventoriesSequenceUseCase = new GetInventoriesSequenceUseCase();
         const result = await getInventoriesSequenceUseCase.execute();
 
+
         return response.json(result);
 
     }
