@@ -14,8 +14,8 @@ from public."inventoriesSequence" AS ise
           LEFT JOIN public."inventoriesTransactions" AS itr ON itr.fk_id_inventory_sequence = ise.id
 		  INNER JOIN public."inventories" AS inv ON ise.fk_id_inventory = inv.id
 		  INNER JOIN public."contractors" AS con ON con.id = ise.fk_user
+          Order BY ise.fk_id_inventory ASC, ise.seq ASC
         `
-        console.log('result', result);
 
         // const result = await prisma.inventoriesSequence.findMany({
         //     orderBy: [{ fk_id_inventory: 'asc' }, { seq: 'asc' }],
