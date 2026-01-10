@@ -48,8 +48,7 @@ export class UpdateTransactionsInventoriesUseCase {
         }
 
 
-        console.log(id, fk_id_client, fk_id_inventory_sequence, description, created_at, fk_user, status)
-        throw new AppError('Testando', 400)
+
 
 
 
