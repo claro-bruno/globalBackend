@@ -33,6 +33,8 @@ export class UpdateTransactionsInventoriesUseCase {
     async execute({ id, fk_id_client, fk_id_inventory_sequence, description, created_at, fk_user, status }: IUpdateTransactionInventory) {
 
         let id_inventory_sequence: any = '';
+
+
         const id_client = isNaN(fk_id_client as any) ? Number(fk_id_client.split(" - ")[0].trim()) : fk_id_client;
         if (!isNaN(fk_id_inventory_sequence as any)) {
             id_inventory_sequence = fk_id_inventory_sequence;

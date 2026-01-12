@@ -6,7 +6,7 @@ export class GetInventoriesSequenceUseCase {
     async execute() {
 
         const result: any = await prisma.$queryRaw`
-          SELECT itr.id as id_transaction, ise.id, ise.ref, itr.fk_id_client,ise.seq,ise.status,ise.created_at,inv.name,ise.fk_id_inventory,
+          SELECT itr.id as id_transaction, ise.id, ise.ref, itr.fk_id_client,ise.seq,ise.status,ise.created_at,inv.name,ise.fk_id_inventory, inv.unit_cost as cost,itr.status as stat,
 
 (SELECT name from public."clients" AS c WHERE c.id = itr.fk_id_client) as namelocation,
 (SELECT first_name from public."contractors" AS co WHERE co.id = ise.fk_user) as nameuser
