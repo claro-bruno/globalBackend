@@ -16,8 +16,14 @@ export class GetTransactionsMaterialsUseCase {
                 quantity: true,
                 total_cost: true,
                 description: true,
+                fk_user: true,
                 month: true,
                 year: true,
+                users: {
+                    select: {
+                        first_name: true,
+                    }
+                },
                 output: {
                     select: {
                         name: true,
