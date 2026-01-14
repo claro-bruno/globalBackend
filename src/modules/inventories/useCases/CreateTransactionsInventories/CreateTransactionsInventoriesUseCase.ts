@@ -63,15 +63,20 @@ export class CreateTransactionsInventoriesUseCase {
       const checkTransaction: any = await prisma.inventoriesTransactions.findMany({
         where: {
           fk_id_inventory_sequence: Number(id_equipment_sequence),
-
-        }
+        },
+        select: {
+          client: {
+            select: {
+              name: true,
+            }
+          }
+        },
       })
 
 
 
-
       if (checkTransaction.length > 0) {
-        throw new AppError('Reference already exists', 400)
+        throw new AppError("Reference already exists on  " + checkTransaction[0]?.client?.name, 400)
       }
 
       const id_equipment: any = equipment_data[0]?.fk_id_inventory
