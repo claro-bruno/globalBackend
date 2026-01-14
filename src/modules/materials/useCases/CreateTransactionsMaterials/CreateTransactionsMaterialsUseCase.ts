@@ -6,9 +6,10 @@ interface ICreateTransactionsMaterial {
   fk_id_material: string;
   quantity: number;
   fk_id_output: string;
-  fk_id_input: string;
+  fk_id_input: any;
   description: string;
   created_at: Date;
+  fk_user: string;
 }
 
 function getMonthFromString(mon: string, year: number) {
@@ -29,7 +30,7 @@ function toMonthName(monthNumber: number) {
 }
 
 export class CreateTransactionsMaterialsUseCase {
-  async execute({ fk_id_material, quantity, fk_id_input, fk_id_output, description, created_at }: ICreateTransactionsMaterial): Promise<any> {
+  async execute({ fk_id_material, quantity, fk_id_input, fk_id_output, description, created_at, fk_user }: ICreateTransactionsMaterial): Promise<any> {
 
     const id = Number(fk_id_material.split("-")[0]);
 
@@ -39,15 +40,11 @@ export class CreateTransactionsMaterialsUseCase {
 
 
 
-
-
-    const input_id = fk_id_input.split("-")[0];
+    const input_id: number = fk_id_input !== 0 ? fk_id_input.split("-")[0] : 0;
     const output_id = Number(fk_id_output.split("-")[0]);
     const month = toMonthName(new Date(data_transaction).getUTCMonth());
     const year = new Date(data_transaction).getUTCFullYear();
 
-    // const cost = material?.unit_cost || 0;
-    // const total = quantity * cost;
 
 
     const res = await prisma.materials.findFirst({
@@ -61,18 +58,19 @@ export class CreateTransactionsMaterialsUseCase {
     const cost = res?.unit_cost || 0;
     const total = quantity * cost;
 
-
     await prisma.materialsTransactions.create({
       data: {
         fk_id_material: +id,
         quantity: +quantity,
         total_cost: +total,
-        fk_id_input: +input_id,
-        fk_id_output: output_id,
+        fk_id_input: input_id,
+        fk_id_output: +output_id,
         description,
         created_at: data_transaction,
         month,
-        year
+        year,
+        fk_user: +fk_user,
+        alter_at: new Date()
       }
     });
 

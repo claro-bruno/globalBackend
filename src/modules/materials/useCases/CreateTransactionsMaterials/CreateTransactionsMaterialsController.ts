@@ -8,7 +8,7 @@ export class CreateTransactionsMaterialsController {
 
 
 
-        const { fk_id_material, quantity, total_cost, fk_id_input, fk_id_output, description, created_at } = request.body;
+        const { fk_id_material, quantity, total_cost, fk_id_input, fk_id_output, description, created_at, fk_user } = request.body;
         const createTransactionsMaterialsUseCase = new CreateTransactionsMaterialsUseCase();
 
 
@@ -16,10 +16,11 @@ export class CreateTransactionsMaterialsController {
         const result = await createTransactionsMaterialsUseCase.execute({
             fk_id_material,
             quantity,
-            fk_id_input,
+            fk_id_input: fk_id_input.toString().length > 0 ? fk_id_input : 0,
             fk_id_output,
             description,
-            created_at
+            created_at,
+            fk_user
         });
         // return response.json(result);
         return response.status(201).send();
