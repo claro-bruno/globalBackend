@@ -8,14 +8,15 @@ interface IUpdateMaterial {
     description?: string;
     unit_cost: number;
     url_image?: string;
-    status?: string;
     created_at: Date;
+    category?: string;
+    fk_user?: number;
 }
 
 
 
 export class UpdateMaterialsUseCase {
-    async execute({ id, name, description, unit_cost, url_image, status, created_at }: IUpdateMaterial) {
+    async execute({ id, name, description, unit_cost, url_image, created_at, fk_user, category }: IUpdateMaterial) {
 
 
 
@@ -46,7 +47,9 @@ export class UpdateMaterialsUseCase {
                 unit_cost: +unit_cost,
                 url_image,
                 created_at: data_material,
-                status,
+
+                fk_user,
+                category
             }
         });
 

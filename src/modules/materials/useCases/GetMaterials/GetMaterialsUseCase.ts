@@ -6,8 +6,9 @@ export class GetMaterialsUseCase {
     async execute() {
 
         const result: any = await prisma.$queryRaw`
-          SELECT mat.id, mat.created_at, mat.name, mat.description, mat.unit_cost, mat.status, mat.url_image,
-          (SELECT SUM(itr.quantity) FROM public."materialsTransactions" AS itr WHERE itr.fk_id_material = mat.id) AS total
+          SELECT mat.id, mat.created_at, mat.name, mat.description, mat.unit_cost,  mat.url_image, mat.category, mat.fk_user,
+          (SELECT SUM(itr.quantity) FROM public."materialsTransactions" AS itr WHERE itr.fk_id_material = mat.id) AS total,
+          (SELECT c.first_name FROM public."contractors" AS c WHERE c.id = mat.fk_user) AS first_name
 from public."materials" AS mat
           Order BY mat.id ASC
         `

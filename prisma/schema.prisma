@@ -144,13 +144,15 @@ model sales {
 
 model Materials {
   id                    Int                     @id @default(autoincrement())
-  name                  String
+  name                  String?
   description           String?
-  unit_cost             Float
-  created_at            DateTime                @default(now())
+  unit_cost             Float?
+  created_at            DateTime?               @default(now())
   url_image             String?
-  status                String?                 @default("ACTIVE")
+  category              String?
+  fk_user               Int?
   materialsTransactions materialsTransactions[]
+  user                  Contractors?            @relation(fields: [fk_user], references: [id])
 
   @@map("materials")
 }
@@ -281,6 +283,7 @@ model Contractors {
   inventoriesTransactions inventoriesTransactions[]
   materialsTransactions   materialsTransactions[]
   logInventories          logInventories[]
+  materials               Materials[]
 
   @@map("contractors")
 }
