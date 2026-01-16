@@ -5,7 +5,7 @@ import { AppError } from "../../../../middlewares/AppError";
 interface ICreateTransactionsMaterial {
   fk_id_material: string;
   quantity: number;
-  fk_id_output: string;
+  fk_id_output: any;
   fk_id_input: any;
   description: string;
   created_at: Date;
@@ -40,8 +40,8 @@ export class CreateTransactionsMaterialsUseCase {
 
 
 
-    const input_id: number = fk_id_input !== 0 ? fk_id_input.split("-")[0] : 0;
-    const output_id = Number(fk_id_output.split("-")[0]);
+    const input_id: any = fk_id_input !== 0 ? fk_id_input.split("-")[0].toString().trim() : 0;
+    const output_id: any = fk_id_output !== 0 ? fk_id_output.split("-")[0].toString().trim() : 0;
     const month = toMonthName(new Date(data_transaction).getUTCMonth());
     const year = new Date(data_transaction).getUTCFullYear();
 
@@ -55,15 +55,17 @@ export class CreateTransactionsMaterialsUseCase {
 
 
 
+
     const cost = res?.unit_cost || 0;
     const total = quantity * cost;
+
 
     await prisma.materialsTransactions.create({
       data: {
         fk_id_material: +id,
         quantity: +quantity,
         total_cost: +total,
-        fk_id_input: input_id,
+        fk_id_input: +input_id,
         fk_id_output: +output_id,
         description,
         created_at: data_transaction,
