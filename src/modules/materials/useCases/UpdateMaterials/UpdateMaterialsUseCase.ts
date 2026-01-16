@@ -47,7 +47,6 @@ export class UpdateMaterialsUseCase {
                 unit_cost: +unit_cost,
                 url_image,
                 created_at: data_material,
-
                 fk_user,
                 category
             }
