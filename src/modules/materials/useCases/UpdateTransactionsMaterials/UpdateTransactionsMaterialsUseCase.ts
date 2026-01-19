@@ -82,8 +82,8 @@ export class UpdateTransactionsMaterialsUseCase {
             data: {
                 quantity,
                 total_cost: +total,
-                fk_id_input: +fk_id_input,
-                fk_id_output: +fk_id_output,
+                fk_id_input: +input_id,
+                fk_id_output: +output_id,
                 description,
                 created_at: data_transaction,
                 month,
