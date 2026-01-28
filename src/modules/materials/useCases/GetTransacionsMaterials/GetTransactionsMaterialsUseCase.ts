@@ -14,7 +14,6 @@ export class GetTransactionsMaterialsUseCase {
                 fk_id_input: true,
                 fk_id_output: true,
                 quantity: true,
-                total_cost: true,
                 description: true,
                 fk_user: true,
                 month: true,

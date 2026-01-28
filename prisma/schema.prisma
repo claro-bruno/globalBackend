@@ -143,16 +143,17 @@ model sales {
 }
 
 model Materials {
-  id                    Int                     @id @default(autoincrement())
-  name                  String?
-  description           String?
-  unit_cost             Float?
-  created_at            DateTime?               @default(now())
-  url_image             String?
-  category              String?
-  fk_user               Int?
-  materialsTransactions materialsTransactions[]
-  user                  Contractors?            @relation(fields: [fk_user], references: [id])
+  id                         Int                          @id @default(autoincrement())
+  name                       String?
+  description                String?
+  unit_cost                  Float?
+  created_at                 DateTime?                    @default(now())
+  url_image                  String?
+  category                   String?
+  fk_user                    Int?
+  materialsTransactions      materialsTransactions[]
+  user                       Contractors?                 @relation(fields: [fk_user], references: [id])
+  materialsSalesTransactions materialsSalesTransactions[]
 
   @@map("materials")
 }
@@ -208,6 +209,33 @@ model logInventories {
   @@map("logInventories")
 }
 
+model salesTransactions {
+  id                         Int      @id @default(autoincrement())
+  fk_id_material_transaction Int?
+  description                String?
+  created_at                 DateTime @default(now())
+  update_at                  DateTime @default(now())
+  total                      Float?
+
+  transaction                materialsTransactions?       @relation(fields: [fk_id_material_transaction], references: [id])
+  materialsSalesTransactions materialsSalesTransactions[]
+
+  @@map("salesTransactions")
+}
+
+model materialsSalesTransactions {
+  id                    Int    @id @default(autoincrement())
+  fk_id_material        Int?
+  qtd                   Int?
+  total                 Float?
+  fk_id_materials_sales Int?
+
+  transactionSales salesTransactions? @relation(fields: [fk_id_materials_sales], references: [id])
+  material         Materials?         @relation(fields: [fk_id_material], references: [id])
+
+  @@map("materialsSalesTransactions")
+}
+
 model materialsTransactions {
   id             Int      @id @default(autoincrement())
   created_at     DateTime @default(now())
@@ -223,10 +251,11 @@ model materialsTransactions {
   fk_user  Int?
   alter_at DateTime @default(now())
 
-  users    Contractors? @relation(fields: [fk_user], references: [id])
-  material Materials?   @relation(fields: [fk_id_material], references: [id])
-  output   Clients?     @relation(fields: [fk_id_output], references: [id], name: "materialsTransactionsOutput")
-  input    Clients?     @relation(fields: [fk_id_input], references: [id], name: "materialsTransactionsInput")
+  users             Contractors?        @relation(fields: [fk_user], references: [id])
+  material          Materials?          @relation(fields: [fk_id_material], references: [id])
+  output            Clients?            @relation(fields: [fk_id_output], references: [id], name: "materialsTransactionsOutput")
+  input             Clients?            @relation(fields: [fk_id_input], references: [id], name: "materialsTransactionsInput")
+  salesTransactions salesTransactions[]
 
   @@map("materialsTransactions")
 }

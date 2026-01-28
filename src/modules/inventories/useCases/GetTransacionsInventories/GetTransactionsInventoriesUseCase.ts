@@ -31,6 +31,7 @@ export class GetTransactionsInventoriesUseCase {
                     select: {
                         fk_id_inventory: true,
                         ref: true,
+                        seq: true,
                         inventories: {
                             select: {
                                 id: true,
