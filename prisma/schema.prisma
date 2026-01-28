@@ -31,6 +31,38 @@ model Costs {
   @@map("costs")
 }
 
+model OrdersMaterialsInventories {
+  id               Int      @id @default(autoincrement())
+  description      String?
+  fk_contractor_id Int?
+  fk_id_client     Int?
+  total            Float?
+  created_at       DateTime @default(now())
+  status           String?
+
+  client                  Clients?                  @relation(fields: [fk_id_client], references: [id])
+  contractor              Contractors?              @relation(fields: [fk_contractor_id], references: [id])
+  orderMaterialsItems     OrderMaterialsItems[]
+  materialsTransactions   materialsTransactions[]
+  inventoriesTransactions inventoriesTransactions[]
+
+  @@map("ordersMaterialsInventories")
+}
+
+model OrderMaterialsItems {
+  id                    Int                        @id @default(autoincrement())
+  fk_id_order_materials Int
+  fk_id_material        Int
+  qtd                   Int
+  description           String?
+  total                 Float
+  created_at            DateTime?                  @default(now())
+  material              Materials                  @relation(fields: [fk_id_material], references: [id])
+  order                 OrdersMaterialsInventories @relation(fields: [fk_id_order_materials], references: [id])
+
+  @@map("ordersMaterialsItems")
+}
+
 model Orders {
   id                 Int                @id @default(autoincrement())
   start              String
@@ -154,6 +186,7 @@ model Materials {
   materialsTransactions      materialsTransactions[]
   user                       Contractors?                 @relation(fields: [fk_user], references: [id])
   materialsSalesTransactions materialsSalesTransactions[]
+  orderMaterialsItems        OrderMaterialsItems[]
 
   @@map("materials")
 }
@@ -210,15 +243,15 @@ model logInventories {
 }
 
 model salesTransactions {
-  id                         Int      @id @default(autoincrement())
-  fk_id_material_transaction Int?
-  description                String?
-  created_at                 DateTime @default(now())
-  update_at                  DateTime @default(now())
-  total                      Float?
+  id Int @id @default(autoincrement())
 
-  transaction                materialsTransactions?       @relation(fields: [fk_id_material_transaction], references: [id])
+  description String?
+  created_at  DateTime @default(now())
+  update_at   DateTime @default(now())
+  total       Float?
+
   materialsSalesTransactions materialsSalesTransactions[]
+  materialsTransactions      materialsTransactions[]
 
   @@map("salesTransactions")
 }
@@ -237,43 +270,47 @@ model materialsSalesTransactions {
 }
 
 model materialsTransactions {
-  id             Int      @id @default(autoincrement())
-  created_at     DateTime @default(now())
-  fk_id_material Int?
-  quantity       Float
-  total_cost     Float?
-  fk_id_output   Int?
-  fk_id_input    Int?
-  description    String?
-  month          String?
-  year           Int?
+  id                                 Int      @id @default(autoincrement())
+  created_at                         DateTime @default(now())
+  fk_id_material                     Int?
+  quantity                           Float
+  total_cost                         Float?
+  fk_id_output                       Int?
+  fk_id_input                        Int?
+  description                        String?
+  month                              String?
+  year                               Int?
+  fk_user                            Int?
+  alter_at                           DateTime @default(now())
+  fk_id_sales_transaction            Int?
+  fk_id_order_materials_transactions Int?
 
-  fk_user  Int?
-  alter_at DateTime @default(now())
-
-  users             Contractors?        @relation(fields: [fk_user], references: [id])
-  material          Materials?          @relation(fields: [fk_id_material], references: [id])
-  output            Clients?            @relation(fields: [fk_id_output], references: [id], name: "materialsTransactionsOutput")
-  input             Clients?            @relation(fields: [fk_id_input], references: [id], name: "materialsTransactionsInput")
-  salesTransactions salesTransactions[]
+  saleTransaction          salesTransactions?          @relation(fields: [fk_id_sales_transaction], references: [id])
+  orderMaterialInventories OrdersMaterialsInventories? @relation(fields: [fk_id_order_materials_transactions], references: [id])
+  users                    Contractors?                @relation(fields: [fk_user], references: [id])
+  material                 Materials?                  @relation(fields: [fk_id_material], references: [id])
+  output                   Clients?                    @relation(fields: [fk_id_output], references: [id], name: "materialsTransactionsOutput")
+  input                    Clients?                    @relation(fields: [fk_id_input], references: [id], name: "materialsTransactionsInput")
 
   @@map("materialsTransactions")
 }
 
 model inventoriesTransactions {
-  id                       Int      @id @default(autoincrement())
-  created_at               DateTime @default(now())
-  fk_id_inventory_sequence Int?
-  fk_id_client             Int?
-  description              String?
-  cost                     Float?
-  fk_user                  Int?
-  alter_at                 DateTime @default(now())
-  status                   String   @default("active")
+  id                                Int      @id @default(autoincrement())
+  created_at                        DateTime @default(now())
+  fk_id_inventory_sequence          Int?
+  fk_id_client                      Int?
+  description                       String?
+  cost                              Float?
+  fk_user                           Int?
+  alter_at                          DateTime @default(now())
+  status                            String   @default("active")
+  fk_id_order_materials_inventories Int?
 
-  users             Contractors?         @relation(fields: [fk_user], references: [id])
-  inventorySequence InventoriesSequence? @relation(fields: [fk_id_inventory_sequence], references: [id])
-  client            Clients?             @relation(fields: [fk_id_client], references: [id])
+  ordersMaterialsInventories OrdersMaterialsInventories? @relation(fields: [fk_id_order_materials_inventories], references: [id])
+  users                      Contractors?                @relation(fields: [fk_user], references: [id])
+  inventorySequence          InventoriesSequence?        @relation(fields: [fk_id_inventory_sequence], references: [id])
+  client                     Clients?                    @relation(fields: [fk_id_client], references: [id])
 
   @@map("inventoriesTransactions")
 }
@@ -305,14 +342,15 @@ model Contractors {
   ordersSupport     Orders[]
   ordersContractors OrderContractors[]
 
-  paymentsContractors     paymentsContractors[]
-  Invoices                Invoices[]
-  sales                   sales[]
-  inventoriesSequences    InventoriesSequence[]
-  inventoriesTransactions inventoriesTransactions[]
-  materialsTransactions   materialsTransactions[]
-  logInventories          logInventories[]
-  materials               Materials[]
+  paymentsContractors        paymentsContractors[]
+  Invoices                   Invoices[]
+  sales                      sales[]
+  inventoriesSequences       InventoriesSequence[]
+  inventoriesTransactions    inventoriesTransactions[]
+  materialsTransactions      materialsTransactions[]
+  logInventories             logInventories[]
+  materials                  Materials[]
+  ordersMaterialsInventories OrdersMaterialsInventories[]
 
   @@map("contractors")
 }
@@ -341,10 +379,11 @@ model Clients {
   Orders        Orders[]
 
   Jobs                        Jobs[]
-  materialsTransactionsInput  materialsTransactions[]   @relation(name: "materialsTransactionsInput")
-  materialsTransactionsOutput materialsTransactions[]   @relation(name: "materialsTransactionsOutput")
+  materialsTransactionsInput  materialsTransactions[]      @relation(name: "materialsTransactionsInput")
+  materialsTransactionsOutput materialsTransactions[]      @relation(name: "materialsTransactionsOutput")
   inventoriesTransactions     inventoriesTransactions[]
   logInventories              logInventories[]
+  ordersMaterialsInventories  OrdersMaterialsInventories[]
 
   @@map("clients")
 }
