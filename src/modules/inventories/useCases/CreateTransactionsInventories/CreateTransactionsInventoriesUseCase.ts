@@ -39,98 +39,98 @@ export class CreateTransactionsInventoriesUseCase {
 
 
 
-    const equipment_data = await prisma.inventoriesSequence.findMany({
-      where: {
-        ref,
-      },
-      select: {
-        id: true,
-        fk_id_inventory: true,
-        inventories: {
-          select: {
-            id: true,
-            unit_cost: true,
-          }
-        }
-      }
-    })
+    // const equipment_data = await prisma.inventoriesSequence.findMany({
+    //   where: {
+    //     ref,
+    //   },
+    //   select: {
+    //     id: true,
+    //     fk_id_inventory: true,
+    //     inventories: {
+    //       select: {
+    //         id: true,
+    //         unit_cost: true,
+    //       }
+    //     }
+    //   }
+    // })
 
 
 
 
-    if (equipment_data.length > 0) {
-      const id_equipment_sequence = equipment_data[0]?.id
+    // if (equipment_data.length > 0) {
+    //   const id_equipment_sequence = equipment_data[0]?.id
 
-      const checkTransaction: any = await prisma.inventoriesTransactions.findMany({
-        where: {
-          fk_id_inventory_sequence: +id_equipment_sequence,
-        },
-        select: {
-          client: {
-            select: {
-              name: true,
-            }
-          }
-        },
-      })
+    //   const checkTransaction: any = await prisma.inventoriesTransactions.findMany({
+    //     where: {
+    //       fk_id_inventory_sequence: +id_equipment_sequence,
+    //     },
+    //     select: {
+    //       client: {
+    //         select: {
+    //           name: true,
+    //         }
+    //       }
+    //     },
+    //   })
 
 
 
-      if (checkTransaction.length > 0) {
-        throw new AppError("Reference already exists on  " + checkTransaction[0]?.client?.name, 400)
-      }
+    //   if (checkTransaction.length > 0) {
+    //     throw new AppError("Reference already exists on  " + checkTransaction[0]?.client?.name, 400)
+    //   }
 
-      const id_equipment: any = equipment_data[0]?.fk_id_inventory
-      // const data_equipament = await prisma.inventories.findMany({
-      //   where: {
-      //     id: +id_equipment,
-      //   },
-      //   select: {
-      //     id: true,
-      //     unit_cost: true,
-      //   }
-      // })
+    //   const id_equipment: any = equipment_data[0]?.fk_id_inventory
+    // const data_equipament = await prisma.inventories.findMany({
+    //   where: {
+    //     id: +id_equipment,
+    //   },
+    //   select: {
+    //     id: true,
+    //     unit_cost: true,
+    //   }
+    // })
 
-      const valor: any = equipment_data[0]?.inventories?.unit_cost
+    //   const valor: any = equipment_data[0]?.inventories?.unit_cost
 
-      console.log()
+    //   console.log(id_equipment_sequence, id_client, description, data_transaction, valor, fk_user, status);
 
-      await prisma.inventoriesTransactions.create({
-        data: {
-          fk_id_inventory_sequence: +id_equipment_sequence,
-          fk_id_client: +id_client,
-          description: description,
-          created_at: data_transaction,
-          cost: +valor,
-          fk_user: +fk_user,
-          alter_at: new Date(),
-          status: status || 'allocated',
+    //   await prisma.inventoriesTransactions.create({
+    //     data: {
+    //       fk_id_inventory_sequence: +id_equipment_sequence,
+    //       fk_id_client: +id_client,
+    //       description: description,
+    //       created_at: data_transaction,
+    //       cost: +valor,
+    //       fk_user: +fk_user,
+    //       alter_at: new Date(),
+    //       status: status || 'allocated',
 
-        }
-      });
+    //     }
+    //   });
 
-      await prisma.inventoriesSequence.update({
-        where: {
-          id: +id_equipment_sequence,
-        },
-        data: {
-          status
-        }
-      })
+    //   await prisma.inventoriesSequence.update({
+    //     where: {
+    //       id: +id_equipment_sequence,
+    //     },
+    //     data: {
+    //       status
+    //     }
+    //   })
 
-      await prisma.logInventories.create({
-        data: {
-          fk_id_inventory_sequence: +id_equipment_sequence,
-          previous_status: 'unallocated',
-          description,
-          new_status: 'allocated',
-          alter_at: new Date(),
-          created_at: data_transaction,
-          fk_id_location: +id_client,
-          fk_id_user: +fk_user
-        }
-      })
-    }
+    //   await prisma.logInventories.create({
+    //     data: {
+    //       fk_id_inventory_sequence: +id_equipment_sequence,
+    //       previous_status: 'unallocated',
+    //       description,
+    //       new_status: 'allocated',
+    //       alter_at: new Date(),
+    //       created_at: data_transaction,
+    //       fk_id_location: +id_client,
+    //       fk_id_user: +fk_user
+    //     }
+    //   })
+    // }
 
 
 
