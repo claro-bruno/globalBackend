@@ -107,27 +107,27 @@ export class CreateTransactionsInventoriesUseCase {
         }
       });
 
-      await prisma.inventoriesSequence.update({
-        where: {
-          id: +id_equipment_sequence,
-        },
-        data: {
-          status
-        }
-      })
+      // await prisma.inventoriesSequence.update({
+      //   where: {
+      //     id: +id_equipment_sequence,
+      //   },
+      //   data: {
+      //     status
+      //   }
+      // })
 
-      await prisma.logInventories.create({
-        data: {
-          fk_id_inventory_sequence: +id_equipment_sequence,
-          previous_status: 'unallocated',
-          description,
-          new_status: 'allocated',
-          alter_at: new Date(),
-          created_at: data_transaction,
-          fk_id_location: +id_client,
-          fk_id_user: +fk_user
-        }
-      })
+      // await prisma.logInventories.create({
+      //   data: {
+      //     fk_id_inventory_sequence: +id_equipment_sequence,
+      //     previous_status: 'unallocated',
+      //     description,
+      //     new_status: 'allocated',
+      //     alter_at: new Date(),
+      //     created_at: data_transaction,
+      //     fk_id_location: +id_client,
+      //     fk_id_user: +fk_user
+      //   }
+      // })
     }
 
 
