@@ -98,7 +98,7 @@ export class CreateTransactionsInventoriesUseCase {
           fk_id_inventory_sequence: +id_equipment_sequence,
           fk_id_client: +id_client,
           //description: description,
-          created_at: data_transaction,
+          created_at: new Date(),
           cost: +valor,
           //fk_user: +fk_user,
           // alter_at: new Date(),
