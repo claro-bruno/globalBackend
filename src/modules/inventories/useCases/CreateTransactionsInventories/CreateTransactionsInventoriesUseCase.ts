@@ -33,9 +33,10 @@ export class CreateTransactionsInventoriesUseCase {
     const data_transaction = new Date(created_at);
 
     const referencia = fk_id_inventory_sequence.split(" ")[0];
-    const ref = (referencia.trim());
+    const ref = (referencia.toString().trim());
 
     const id_client = Number(fk_id_client.split("-")[0]);
+
 
 
     const equipment_data = await prisma.inventoriesSequence.findMany({
@@ -62,7 +63,7 @@ export class CreateTransactionsInventoriesUseCase {
 
       const checkTransaction: any = await prisma.inventoriesTransactions.findMany({
         where: {
-          fk_id_inventory_sequence: Number(id_equipment_sequence),
+          fk_id_inventory_sequence: +id_equipment_sequence,
         },
         select: {
           client: {
@@ -92,18 +93,18 @@ export class CreateTransactionsInventoriesUseCase {
 
       const valor: any = equipment_data[0]?.inventories?.unit_cost
 
+      console.log()
 
-
-      const res: any = await prisma.inventoriesTransactions.create({
+      await prisma.inventoriesTransactions.create({
         data: {
           fk_id_inventory_sequence: +id_equipment_sequence,
           fk_id_client: +id_client,
-          description,
+          description: description,
           created_at: data_transaction,
           cost: +valor,
           fk_user: +fk_user,
           alter_at: new Date(),
-          status
+          status: status || 'allocated',
 
         }
       });
