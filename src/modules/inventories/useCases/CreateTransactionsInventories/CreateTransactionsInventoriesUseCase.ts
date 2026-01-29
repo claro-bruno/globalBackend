@@ -57,7 +57,6 @@ export class CreateTransactionsInventoriesUseCase {
 
 
 
-
     if (equipment_data.length > 0) {
       const id_equipment_sequence = equipment_data[0]?.id
 
@@ -92,44 +91,43 @@ export class CreateTransactionsInventoriesUseCase {
       })
 
       const valor: any = equipment_data[0]?.inventories?.unit_cost
+      //   //   console.log(id_equipment_sequence, id_client, description, data_transaction, valor, fk_user, status);
 
-      //   console.log(id_equipment_sequence, id_client, description, data_transaction, valor, fk_user, status);
+      await prisma.inventoriesTransactions.create({
+        data: {
+          fk_id_inventory_sequence: +id_equipment_sequence,
+          fk_id_client: +id_client,
+          description: description,
+          created_at: data_transaction,
+          cost: +valor,
+          fk_user: +fk_user,
+          alter_at: new Date(),
+          status,
 
-      //   await prisma.inventoriesTransactions.create({
-      //     data: {
-      //       fk_id_inventory_sequence: +id_equipment_sequence,
-      //       fk_id_client: +id_client,
-      //       description: description,
-      //       created_at: data_transaction,
-      //       cost: +valor,
-      //       fk_user: +fk_user,
-      //       alter_at: new Date(),
-      //       status: status || 'allocated',
+        }
+      });
 
-      //     }
-      //   });
+      await prisma.inventoriesSequence.update({
+        where: {
+          id: +id_equipment_sequence,
+        },
+        data: {
+          status
+        }
+      })
 
-      //   await prisma.inventoriesSequence.update({
-      //     where: {
-      //       id: +id_equipment_sequence,
-      //     },
-      //     data: {
-      //       status
-      //     }
-      //   })
-
-      // await prisma.logInventories.create({
-      //   data: {
-      //     fk_id_inventory_sequence: +id_equipment_sequence,
-      //     previous_status: 'unallocated',
-      //     description,
-      //     new_status: 'allocated',
-      //     alter_at: new Date(),
-      //     created_at: data_transaction,
-      //     fk_id_location: +id_client,
-      //     fk_id_user: +fk_user
-      //   }
-      // })
+      await prisma.logInventories.create({
+        data: {
+          fk_id_inventory_sequence: +id_equipment_sequence,
+          previous_status: 'unallocated',
+          description,
+          new_status: 'allocated',
+          alter_at: new Date(),
+          created_at: data_transaction,
+          fk_id_location: +id_client,
+          fk_id_user: +fk_user
+        }
+      })
     }
 
 
