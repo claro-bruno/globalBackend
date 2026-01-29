@@ -4,6 +4,7 @@ import { prisma } from "../../../../database/prismaClient";
 
 export class GetTransactionsInventoriesUseCase {
     async execute() {
+        // batata
         const result = await prisma.inventoriesTransactions.findMany({
             orderBy: [{ created_at: 'desc' }, { inventorySequence: { fk_id_inventory: 'desc' } }, { inventorySequence: { seq: 'asc' } }],
 
@@ -11,6 +12,7 @@ export class GetTransactionsInventoriesUseCase {
                 id: true,
                 created_at: true,
                 fk_id_inventory_sequence: true,
+
                 fk_id_client: true,
                 description: true,
                 cost: true,
