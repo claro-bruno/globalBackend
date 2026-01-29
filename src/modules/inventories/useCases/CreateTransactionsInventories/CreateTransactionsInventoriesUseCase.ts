@@ -39,21 +39,21 @@ export class CreateTransactionsInventoriesUseCase {
 
 
 
-    // const equipment_data = await prisma.inventoriesSequence.findMany({
-    //   where: {
-    //     ref,
-    //   },
-    //   select: {
-    //     id: true,
-    //     fk_id_inventory: true,
-    //     inventories: {
-    //       select: {
-    //         id: true,
-    //         unit_cost: true,
-    //       }
-    //     }
-    //   }
-    // })
+    const equipment_data = await prisma.inventoriesSequence.findMany({
+      where: {
+        ref,
+      },
+      select: {
+        id: true,
+        fk_id_inventory: true,
+        inventories: {
+          select: {
+            id: true,
+            unit_cost: true,
+          }
+        }
+      }
+    })
 
 
 
