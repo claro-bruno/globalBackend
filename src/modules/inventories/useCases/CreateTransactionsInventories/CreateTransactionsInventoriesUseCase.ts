@@ -95,8 +95,8 @@ export class CreateTransactionsInventoriesUseCase {
 
       await prisma.inventoriesTransactions.create({
         data: {
-          //fk_id_inventory_sequence: +id_equipment_sequence,
-          //fk_id_client: +id_client,
+          fk_id_inventory_sequence: +id_equipment_sequence,
+          fk_id_client: +id_client,
           //description: description,
           created_at: data_transaction,
           //cost: +valor,
