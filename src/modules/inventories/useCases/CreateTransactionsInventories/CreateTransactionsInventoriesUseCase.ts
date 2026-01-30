@@ -91,7 +91,6 @@ export class CreateTransactionsInventoriesUseCase {
       })
 
       const valor: any = equipment_data[0]?.inventories?.unit_cost
-      //   //   console.log(id_equipment_sequence, id_client, description, data_transaction, valor, fk_user, status);
 
       await prisma.inventoriesTransactions.create({
         data: {
