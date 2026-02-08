@@ -25,6 +25,7 @@ export class GetTransactionsMaterialsUseCase {
                 },
                 output: {
                     select: {
+                        id: true,
                         name: true,
 
                     }

@@ -62,7 +62,6 @@ export class UpdateOrderUseCase {
             }, 0)
         }
 
-        console.log(id_client, date_at, date_at_end, start, end, description, notes, support, type, total)
         if (total > 0) {
             const order = await prisma.orders.update({
                 where: {

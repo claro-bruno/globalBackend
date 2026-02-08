@@ -12,6 +12,7 @@ import { costsRoutes } from "./costs.routes";
 import { salesRoutes } from "./sales.routes";
 import { materialsRoutes } from "./materials.routes";
 import { inventoriesRoutes } from "./inventories.routes";
+import { ordersmiRoutes } from "./ordersmi.routes";
 const router = Router();
 
 router.get("/", (request, response) => {
@@ -30,7 +31,7 @@ router.use("/order", ordersRoutes);
 router.use("/sales", salesRoutes);
 router.use("/material", materialsRoutes);
 router.use("/inventory", inventoriesRoutes);
-
+router.use("/ordermi", ordersmiRoutes);
 
 
 export { router };
