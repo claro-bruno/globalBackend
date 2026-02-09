@@ -325,7 +325,7 @@ model inventoriesTransactions {
   fk_user                  Int?
   alter_at                 DateTime @default(now())
   status                   String   @default("active")
-  fk_id_order_inventories  Int?
+  // fk_id_order_inventories  Int?
 
   // ordersMaterialsInventories OrdersMaterialsInventories? @relation(fields: [fk_id_order_inventories], references: [id])
   users             Contractors?         @relation(fields: [fk_user], references: [id])
