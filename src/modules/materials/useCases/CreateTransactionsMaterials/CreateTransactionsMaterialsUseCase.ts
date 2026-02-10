@@ -53,6 +53,7 @@ export class CreateTransactionsMaterialsUseCase {
       }
     });
 
+    //console.log(fk_id_material, quantity, input_id, output_id, description, created_at, fk_user, month, year, id);
 
 
 
