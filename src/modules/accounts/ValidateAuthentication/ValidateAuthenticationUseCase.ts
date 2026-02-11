@@ -10,6 +10,7 @@ export class ValidateAuthenticationUseCase {
                 access: access as any
             }
         });
+        console.log(contractorExist)
         if (!contractorExist) {
             throw new AppError("Permission Required");
         }

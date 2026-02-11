@@ -34,10 +34,13 @@ export class AuthenticateContractorUseCase {
             }
         });
 
+        console.log(contractor_account)
+
         if (!contractor_account) {
             throw new AppError("Username or Password invalid!");
         }
         // Verificar se a senha corresponde ao username
+
         const passwordMatch = await compare(password, contractor_account.password);
 
         if (!passwordMatch) {

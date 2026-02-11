@@ -506,6 +506,7 @@ enum Access {
   OFFICE
   ADMIN
   DEV
+  MEDIUM
 }
 
 enum Role {

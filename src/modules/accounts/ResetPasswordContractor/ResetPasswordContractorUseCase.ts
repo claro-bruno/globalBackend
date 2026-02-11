@@ -40,12 +40,13 @@ export class ResetPasswordContractorUseCase {
       // console.log(firstName.split(",").toString());
       // const password = contractorExist.first_name[0].toLowerCase().split(" ")[0].toString() + ("0" + (birthday.getMonth() + 1)).slice(-2).toString() + ("0" + (birthday.getDate())).slice(-2).toString();
 
+      console.log(password, contractorAccountExist?.id)
       //criptografar a senha
       const hashPassword = await hash(password, 10);
 
       await prisma.accounts.update({
         where: {
-          id: contractorAccountExist.id as any
+          id: contractorAccountExist?.id as any
         },
         data: {
           resetPassword: true,
@@ -56,7 +57,6 @@ export class ResetPasswordContractorUseCase {
       const hostname = "smtp.gmail.com";
       const username = "globaljanitorialcontact@gmail.com";
       const pass = "oekrrjxmemlnipke";
-      console.log(pass)
       const transporter = nodemailer.createTransport({
         host: hostname,
         // port: 993,
