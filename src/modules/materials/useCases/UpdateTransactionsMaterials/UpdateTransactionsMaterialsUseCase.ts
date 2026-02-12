@@ -59,7 +59,7 @@ export class UpdateTransactionsMaterialsUseCase {
         const input_id: number = isNaN(fk_id_input) ? Number(fk_id_input.split("-")[0]) : fk_id_input;
         const output_id = isNaN(fk_id_output) ? Number(fk_id_output.split("-")[0]) : fk_id_output;
 
-
+        const material_id: number = isNaN(fk_id_material) ? Number(fk_id_material.split("-")[0]) : fk_id_material;
 
         const res = await prisma.materials.findMany({
             where: {
@@ -84,6 +84,7 @@ export class UpdateTransactionsMaterialsUseCase {
                 total_cost: +total,
                 fk_id_input: +input_id,
                 fk_id_output: +output_id,
+                fk_id_material: +material_id,
                 description,
                 created_at: data_transaction,
                 month,

@@ -10,6 +10,8 @@ interface IOrderMaterialsInventories {
     fk_id_client: number;
     fk_id_contractor: number;
     total: any;
+    total_supplies?: any;
+    total_inventories?: any;
     status: string;
     inventories?: any;
     supplies: any;
@@ -21,6 +23,7 @@ interface IInfoSupply {
     description?: string;
     qtd: number;
     total: number;
+    cost?: number;
     created_at: string;
 }
 
@@ -29,12 +32,13 @@ interface IInfoInventory {
     inventory_id?: number;
     description?: string;
     qtd: number;
+    cost?: number;
     total: number;
     created_at: string;
 }
 
 export class CreateOrderMaterialsInventoriesUseCase {
-    async execute({ description, created_at, fk_id_client, fk_id_contractor, total, status, inventories, supplies }: IOrderMaterialsInventories): Promise<any> {
+    async execute({ description, created_at, fk_id_client, fk_id_contractor, total, total_supplies, total_inventories, status, inventories, supplies }: IOrderMaterialsInventories): Promise<any> {
 
 
 
@@ -54,11 +58,16 @@ export class CreateOrderMaterialsInventoriesUseCase {
                 id: +fk_id_contractor,
             }
         });
+
+
         if (!contractorExist) {
             throw new AppError('Contractor does not exists', 401)
         }
 
         let totalSupplies = 0;
+
+
+
 
         if (supplies.length > 0) {
             totalSupplies = supplies.reduce((acc: number, currently: IInfoSupply) => {
@@ -66,9 +75,13 @@ export class CreateOrderMaterialsInventoriesUseCase {
             }, 0)
         }
 
-        let totalInventories = 0;
 
-        if (supplies.length > 0) {
+
+        let totalInventories = 0;
+        console.log('inventories', inventories)
+        throw new AppError('AQUIIII', 401)
+
+        if (inventories.length > 0) {
             totalInventories = supplies.reduce((acc: number, currently: IInfoInventory) => {
                 return acc + Number(currently.total)
             }, 0)
