@@ -40,6 +40,7 @@ model OrdersMaterialsInventories {
   totalSupplies    Float?
   totalInventories Float?
   created_at       DateTime @default(now())
+  fk_user_id       Int?
   status           String?
 
   client                Clients?                @relation(fields: [fk_id_client], references: [id])
@@ -71,9 +72,9 @@ model OrderInventoriesItems {
   id                              Int                        @id @default(autoincrement())
   fk_id_order_materials_inventory Int
   fk_id_inventory_sequence        Int
-  qtd                             Int
+  qtd                             Int?
   description                     String?
-  total                           Float
+  total                           Float?
   created_at                      DateTime?                  @default(now())
   inventoriesSequence             InventoriesSequence        @relation(fields: [fk_id_inventory_sequence], references: [id])
   orderInventories                OrdersMaterialsInventories @relation(fields: [fk_id_order_materials_inventory], references: [id])

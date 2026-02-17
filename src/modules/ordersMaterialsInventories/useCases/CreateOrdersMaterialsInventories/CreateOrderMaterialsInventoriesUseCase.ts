@@ -19,7 +19,7 @@ interface IOrderMaterialsInventories {
 
 interface IInfoSupply {
     order_id?: number;
-    supply_id?: number;
+    fk_id_material?: number;
     description?: string;
     qtd: number;
     total: number;
@@ -29,7 +29,7 @@ interface IInfoSupply {
 
 interface IInfoInventory {
     order_id?: number;
-    inventory_id?: number;
+    fk_id_inventory_sequence?: number;
     description?: string;
     qtd: number;
     cost?: number;
@@ -71,23 +71,21 @@ export class CreateOrderMaterialsInventoriesUseCase {
 
         if (supplies.length > 0) {
             totalSupplies = supplies.reduce((acc: number, currently: IInfoSupply) => {
-                return acc + Number(currently.total)
+                return acc + Number(currently?.total)
             }, 0)
         }
+
 
 
 
         let totalInventories = 0;
-        console.log('inventories', inventories)
-        throw new AppError('AQUIIII', 401)
+
 
         if (inventories.length > 0) {
-            totalInventories = supplies.reduce((acc: number, currently: IInfoInventory) => {
+            totalInventories = inventories.reduce((acc: number, currently: IInfoInventory) => {
                 return acc + Number(currently.total)
             }, 0)
         }
-
-
         if (totalSupplies > 0 || totalInventories > 0) {
             const order = await prisma.ordersMaterialsInventories.create({
                 data: {
@@ -105,35 +103,32 @@ export class CreateOrderMaterialsInventoriesUseCase {
             await supplies.reduce(async (memo: any, info: IInfoSupply) => {
                 await memo;
 
-                const id_order: number = Number(order.id)
-                const id_material: number = Number(info?.supply_id)
-                const date_at = new Date(info.created_at)
+                const id_order: number = Number(order?.id)
+                const id_material: number = Number(info?.fk_id_material)
                 await prisma.orderMaterialsItems.create({
                     data: {
-                        fk_id_order_materials: id_order,
-                        fk_id_material: id_material,
+                        fk_id_order_materials: +id_order,
+                        fk_id_material: +id_material,
                         qtd: +info.qtd,
                         description,
-                        created_at: new Date(date_at),
-                        total: +info.total
+                        created_at: new Date(),
+                        total: +info?.total
                     }
                 });
             }, undefined);
 
             await inventories.reduce(async (memo: any, info: IInfoInventory) => {
                 await memo;
-
-                const id_order: number = Number(order.id)
-                const inventory_id: number = Number(info?.inventory_id)
-                const date_at = new Date(info.created_at)
+                const id_order: number = Number(order?.id)
+                const fk_id_inventory_sequence: number = Number(info?.fk_id_inventory_sequence)
                 await prisma.orderInventoriesItems.create({
                     data: {
-                        fk_id_order_materials_inventory: id_order,
-                        fk_id_inventory_sequence: +inventory_id,
-                        qtd: +info.qtd,
+                        fk_id_order_materials_inventory: +id_order,
+                        fk_id_inventory_sequence: +fk_id_inventory_sequence,
+                        qtd: 1,
                         description,
-                        created_at: new Date(date_at),
-                        total: +info.total
+                        created_at: new Date(),
+                        total: info?.total
                     }
                 });
             }, undefined);
