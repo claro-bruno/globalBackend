@@ -11,6 +11,5 @@ export class GetAllOrdersMaterialsInventoriesController {
         return response.json(result);
 
 
-
     }
 }

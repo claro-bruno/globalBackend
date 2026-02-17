@@ -26,6 +26,8 @@ function toMonthName(monthNumber: number) {
 export class GetAllOrdersMaterialsInventoriesUseCase {
   async execute() {
 
+
+
     let result = await prisma.ordersMaterialsInventories.findMany({
 
       orderBy: [
@@ -54,6 +56,8 @@ export class GetAllOrdersMaterialsInventoriesUseCase {
         }
       }
     });
+
     return result;
+
   }
 }

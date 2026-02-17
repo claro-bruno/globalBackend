@@ -35,15 +35,14 @@ model OrdersMaterialsInventories {
   id               Int      @id @default(autoincrement())
   description      String?
   fk_contractor_id Int?
-  fk_id_client     Int?
+  fk_client_id     Int?
   total            Float?
   totalSupplies    Float?
   totalInventories Float?
   created_at       DateTime @default(now())
-  fk_user_id       Int?
   status           String?
 
-  client                Clients?                @relation(fields: [fk_id_client], references: [id])
+  client                Clients?                @relation(fields: [fk_client_id], references: [id])
   contractor            Contractors?            @relation(fields: [fk_contractor_id], references: [id])
   // inventoriesTransactions inventoriesTransactions[]
   orderInventoriesItems OrderInventoriesItems[]
