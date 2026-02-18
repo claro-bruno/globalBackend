@@ -5,47 +5,61 @@ import { prisma } from "../../../../database/prismaClient";
 export class GetInventoriesSequenceUseCase {
     async execute() {
 
-        const result: any = await prisma.$queryRaw`
-          SELECT itr.id as id_transaction, ise.id,inv.unit_cost, ise.ref,ise.id as fk_id_inventory_sequence, itr.fk_id_client,ise.seq,ise.status,ise.created_at,inv.name,ise.fk_id_inventory, inv.unit_cost as cost,itr.status as stat,
+        //         const result: any = await prisma.$queryRaw`
+        //           SELECT itr.id as id_transaction, ise.id,inv.unit_cost, ise.ref,ise.id as fk_id_inventory_sequence, itr.fk_id_client,ise.seq,ise.status,ise.created_at,inv.name,ise.fk_id_inventory, inv.unit_cost as cost,itr.status as stat,
 
-(SELECT name from public."clients" AS c WHERE c.id = itr.fk_id_client) as namelocation,
-(SELECT first_name from public."contractors" AS co WHERE co.id = ise.fk_user) as nameuser
-from public."inventoriesSequence" AS ise
-          LEFT JOIN public."inventoriesTransactions" AS itr ON itr.fk_id_inventory_sequence = ise.id
-		  INNER JOIN public."inventories" AS inv ON ise.fk_id_inventory = inv.id
-		  INNER JOIN public."contractors" AS con ON con.id = ise.fk_user
-          Order BY ise.fk_id_inventory ASC, ise.seq ASC
-        `
+        // (SELECT name from public."clients" AS c WHERE c.id = itr.fk_id_client) as namelocation,
+        // (SELECT first_name from public."contractors" AS co WHERE co.id = ise.fk_user) as nameuser
+        // from public."inventoriesSequence" AS ise
+        //           LEFT JOIN public."inventoriesTransactions" AS itr ON itr.fk_id_inventory_sequence = ise.id
+        // 		  INNER JOIN public."inventories" AS inv ON ise.fk_id_inventory = inv.id
+        // 		  INNER JOIN public."contractors" AS con ON con.id = ise.fk_user
+        //        GROUP BY itr.id, inv.unit_cost,ise.ref,ise.seq,ise.status,ise.created_at,inv.name,ise.fk_id_inventory,itr.fk_id_client,itr.status 
+        //         Order BY ise.fk_id_inventory ASC, ise.seq ASC
+        //
+        //         `
 
-        // const result = await prisma.inventoriesSequence.findMany({
-        //     orderBy: [{ fk_id_inventory: 'asc' }, { seq: 'asc' }],
+        const result = await prisma.inventoriesSequence.findMany({
+            orderBy: [{ fk_id_inventory: 'asc' }, { seq: 'asc' }],
 
-        //     select: {
-        //         id: true,
-        //         seq: true,
-        //         ref: true,
-        //         year: true,
-        //         month: true,
-        //         fk_id_inventory: true,
-        //         created_at: true,
-        //         fk_user: true,
-        //         status: true,
-        //         users: {
-        //             select: {
-        //                 first_name: true
-        //             },
-        //         },
-        //         inventories: {
-        //             select: {
-        //                 name: true,
-        //                 description: true,
-        //                 unit_cost: true,
-        //                 url_image: true,
-        //                 status: true
-        //             }
-        //         },
-        //     }
-        // });
+            select: {
+                id: true,
+                seq: true,
+                ref: true,
+                year: true,
+                month: true,
+                fk_id_inventory: true,
+                created_at: true,
+                fk_user: true,
+                status: true,
+                users: {
+                    select: {
+                        first_name: true
+                    },
+                },
+                inventories: {
+                    select: {
+                        name: true,
+                        description: true,
+                        unit_cost: true,
+                        url_image: true,
+                        status: true
+                    }
+                },
+                inventoriesTransactions: {
+                    select: {
+                        id: true,
+                        fk_id_client: true,
+                        status: true,
+                        client: {
+                            select: {
+                                name: true
+                            }
+                        }
+                    }
+                }
+            }
+        });
 
         // const result = await prisma.inventoriesSequence.findMany({
         //     orderBy: [{ fk_id_inventory: 'asc' }, { seq: 'asc' }],
