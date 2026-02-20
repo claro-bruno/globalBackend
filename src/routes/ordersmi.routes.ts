@@ -15,8 +15,9 @@ const updateOrderMaterialsInventoriesController = new UpdateOrderMaterialsInvent
 const getAllOrdersMaterialsInventoriesController = new GetAllOrdersMaterialsInventoriesController();
 
 ordersmiRoutes.post("/", use(ensureAuthenticate), use(createOrderMaterialsInventoriesController.handle));
+ordersmiRoutes.put("/:id", use(ensureAuthenticate), use(updateOrderMaterialsInventoriesController.handle));
 // ordersmiRoutes.get("/:id", use(ensureAuthenticate), use(getExpensiveController.handle));
 ordersmiRoutes.get("/", use(ensureAuthenticate), use(getAllOrdersMaterialsInventoriesController.handle));
-ordersmiRoutes.put("/:id", use(ensureAuthenticate), use(updateOrderMaterialsInventoriesController.handle));
+
 
 export { ordersmiRoutes };
