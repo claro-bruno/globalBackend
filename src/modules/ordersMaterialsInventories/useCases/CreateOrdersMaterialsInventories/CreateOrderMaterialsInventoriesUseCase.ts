@@ -41,7 +41,8 @@ export class CreateOrderMaterialsInventoriesUseCase {
     async execute({ description, created_at, fk_id_client, fk_id_contractor, total, total_supplies, total_inventories, status, inventories, supplies }: IOrderMaterialsInventories): Promise<any> {
 
 
-        console.log(description, created_at, fk_id_client, fk_id_contractor, total, total_supplies, total_inventories, status, inventories, supplies)
+        // onsole.log(description, fk_id_client, fk_id_contractor, total, status, inventories, supplies)
+
         //validar se o client existe
         const clientExist = await prisma.clients.findFirst({
             where: {
@@ -87,25 +88,30 @@ export class CreateOrderMaterialsInventoriesUseCase {
             }, 0)
         }
 
+
+
         if (totalSupplies > 0 || totalInventories > 0) {
+            // console.log(description, fk_id_client, created_at, totalSupplies, totalInventories, status, inventories, supplies)
+
             const order = await prisma.ordersMaterialsInventories.create({
                 data: {
                     description,
                     fk_client_id: +fk_id_client,
                     fk_contractor_id: +fk_id_contractor,
-                    created_at: new Date(created_at),
+                    created_at: new Date(),
                     total: (+totalInventories + +totalSupplies),
                     totalSupplies: +totalSupplies,
                     totalInventories: +totalInventories,
-                    status
+                    status,
                 }
             });
+
 
             await supplies.reduce(async (memo: any, info: IInfoSupply) => {
                 await memo;
 
                 const id_order: number = Number(order?.id)
-                const id_material: number = Number(info?.fk_id_material)
+                const id_material: any = Number(info?.fk_id_material?.toString().split(' - ')[0].trim())
                 await prisma.orderMaterialsItems.create({
                     data: {
                         fk_id_order_materials: +id_order,
@@ -121,7 +127,7 @@ export class CreateOrderMaterialsInventoriesUseCase {
             await inventories.reduce(async (memo: any, info: IInfoInventory) => {
                 await memo;
                 const id_order: number = Number(order?.id)
-                const fk_id_inventory_sequence: number = Number(info?.fk_id_inventory_sequence)
+                const fk_id_inventory_sequence: any = Number(info?.fk_id_inventory_sequence?.toString().split(' - ')[0].trim())
                 await prisma.orderInventoriesItems.create({
                     data: {
                         fk_id_order_materials_inventory: +id_order,

@@ -119,9 +119,8 @@ export class UpdateOrderMaterialsInventoriesUseCase {
 
             await supplies.reduce(async (memo: any, info: IInfoSupply) => {
                 await memo;
-                console.log(info)
                 // const id_order: number = Number(order?.id)
-                const id_material: number = Number(info?.fk_id_material)
+                const id_material: number = Number(info?.fk_id_material?.toString().split(' - ')[0].trim())
                 const date_at = new Date()
                 await prisma.orderMaterialsItems.create({
                     data: {
@@ -147,7 +146,7 @@ export class UpdateOrderMaterialsInventoriesUseCase {
                 await memo;
 
                 const id_order: number = Number(order?.id)
-                const inventory_id: number = Number(info?.fk_id_inventory_sequence)
+                const inventory_id: number = Number(info?.fk_id_inventory_sequence?.toString().split(' - ')[0].trim())
                 //const date_at = new Date(info.created_at)
                 await prisma.orderInventoriesItems.create({
                     data: {

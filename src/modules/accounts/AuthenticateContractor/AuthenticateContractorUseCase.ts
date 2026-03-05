@@ -34,7 +34,6 @@ export class AuthenticateContractorUseCase {
             }
         });
 
-        console.log(contractor_account)
 
         if (!contractor_account) {
             throw new AppError("Username or Password invalid!");
