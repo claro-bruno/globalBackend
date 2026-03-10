@@ -13,7 +13,7 @@ interface IOrderMaterialsInventories {
     total_supplies?: any;
     total_inventories?: any;
     status: string;
-    inventories?: any;
+    // inventories?: any;
     supplies: any;
 }
 
@@ -27,18 +27,18 @@ interface IInfoSupply {
     created_at: string;
 }
 
-interface IInfoInventory {
-    order_id?: number;
-    fk_id_inventory_sequence?: number;
-    description?: string;
-    qtd: number;
-    cost?: number;
-    total: number;
-    created_at: string;
-}
+// interface IInfoInventory {
+//     order_id?: number;
+//     fk_id_inventory_sequence?: number;
+//     description?: string;
+//     qtd: number;
+//     cost?: number;
+//     total: number;
+//     created_at: string;
+// }
 
 export class CreateOrderMaterialsInventoriesUseCase {
-    async execute({ description, created_at, fk_id_client, fk_id_contractor, total, total_supplies, total_inventories, status, inventories, supplies }: IOrderMaterialsInventories): Promise<any> {
+    async execute({ description, created_at, fk_id_client, fk_id_contractor, total, total_supplies, total_inventories, status, supplies }: IOrderMaterialsInventories): Promise<any> {
 
 
         // onsole.log(description, fk_id_client, fk_id_contractor, total, status, inventories, supplies)
@@ -79,18 +79,18 @@ export class CreateOrderMaterialsInventoriesUseCase {
 
 
 
-        let totalInventories = 0;
+        // let totalInventories = 0;
 
 
-        if (inventories.length > 0) {
-            totalInventories = inventories.reduce((acc: number, currently: IInfoInventory) => {
-                return acc + Number(currently.total)
-            }, 0)
-        }
+        // if (inventories.length > 0) {
+        //     totalInventories = inventories.reduce((acc: number, currently: IInfoInventory) => {
+        //         return acc + Number(currently.total)
+        //     }, 0)
+        // }
 
 
 
-        if (totalSupplies > 0 || totalInventories > 0) {
+        if (totalSupplies > 0) {
             // console.log(description, fk_id_client, created_at, totalSupplies, totalInventories, status, inventories, supplies)
 
             const order = await prisma.ordersMaterialsInventories.create({
@@ -99,9 +99,9 @@ export class CreateOrderMaterialsInventoriesUseCase {
                     fk_client_id: +fk_id_client,
                     fk_contractor_id: +fk_id_contractor,
                     created_at: new Date(),
-                    total: (+totalInventories + +totalSupplies),
-                    totalSupplies: +totalSupplies,
-                    totalInventories: +totalInventories,
+                    total: (+totalSupplies * 1.45),
+                    totalSupplies: +totalSupplies * 1.45,
+                    totalInventories: 0,
                     status,
                 }
             });
@@ -124,21 +124,21 @@ export class CreateOrderMaterialsInventoriesUseCase {
                 });
             }, undefined);
 
-            await inventories.reduce(async (memo: any, info: IInfoInventory) => {
-                await memo;
-                const id_order: number = Number(order?.id)
-                const fk_id_inventory_sequence: any = Number(info?.fk_id_inventory_sequence?.toString().split(' - ')[0].trim())
-                await prisma.orderInventoriesItems.create({
-                    data: {
-                        fk_id_order_materials_inventory: +id_order,
-                        fk_id_inventory_sequence: +fk_id_inventory_sequence,
-                        qtd: 1,
-                        description,
-                        created_at: new Date(),
-                        total: info?.total
-                    }
-                });
-            }, undefined);
+            // await inventories.reduce(async (memo: any, info: IInfoInventory) => {
+            //     await memo;
+            //     const id_order: number = Number(order?.id)
+            //     const fk_id_inventory_sequence: any = Number(info?.fk_id_inventory_sequence?.toString().split(' - ')[0].trim())
+            //     await prisma.orderInventoriesItems.create({
+            //         data: {
+            //             fk_id_order_materials_inventory: +id_order,
+            //             fk_id_inventory_sequence: +fk_id_inventory_sequence,
+            //             qtd: 1,
+            //             description,
+            //             created_at: new Date(),
+            //             total: info?.total
+            //         }
+            //     });
+            // }, undefined);
 
             return order;
         }

@@ -12,7 +12,7 @@ interface IOrderMaterialsInventories {
     fk_id_contractor: number;
     total?: any;
     status: string;
-    inventories?: any;
+    // inventories?: any;
     supplies: any;
 }
 
@@ -25,17 +25,17 @@ interface IInfoSupply {
     created_at: string;
 }
 
-interface IInfoInventory {
-    order_id?: number;
-    fk_id_inventory_sequence?: number;
-    description?: string;
-    qtd: number;
-    total: number;
-    created_at: string;
-}
+// interface IInfoInventory {
+//     order_id?: number;
+//     fk_id_inventory_sequence?: number;
+//     description?: string;
+//     qtd: number;
+//     total: number;
+//     created_at: string;
+// }
 
 export class UpdateOrderMaterialsInventoriesUseCase {
-    async execute({ id, description, created_at, fk_id_client, fk_id_contractor, status, inventories, supplies }: IOrderMaterialsInventories): Promise<any> {
+    async execute({ id, description, created_at, fk_id_client, fk_id_contractor, status, supplies }: IOrderMaterialsInventories): Promise<any> {
         // console.log(inventories)
 
         //validar se o client existe
@@ -80,17 +80,17 @@ export class UpdateOrderMaterialsInventoriesUseCase {
         }
 
 
-        let totalInventories = 0;
+        // let totalInventories = 0;
 
-        if (inventories.length > 0) {
-            totalInventories = inventories.reduce((acc: number, currently: IInfoInventory) => {
-                return acc + Number(currently.total)
-            }, 0)
-        }
+        // if (inventories.length > 0) {
+        //     totalInventories = inventories.reduce((acc: number, currently: IInfoInventory) => {
+        //         return acc + Number(currently.total)
+        //     }, 0)
+        // }
 
 
 
-        if (totalSupplies > 0 || totalInventories > 0) {
+        if (totalSupplies > 0) {
             const order = await prisma.ordersMaterialsInventories.update({
                 where: {
                     id,
@@ -100,9 +100,9 @@ export class UpdateOrderMaterialsInventoriesUseCase {
                     fk_client_id: fk_id_client,
                     fk_contractor_id: fk_id_contractor,
                     created_at: new Date(created_at),
-                    total: (+totalInventories + +totalSupplies),
-                    totalSupplies: +totalSupplies,
-                    totalInventories: +totalInventories,
+                    total: (+totalSupplies * 1.45),
+                    totalSupplies: +totalSupplies * 1.45,
+                    totalInventories: 0,
                     status
                 }
             });
@@ -142,23 +142,23 @@ export class UpdateOrderMaterialsInventoriesUseCase {
                 });
 
 
-            await inventories.reduce(async (memo: any, info: IInfoInventory) => {
-                await memo;
+            // await inventories.reduce(async (memo: any, info: IInfoInventory) => {
+            //     await memo;
 
-                const id_order: number = Number(order?.id)
-                const inventory_id: number = Number(info?.fk_id_inventory_sequence?.toString().split(' - ')[0].trim())
-                //const date_at = new Date(info.created_at)
-                await prisma.orderInventoriesItems.create({
-                    data: {
-                        fk_id_order_materials_inventory: +id,
-                        fk_id_inventory_sequence: +inventory_id,
-                        qtd: 1,
-                        description,
-                        created_at: new Date(),
-                        total: +info.total
-                    }
-                });
-            }, undefined);
+            //     const id_order: number = Number(order?.id)
+            //     const inventory_id: number = Number(info?.fk_id_inventory_sequence?.toString().split(' - ')[0].trim())
+            //     //const date_at = new Date(info.created_at)
+            //     await prisma.orderInventoriesItems.create({
+            //         data: {
+            //             fk_id_order_materials_inventory: +id,
+            //             fk_id_inventory_sequence: +inventory_id,
+            //             qtd: 1,
+            //             description,
+            //             created_at: new Date(),
+            //             total: +info.total
+            //         }
+            //     });
+            // }, undefined);
 
             return order;
         }

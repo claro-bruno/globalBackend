@@ -4,7 +4,7 @@ import { UpdateOrderMaterialsInventoriesUseCase } from "./UpdateOrderMaterialsIn
 
 export class UpdateOrderMaterialsInventoriesController {
     async handle(request: Request, response: Response, next: NextFunction): Promise<Response> {
-        const { id, created_at, description, fk_client_id, fk_contractor_id, total, status, inventories, supplies } = request.body;
+        const { id, created_at, description, fk_client_id, fk_contractor_id, total, status, supplies } = request.body;
         const updateOrderMaterialsInventoriesUseCase = new UpdateOrderMaterialsInventoriesUseCase();
 
         const result = await updateOrderMaterialsInventoriesUseCase.execute({
@@ -15,7 +15,6 @@ export class UpdateOrderMaterialsInventoriesController {
             fk_id_contractor: + fk_contractor_id,
             total,
             status,
-            inventories,
             supplies
         });
 

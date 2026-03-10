@@ -37,17 +37,17 @@ export class GetOrderMaterialsInventoriesUseCase {
       include: {
         contractor: true,
         client: true,
-        orderInventoriesItems: {
-          include: {
-            inventoriesSequence: {
-              include: {
-                inventories: true
-              }
-            },
+        // orderInventoriesItems: {
+        //   include: {
+        //     inventoriesSequence: {
+        //       include: {
+        //         inventories: true
+        //       }
+        //     },
 
 
-          }
-        },
+        //   }
+        // },
         orderMaterialsItems: {
           include: {
             material: true
