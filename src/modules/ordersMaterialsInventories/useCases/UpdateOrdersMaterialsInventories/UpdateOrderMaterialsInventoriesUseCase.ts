@@ -127,7 +127,7 @@ export class UpdateOrderMaterialsInventoriesUseCase {
                         fk_id_order_materials: +id,
                         fk_id_material: id_material,
                         qtd: +info.qtd,
-                        description,
+                        description: info?.description,
                         created_at: new Date(date_at),
                         total: +info.total
                     }

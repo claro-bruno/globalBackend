@@ -41,7 +41,8 @@ export class CreateOrderMaterialsInventoriesUseCase {
     async execute({ description, created_at, fk_id_client, fk_id_contractor, total, total_supplies, total_inventories, status, supplies }: IOrderMaterialsInventories): Promise<any> {
 
 
-        // onsole.log(description, fk_id_client, fk_id_contractor, total, status, inventories, supplies)
+
+
 
         //validar se o client existe
         const clientExist = await prisma.clients.findFirst({
@@ -117,7 +118,7 @@ export class CreateOrderMaterialsInventoriesUseCase {
                         fk_id_order_materials: +id_order,
                         fk_id_material: +id_material,
                         qtd: +info.qtd,
-                        description,
+                        description: info?.description,
                         created_at: new Date(),
                         total: +info?.total
                     }
