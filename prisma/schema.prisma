@@ -41,13 +41,17 @@ model OrdersMaterialsInventories {
   totalInventories Float?
   created_at       DateTime @default(now())
   status           String?
+  fk_user          Int?
 
-  client                Clients?                @relation(fields: [fk_client_id], references: [id])
-  contractor            Contractors?            @relation(fields: [fk_contractor_id], references: [id])
+  client     Clients?     @relation(fields: [fk_client_id], references: [id])
+  contractor Contractors? @relation(fields: [fk_contractor_id], references: [id])
+
+  user                  Contractors?            @relation(fields: [fk_user], references: [id], name: "ordersMaterialsInventoriesUser")
   // inventoriesTransactions inventoriesTransactions[]
   orderInventoriesItems OrderInventoriesItems[]
   orderMaterialsItems   OrderMaterialsItems[]
   // materialsTransactions   materialsTransactions[]
+  materialsTransactions materialsTransactions[]
 
   @@map("ordersMaterialsInventories")
 }
@@ -301,15 +305,17 @@ model materialsTransactions {
   year           Int?
   fk_user        Int?
   alter_at       DateTime @default(now())
+  fk_order_id    Int?
   // fk_id_sales_transaction Int?
   // fk_id_order_materials   Int?
 
   // saleTransaction salesTransactions? @relation(fields: [fk_id_sales_transaction], references: [id])
   // orderMaterialInventories OrdersMaterialsInventories? @relation(fields: [fk_id_order_materials], references: [id])
-  users    Contractors? @relation(fields: [fk_user], references: [id])
-  material Materials?   @relation(fields: [fk_id_material], references: [id])
-  output   Clients?     @relation(fields: [fk_id_output], references: [id], name: "materialsTransactionsOutput")
-  input    Clients?     @relation(fields: [fk_id_input], references: [id], name: "materialsTransactionsInput")
+  users    Contractors?                @relation(fields: [fk_user], references: [id])
+  material Materials?                  @relation(fields: [fk_id_material], references: [id])
+  order    OrdersMaterialsInventories? @relation(fields: [fk_order_id], references: [id])
+  output   Clients?                    @relation(fields: [fk_id_output], references: [id], name: "materialsTransactionsOutput")
+  input    Clients?                    @relation(fields: [fk_id_input], references: [id], name: "materialsTransactionsInput")
   // salesTransactions   salesTransactions? @relation(fields: [salesTransactionsId], references: [id])
   // salesTransactionsId Int?
 
@@ -361,15 +367,16 @@ model Contractors {
   ordersSupport     Orders[]
   ordersContractors OrderContractors[]
 
-  paymentsContractors        paymentsContractors[]
-  Invoices                   Invoices[]
-  sales                      sales[]
-  inventoriesSequences       InventoriesSequence[]
-  inventoriesTransactions    inventoriesTransactions[]
-  materialsTransactions      materialsTransactions[]
-  logInventories             logInventories[]
-  materials                  Materials[]
-  ordersMaterialsInventories OrdersMaterialsInventories[]
+  paymentsContractors         paymentsContractors[]
+  Invoices                    Invoices[]
+  sales                       sales[]
+  inventoriesSequences        InventoriesSequence[]
+  inventoriesTransactions     inventoriesTransactions[]
+  materialsTransactions       materialsTransactions[]
+  logInventories              logInventories[]
+  materials                   Materials[]
+  ordersMaterialsInventories  OrdersMaterialsInventories[]
+  ordersMaterialsInventories2 OrdersMaterialsInventories[] @relation(name: "ordersMaterialsInventoriesUser")
 
   @@map("contractors")
 }

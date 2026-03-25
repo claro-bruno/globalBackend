@@ -14,6 +14,7 @@ interface IOrderMaterialsInventories {
     status: string;
     // inventories?: any;
     supplies: any;
+    fk_user: number;
 }
 
 interface IInfoSupply {
@@ -21,8 +22,27 @@ interface IInfoSupply {
     fk_id_material?: number;
     description?: string;
     qtd: number;
+
     total: number;
+    totalSupplies: number;
     created_at: string;
+}
+
+function getMonthFromString(mon: string, year: number) {
+    const d = Date.parse(mon + "1, " + year);
+    if (!isNaN(d)) {
+        return new Date(d).getMonth() - 1;
+    }
+    return -1;
+}
+
+function toMonthName(monthNumber: number) {
+    const date = new Date();
+    date.setMonth(monthNumber);
+
+    return date.toLocaleString("en-US", {
+        month: "long"
+    });
 }
 
 // interface IInfoInventory {
@@ -35,7 +55,7 @@ interface IInfoSupply {
 // }
 
 export class UpdateOrderMaterialsInventoriesUseCase {
-    async execute({ id, description, created_at, fk_id_client, fk_id_contractor, status, supplies }: IOrderMaterialsInventories): Promise<any> {
+    async execute({ id, description, created_at, fk_id_client, fk_id_contractor, status, supplies, fk_user }: IOrderMaterialsInventories): Promise<any> {
         // console.log(inventories)
 
         //validar se o client existe
@@ -71,13 +91,17 @@ export class UpdateOrderMaterialsInventoriesUseCase {
         }
 
         let totalSupplies = 0;
-
+        let totall = 0;
 
         if (supplies.length > 0) {
+            totall = supplies.reduce((acc: number, currently: IInfoSupply) => {
+                return acc + Number(currently?.total)
+            }, 0)
             totalSupplies = supplies.reduce((acc: number, currently: IInfoSupply) => {
-                return acc + Number(currently.total)
+                return acc + Number(currently?.totalSupplies)
             }, 0)
         }
+
 
 
         // let totalInventories = 0;
@@ -100,20 +124,31 @@ export class UpdateOrderMaterialsInventoriesUseCase {
                     fk_client_id: fk_id_client,
                     fk_contractor_id: fk_id_contractor,
                     created_at: new Date(created_at),
-                    total: (+totalSupplies * 1.45),
-                    totalSupplies: +totalSupplies * 1.45,
+                    total: +totall,
+                    totalSupplies: +totalSupplies,
                     totalInventories: 0,
-                    status
+                    status,
+                    fk_user: +fk_user
                 }
             });
 
+            const data_transaction = new Date(created_at);
 
+            const month = toMonthName(new Date(data_transaction).getUTCMonth());
+            const year = new Date(data_transaction).getUTCFullYear();
 
 
             await prisma.orderMaterialsItems.deleteMany(
                 {
                     where: {
                         fk_id_order_materials: +id
+                    }
+                });
+
+            await prisma.materialsTransactions.deleteMany(
+                {
+                    where: {
+                        fk_order_id: +id
                     }
                 });
 
@@ -129,17 +164,32 @@ export class UpdateOrderMaterialsInventoriesUseCase {
                         qtd: +info.qtd,
                         description: info?.description,
                         created_at: new Date(date_at),
-                        total: +info.total
+                        total: +info.total,
+
                     }
                 });
+
+                await prisma.materialsTransactions.create({
+                    data: {
+                        fk_id_material: +id_material,
+                        quantity: +info.qtd,
+                        total_cost: +info.total,
+                        fk_id_input: 55,
+                        fk_id_output: +fk_id_client,
+                        description,
+                        created_at: data_transaction,
+                        month,
+                        year,
+                        fk_user: +fk_user,
+                        alter_at: new Date()
+                    }
+                });
+
             }, undefined);
 
-            await prisma.orderInventoriesItems.deleteMany(
-                {
-                    where: {
-                        fk_id_order_materials_inventory: +id
-                    }
-                });
+
+
+
 
 
             // await inventories.reduce(async (memo: any, info: IInfoInventory) => {

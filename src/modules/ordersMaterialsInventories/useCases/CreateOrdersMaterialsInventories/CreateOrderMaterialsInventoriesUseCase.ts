@@ -15,6 +15,7 @@ interface IOrderMaterialsInventories {
     status: string;
     // inventories?: any;
     supplies: any;
+    fk_user: number;
 }
 
 interface IInfoSupply {
@@ -23,8 +24,26 @@ interface IInfoSupply {
     description?: string;
     qtd: number;
     total: number;
+    totalSupplies: number;
     cost?: number;
     created_at: string;
+}
+
+function getMonthFromString(mon: string, year: number) {
+    const d = Date.parse(mon + "1, " + year);
+    if (!isNaN(d)) {
+        return new Date(d).getMonth() - 1;
+    }
+    return -1;
+}
+
+function toMonthName(monthNumber: number) {
+    const date = new Date();
+    date.setMonth(monthNumber);
+
+    return date.toLocaleString("en-US", {
+        month: "long"
+    });
 }
 
 // interface IInfoInventory {
@@ -38,7 +57,7 @@ interface IInfoSupply {
 // }
 
 export class CreateOrderMaterialsInventoriesUseCase {
-    async execute({ description, created_at, fk_id_client, fk_id_contractor, total, total_supplies, total_inventories, status, supplies }: IOrderMaterialsInventories): Promise<any> {
+    async execute({ description, created_at, fk_id_client, fk_id_contractor, total, total_supplies, total_inventories, status, supplies, fk_user }: IOrderMaterialsInventories): Promise<any> {
 
 
 
@@ -66,14 +85,17 @@ export class CreateOrderMaterialsInventoriesUseCase {
             throw new AppError('Contractor does not exists', 401)
         }
 
+        let totall = 0;
         let totalSupplies = 0;
 
 
 
-
         if (supplies.length > 0) {
-            totalSupplies = supplies.reduce((acc: number, currently: IInfoSupply) => {
+            totall = supplies.reduce((acc: number, currently: IInfoSupply) => {
                 return acc + Number(currently?.total)
+            }, 0)
+            totalSupplies = supplies.reduce((acc: number, currently: IInfoSupply) => {
+                return acc + Number(currently?.totalSupplies)
             }, 0)
         }
 
@@ -92,6 +114,11 @@ export class CreateOrderMaterialsInventoriesUseCase {
 
 
         if (totalSupplies > 0) {
+            const data_transaction = new Date(created_at);
+
+            const month = toMonthName(new Date(data_transaction).getUTCMonth());
+            const year = new Date(data_transaction).getUTCFullYear();
+
             // console.log(description, fk_id_client, created_at, totalSupplies, totalInventories, status, inventories, supplies)
 
             const order = await prisma.ordersMaterialsInventories.create({
@@ -100,10 +127,11 @@ export class CreateOrderMaterialsInventoriesUseCase {
                     fk_client_id: +fk_id_client,
                     fk_contractor_id: +fk_id_contractor,
                     created_at: new Date(),
-                    total: (+totalSupplies * 1.45),
-                    totalSupplies: +totalSupplies * 1.45,
+                    total: +totall,
+                    totalSupplies: +totalSupplies,
                     totalInventories: 0,
                     status,
+                    fk_user: +fk_user,
                 }
             });
 
@@ -123,6 +151,22 @@ export class CreateOrderMaterialsInventoriesUseCase {
                         total: +info?.total
                     }
                 });
+
+                // await prisma.materialsTransactions.create({
+                //     data: {
+                //         fk_id_material: +id_material,
+                //         quantity: +info.qtd,
+                //         total_cost: +total,
+                //         fk_id_input: 55,
+                //         fk_id_output: +fk_id_client,
+                //         description,
+                //         created_at: data_transaction,
+                //         month,
+                //         year,
+                //         fk_user: +fk_user,
+                //         alter_at: new Date()
+                //     }
+                // });
             }, undefined);
 
             // await inventories.reduce(async (memo: any, info: IInfoInventory) => {
