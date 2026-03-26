@@ -152,21 +152,21 @@ export class CreateOrderMaterialsInventoriesUseCase {
                     }
                 });
 
-                // await prisma.materialsTransactions.create({
-                //     data: {
-                //         fk_id_material: +id_material,
-                //         quantity: +info.qtd,
-                //         total_cost: +total,
-                //         fk_id_input: 55,
-                //         fk_id_output: +fk_id_client,
-                //         description,
-                //         created_at: data_transaction,
-                //         month,
-                //         year,
-                //         fk_user: +fk_user,
-                //         alter_at: new Date()
-                //     }
-                // });
+                await prisma.materialsTransactions.create({
+                    data: {
+                        fk_id_material: +id_material,
+                        quantity: +info.qtd,
+                        total_cost: +info.total,
+                        fk_id_input: 55,
+                        fk_id_output: +fk_id_client,
+                        description,
+                        created_at: data_transaction,
+                        month,
+                        year,
+                        fk_user: +fk_user,
+                        alter_at: new Date()
+                    }
+                });
             }, undefined);
 
             // await inventories.reduce(async (memo: any, info: IInfoInventory) => {
