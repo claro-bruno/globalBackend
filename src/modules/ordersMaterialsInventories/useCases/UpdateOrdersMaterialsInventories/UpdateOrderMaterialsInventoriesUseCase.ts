@@ -132,7 +132,7 @@ export class UpdateOrderMaterialsInventoriesUseCase {
                 }
             });
 
-            const data_transaction = new Date(created_at);
+            const data_transaction = !created_at ? new Date() : new Date(created_at)
 
             const month = toMonthName(new Date(data_transaction).getUTCMonth());
             const year = new Date(data_transaction).getUTCFullYear();

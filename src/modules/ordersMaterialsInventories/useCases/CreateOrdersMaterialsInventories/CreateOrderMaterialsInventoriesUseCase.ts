@@ -114,8 +114,7 @@ export class CreateOrderMaterialsInventoriesUseCase {
 
 
         if (totalSupplies > 0) {
-            const data_transaction = new Date(created_at);
-
+            const data_transaction = !created_at ? new Date() : new Date(created_at)
             const month = toMonthName(new Date(data_transaction).getUTCMonth());
             const year = new Date(data_transaction).getUTCFullYear();
 
@@ -160,7 +159,7 @@ export class CreateOrderMaterialsInventoriesUseCase {
                         fk_id_input: Number(55),
                         fk_id_output: +fk_id_client,
                         description: info?.description,
-                        created_at: new Date(created_at),
+                        created_at: data_transaction,
                         month,
                         year,
                         fk_user: +fk_user,

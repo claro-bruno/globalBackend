@@ -6,7 +6,9 @@ export class CreateOrderMaterialsInventoriesController {
     async handle(request: Request, response: Response, next: NextFunction): Promise<Response> {
         const { created_at, description, fk_client_id, fk_contractor_id, total, status, supplies, fk_user } = request.body;
 
+        console.log(request.body, 'body')
         const createOrderMaterialsInventoriesUseCase = new CreateOrderMaterialsInventoriesUseCase();
+
         const result = await createOrderMaterialsInventoriesUseCase.execute({
             description,
             created_at,
