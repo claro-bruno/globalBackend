@@ -175,7 +175,7 @@ export class UpdateOrderMaterialsInventoriesUseCase {
                         fk_id_material: +id_material,
                         quantity: +info.qtd,
                         total_cost: +info.total,
-                        fk_id_input: 55,
+                        fk_id_input: Number(364),
                         fk_id_output: +fk_id_client,
                         description,
                         created_at: data_transaction,
