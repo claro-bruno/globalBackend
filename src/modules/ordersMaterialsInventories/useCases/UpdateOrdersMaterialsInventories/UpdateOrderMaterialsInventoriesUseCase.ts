@@ -115,6 +115,7 @@ export class UpdateOrderMaterialsInventoriesUseCase {
 
 
         if (totalSupplies > 0) {
+            const data_transaction = !created_at ? new Date() : new Date(created_at)
             const order = await prisma.ordersMaterialsInventories.update({
                 where: {
                     id,
@@ -123,7 +124,7 @@ export class UpdateOrderMaterialsInventoriesUseCase {
                     description,
                     fk_client_id: fk_id_client,
                     fk_contractor_id: fk_id_contractor,
-                    created_at: new Date(created_at),
+                    created_at: data_transaction,
                     total: +totall,
                     totalSupplies: +totalSupplies,
                     totalInventories: 0,
@@ -132,7 +133,7 @@ export class UpdateOrderMaterialsInventoriesUseCase {
                 }
             });
 
-            const data_transaction = !created_at ? new Date() : new Date(created_at)
+
 
             const month = toMonthName(new Date(data_transaction).getUTCMonth());
             const year = new Date(data_transaction).getUTCFullYear();
