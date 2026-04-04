@@ -56,7 +56,6 @@ function toMonthName(monthNumber: number) {
 
 export class UpdateOrderMaterialsInventoriesUseCase {
     async execute({ id, description, created_at, fk_id_client, fk_id_contractor, status, supplies, fk_user }: IOrderMaterialsInventories): Promise<any> {
-        // console.log(inventories)
 
         //validar se o client existe
         const orderExist = await prisma.ordersMaterialsInventories.findFirst({
@@ -116,6 +115,53 @@ export class UpdateOrderMaterialsInventoriesUseCase {
 
         if (totalSupplies > 0) {
             const data_transaction = !created_at ? new Date() : new Date(created_at)
+
+
+            await supplies.reduce(async (memo: any, info: IInfoSupply) => {
+                await memo;
+                const id_material: any = Number(info?.fk_id_material?.toString().split(' - ')[0].trim())
+                // const id_contractor: number = Number(info.contractor_id)
+                // const id_order: number = Number(order.id)
+                // const value_order: number = Number(info.total_hours)
+                // const date_at = new Date(info.date_at)
+
+
+                const transaction: any = await prisma.materialsTransactions.findFirst({
+                    where: {
+                        fk_id_material: +id_material,
+                        fk_order_id: +id
+                    }
+                });
+
+                const total_in = await prisma.materialsTransactions.aggregate({
+                    _sum: {
+                        quantity: true
+                    },
+                    where: {
+                        fk_id_material: id_material,
+                        fk_id_output: Number(364)
+                    }
+                });
+
+                const total_out: any = await prisma.materialsTransactions.aggregate({
+                    _sum: {
+                        quantity: true
+                    },
+                    where: {
+                        fk_id_material: id_material,
+                        fk_id_output: { not: Number(364) }
+                    }
+                });
+
+                const total_in_quantity = total_in?._sum?.quantity || 0;
+                const total_out_quantity = total_out?._sum?.quantity + +info.qtd - +transaction?.quantity || 0;
+
+                if (+total_out_quantity > +total_in_quantity) {
+                    throw new AppError("Quantidade insuficiente para realizar a transação.", 404);
+                }
+            }, undefined);
+
+
             const order = await prisma.ordersMaterialsInventories.update({
                 where: {
                     id,
@@ -182,7 +228,8 @@ export class UpdateOrderMaterialsInventoriesUseCase {
                         month,
                         year,
                         fk_user: +fk_user,
-                        alter_at: new Date()
+                        alter_at: new Date(),
+                        fk_order_id: +id
                     }
                 });
 

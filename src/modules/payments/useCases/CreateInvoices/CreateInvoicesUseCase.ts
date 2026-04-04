@@ -45,7 +45,8 @@ export class CreateInvoicesUseCase {
     const year = new Date(date_invoice).getUTCFullYear();
     const id_client = fk_id_client.split("-");
 
-
+    // console.log(date_invoice, month, year)
+    // throw new AppError('Order does not exists', 400)
     // const invoiceExist = await prisma.invoices.findFirst({
     //   where: {
     //     identification,

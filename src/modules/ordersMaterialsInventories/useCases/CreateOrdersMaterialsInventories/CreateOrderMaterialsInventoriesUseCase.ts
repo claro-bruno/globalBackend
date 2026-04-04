@@ -90,6 +90,7 @@ export class CreateOrderMaterialsInventoriesUseCase {
 
 
 
+
         if (supplies.length > 0) {
             totall = supplies.reduce((acc: number, currently: IInfoSupply) => {
                 return acc + Number(currently?.total)
@@ -117,6 +118,43 @@ export class CreateOrderMaterialsInventoriesUseCase {
             const data_transaction = !created_at ? new Date() : new Date(created_at)
             const month = toMonthName(new Date(data_transaction).getUTCMonth());
             const year = new Date(data_transaction).getUTCFullYear();
+
+            await supplies.reduce(async (memo: any, info: IInfoSupply) => {
+                await memo;
+                const id_material: any = Number(info?.fk_id_material?.toString().split(' - ')[0].trim())
+                // const id_contractor: number = Number(info.contractor_id)
+                // const id_order: number = Number(order.id)
+                // const value_order: number = Number(info.total_hours)
+                // const date_at = new Date(info.date_at)
+
+                const total_in = await prisma.materialsTransactions.aggregate({
+                    _sum: {
+                        quantity: true
+                    },
+                    where: {
+                        fk_id_material: id_material,
+                        fk_id_output: Number(364)
+                    }
+                });
+
+                const total_out: any = await prisma.materialsTransactions.aggregate({
+                    _sum: {
+                        quantity: true
+                    },
+                    where: {
+                        fk_id_material: id_material,
+                        fk_id_output: { not: Number(364) }
+                    }
+                });
+
+                const total_in_quantity = total_in?._sum?.quantity || 0;
+                const total_out_quantity = total_out?._sum?.quantity + +info.qtd || 0;
+
+                if (+total_in_quantity < +total_out_quantity) {
+                    throw new AppError("Quantidade insuficiente para realizar a transação.", 404);
+                }
+            }, undefined);
+
 
             // console.log(description, fk_id_client, created_at, totalSupplies, totalInventories, status, inventories, supplies)
 
@@ -163,7 +201,8 @@ export class CreateOrderMaterialsInventoriesUseCase {
                         month,
                         year,
                         fk_user: +fk_user,
-                        alter_at: new Date()
+                        alter_at: new Date(),
+                        fk_order_id: +id_order
                     }
                 });
             }, undefined);

@@ -46,15 +46,41 @@ export class CreateTransactionsMaterialsUseCase {
     const year = new Date(data_transaction).getUTCFullYear();
 
 
+    const total_in = await prisma.materialsTransactions.aggregate({
+      _sum: {
+        quantity: true
+      },
+      where: {
+        fk_id_material: id,
+        fk_id_output: Number(364)
+      }
+    });
+
+    const total_out: any = await prisma.materialsTransactions.aggregate({
+      _sum: {
+        quantity: true
+      },
+      where: {
+        fk_id_material: id,
+        fk_id_output: { not: Number(364) }
+      }
+    });
+
+    const total_in_quantity = total_in?._sum?.quantity || 0;
+    const total_out_quantity = +total_out?._sum?.quantity + +quantity || +quantity;
+
+
+    if (+total_out_quantity > +total_in_quantity) {
+      throw new AppError("Quantidade insuficiente para realizar a transação.");
+    }
+
+
 
     const res = await prisma.materials.findFirst({
       where: {
         id
       }
     });
-
-    //console.log(fk_id_material, quantity, input_id, output_id, description, created_at, fk_user, month, year, id);
-
 
 
     const cost = res?.unit_cost || 0;

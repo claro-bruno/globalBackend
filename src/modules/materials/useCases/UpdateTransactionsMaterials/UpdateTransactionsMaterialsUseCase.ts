@@ -66,6 +66,41 @@ export class UpdateTransactionsMaterialsUseCase {
                 id: id_material
             }
         });
+        const transaction = await prisma.materialsTransactions.findFirst({
+            where: {
+                id,
+            }
+        });
+        const total_transaction = transaction?.quantity || 0;
+        const total_in = await prisma.materialsTransactions.aggregate({
+            _sum: {
+                quantity: true
+            },
+            where: {
+                fk_id_material: +material_id,
+                fk_id_output: Number(364)
+            }
+        });
+
+        const total_out: any = await prisma.materialsTransactions.aggregate({
+            _sum: {
+                quantity: true
+            },
+            where: {
+                fk_id_material: +material_id,
+                fk_id_output: { not: Number(364) }
+            }
+        });
+
+        const total_in_quantity = total_in?._sum?.quantity || 0;
+        const total_out_quantity = +total_out?._sum?.quantity + +quantity - +total_transaction || +quantity;
+
+
+
+        if (Number(total_out_quantity) > Number(total_in_quantity)) {
+
+            throw new AppError("Quantidade insuficiente para realizar a transação.", 400);
+        }
 
 
 

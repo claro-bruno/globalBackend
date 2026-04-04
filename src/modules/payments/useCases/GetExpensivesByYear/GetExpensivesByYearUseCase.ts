@@ -38,7 +38,8 @@ export class GetExpensivesByMonthUseCase {
             "Travel",
             "Uniform",
             "Utilites",
-            "Extra"
+            "Extra",
+            "Supplies & Materials - COGS"
         ];
 
 
@@ -50,7 +51,7 @@ export class GetExpensivesByMonthUseCase {
 
 
         const result = await prisma.payments.groupBy({
-            by: ['category'],
+            by: ['month', 'category'],
             where: {
                 year
             },
@@ -60,7 +61,7 @@ export class GetExpensivesByMonthUseCase {
         });
 
 
-
+        console.log(result, 'result')
 
 
 
