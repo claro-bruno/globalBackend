@@ -66,7 +66,6 @@ export class CreateTransactionsMaterialsUseCase {
       }
     });
 
-    console.log(output_id)
     const total_in_quantity = total_in?._sum?.quantity || 0;
     const total_out_quantity = +total_out?._sum?.quantity + +quantity || +quantity;
 
