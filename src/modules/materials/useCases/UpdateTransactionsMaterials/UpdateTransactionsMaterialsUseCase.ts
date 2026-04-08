@@ -97,7 +97,7 @@ export class UpdateTransactionsMaterialsUseCase {
 
 
 
-        if (Number(total_out_quantity) > Number(total_in_quantity)) {
+        if (Number(total_out_quantity) > Number(total_in_quantity) && +output_id !== 364) {
 
             throw new AppError("Quantidade insuficiente para realizar a transação.", 404);
         }

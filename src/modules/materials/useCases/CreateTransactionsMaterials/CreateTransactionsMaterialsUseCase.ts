@@ -66,12 +66,16 @@ export class CreateTransactionsMaterialsUseCase {
       }
     });
 
+    console.log(output_id)
     const total_in_quantity = total_in?._sum?.quantity || 0;
     const total_out_quantity = +total_out?._sum?.quantity + +quantity || +quantity;
 
 
-    if (+total_out_quantity > +total_in_quantity) {
-      throw new AppError("Quantidade insuficiente para realizar a transação.");
+
+
+
+    if ((+total_out_quantity > +total_in_quantity) && +output_id !== 364) {
+      throw new AppError("Quantidade insuficiente para realizar a transação.", 400);
     }
 
 

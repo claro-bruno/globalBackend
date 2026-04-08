@@ -97,11 +97,11 @@ export class CreatePaymentsUseCase {
     let valor = value == null ? 0 : value;
     if (valor > 0 && method != "") {
       if (id != '' && id != null) {
-        let res = await prisma.payments.findFirst({
-          where: {
-            pay_id: id
-          }
-        })
+        // let res = await prisma.payments.findFirst({
+        //   where: {
+        //     pay_id: id
+        //   }
+        // })
         let res_pay = await prisma.paymentsContractors.findFirst({
           where: {
             id
@@ -267,54 +267,54 @@ export class CreatePaymentsUseCase {
         // });
       }
 
-      const sumOutput = await prisma.payments.aggregate({
-        _sum: {
-          value: true
-        },
+      // const sumOutput = await prisma.payments.aggregate({
+      //   _sum: {
+      //     value: true
+      //   },
 
-        where: {
-          month,
-          year,
-          NOT: {
-            type: {
-              equals: 'INPUT' as any
-            }
-          }
-        }
-      });
+      //   where: {
+      //     month,
+      //     year,
+      //     NOT: {
+      //       type: {
+      //         equals: 'INPUT' as any
+      //       }
+      //     }
+      //   }
+      // });
 
-      const sumInput = await prisma.payments.aggregate({
-        _sum: {
-          value: true
-        },
+      // const sumInput = await prisma.payments.aggregate({
+      //   _sum: {
+      //     value: true
+      //   },
 
-        where: {
-          month,
-          year,
-          type: 'INPUT' as any
-        }
-      });
+      //   where: {
+      //     month,
+      //     year,
+      //     type: 'INPUT' as any
+      //   }
+      // });
 
-      const balanceExist = await prisma.balances.findFirst({
-        where: {
-          month: month as any,
-          year
-        }
-      });
+      // const balanceExist = await prisma.balances.findFirst({
+      //   where: {
+      //     month: month as any,
+      //     year
+      //   }
+      // });
 
-      const total_input = sumInput._sum.value == null ? 0 : sumInput._sum.value;
-      const total_output = sumOutput._sum.value == null ? 0 : sumOutput._sum.value;
+      // const total_input = sumInput._sum.value == null ? 0 : sumInput._sum.value;
+      // const total_output = sumOutput._sum.value == null ? 0 : sumOutput._sum.value;
 
-      if (balanceExist && balanceLastMonthExist) {
-        await prisma.balances.update({
-          where: {
-            id: balanceExist.id
-          },
-          data: {
-            value: balanceLastMonthExist.value + total_input - total_output
-          }
-        });
-      }
+      // if (balanceExist && balanceLastMonthExist) {
+      //   await prisma.balances.update({
+      //     where: {
+      //       id: balanceExist.id
+      //     },
+      //     data: {
+      //       value: balanceLastMonthExist.value + total_input - total_output
+      //     }
+      //   });
+      // }
 
     }
     // else if(valor> 0){
@@ -338,11 +338,11 @@ export class CreatePaymentsUseCase {
     valor = value_2 == null ? 0 : value_2;
     if (valor > 0 && method_2 != "") {
       if (id_2 != '' && id_2 != null) {
-        let res = await prisma.payments.findFirst({
-          where: {
-            pay_id: id_2
-          }
-        })
+        // let res = await prisma.payments.findFirst({
+        //   where: {
+        //     pay_id: id_2
+        //   }
+        // })
         let res_pay = await prisma.paymentsContractors.findFirst({
           where: {
             id: id_2
@@ -509,62 +509,63 @@ export class CreatePaymentsUseCase {
         //   }
         // });
       }
-      const sumOutput = await prisma.payments.aggregate({
-        _sum: {
-          value: true
-        },
+      // const sumOutput = await prisma.payments.aggregate({
+      //   _sum: {
+      //     value: true
+      //   },
 
-        where: {
-          month,
-          year,
-          NOT: {
-            type: {
-              equals: 'INPUT' as any
-            }
-          }
-        }
-      });
+      //   where: {
+      //     month,
+      //     year,
+      //     NOT: {
+      //       type: {
+      //         equals: 'INPUT' as any
+      //       }
+      //     }
+      //   }
+      // });
 
-      const sumInput = await prisma.payments.aggregate({
-        _sum: {
-          value: true
-        },
+      // const sumInput = await prisma.payments.aggregate({
+      //   _sum: {
+      //     value: true
+      //   },
 
-        where: {
-          month,
-          year,
-          type: 'INPUT' as any
-        }
-      });
+      //   where: {
+      //     month,
+      //     year,
+      //     type: 'INPUT' as any
+      //   }
+      // });
 
-      const balanceExist = await prisma.balances.findFirst({
-        where: {
-          month: month as any,
-          year
-        }
-      });
+      // const balanceExist = await prisma.balances.findFirst({
+      //   where: {
+      //     month: month as any,
+      //     year
+      //   }
+      // });
 
-      const total_input = sumInput._sum.value == null ? 0 : sumInput._sum.value;
-      const total_output = sumOutput._sum.value == null ? 0 : sumOutput._sum.value;
+      //   const total_input = sumInput._sum.value == null ? 0 : sumInput._sum.value;
+      //   const total_output = sumOutput._sum.value == null ? 0 : sumOutput._sum.value;
 
-      if (balanceExist && balanceLastMonthExist) {
-        await prisma.balances.update({
-          where: {
-            id: balanceExist.id
-          },
-          data: {
-            value: balanceLastMonthExist.value + total_input - total_output
-          }
-        });
-      }
+      //   if (balanceExist && balanceLastMonthExist) {
+      //     await prisma.balances.update({
+      //       where: {
+      //         id: balanceExist.id
+      //       },
+      //       data: {
+      //         value: balanceLastMonthExist.value + total_input - total_output
+      //       }
+      //     });
+      //   }
 
+      // }
+      // else if(valor > 0){
+      //     if(!method_2) {
+      //       throw new AppError("Method is required!", 401);
+      //     }
+      // }
+
+      return "Ok";
     }
-    // else if(valor > 0){
-    //     if(!method_2) {
-    //       throw new AppError("Method is required!", 401);
-    //     }
-    // }
-
-    return "Ok";
   }
 }
