@@ -44,7 +44,7 @@ export class UpdateTransactionsMaterialsUseCase {
 
 
         if (!transactionMaterialExist) {
-            throw new AppError('Transaction does not exists', 400)
+            throw new AppError('Transaction does not exists', 404)
         }
 
 
@@ -99,7 +99,7 @@ export class UpdateTransactionsMaterialsUseCase {
 
         if (Number(total_out_quantity) > Number(total_in_quantity)) {
 
-            throw new AppError("Quantidade insuficiente para realizar a transação.", 400);
+            throw new AppError("Quantidade insuficiente para realizar a transação.", 404);
         }
 
 
