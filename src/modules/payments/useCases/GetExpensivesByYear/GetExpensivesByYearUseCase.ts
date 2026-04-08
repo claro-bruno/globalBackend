@@ -221,6 +221,11 @@ export class GetExpensivesByMonthUseCase {
             total: 0,
             month_number: 0
         });
+        total_months_.push({
+            month: '',
+            total: 0,
+            month_number: 0
+        });
         MONTHS.forEach((info: any) => {
 
 
@@ -239,6 +244,7 @@ export class GetExpensivesByMonthUseCase {
         const result: any = []
         arrTypes.forEach((type: any) => {
             result.push({
+                total: totals_category.find((item: any) => item.category === type)?.total || 0,
                 category: type,
                 january: totals_1.find((item: any) => item.category === type)?.total || 0,
                 february: totals_2.find((item: any) => item.category === type)?.total || 0,
