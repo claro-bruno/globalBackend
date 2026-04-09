@@ -340,6 +340,7 @@ export class GetClientsProfitUseCase {
                 if (invoice_info) {
                     info.taxa = invoice_info._sum.taxa != null ? invoice_info._sum.taxa : 0;
                     info.amount = invoice_info._sum.value != null ? invoice_info._sum.value + info.taxa : 0;
+                    info.amount_perc = invoice_info._sum.value != null ? +info.amount / +total_invoices * 100 : 0;
                     info.total_labour = labour_info ? labour_info?.total : 0;
                     info.total_labour = labour_info ? labour_info?.total : 0;
                     info.total_labour_1 = labour_info_1 ? labour_info_1?.total : 0;
@@ -349,12 +350,12 @@ export class GetClientsProfitUseCase {
                     // info.expensive_value = info.ganho != null && total_despesas > 0 ? info.ganho * total_despesas : 0;
                     // info.expensive_value = total_despesas > 0 ? total_despesas / (total_invoices * info.amount) : 0;
                     // info.expensive_value = total_despesas > 0 ? total_despesas / total_invoices * info.amount : 0;
-                    info.ganho = invoice_info._sum.value != null && total_invoices > 0 ? info.total_labour / info.amount : 0;
+                    info.ganho = invoice_info._sum.value != null && total_invoices > 0 ? info.total_labour / total_labour : 0;
                     // info.ganho = invoice_info._sum.value != null && total_invoices > 0 ? total_despesas / invoice_info._sum.value : 0;
 
                     // info.profit = Number(Number(info.amount) - Number(info.expensive_value) - Number(info.total_labour));
                     info.profit = Number(Number(info.amount) - Number(info.total_labour));
-                    info.profit_perc = invoice_info._sum.value != null && total_invoices > 0 ? info.profit / info.amount : 0;
+                    info.profit_perc = invoice_info._sum.value != null && total_invoices > 0 ? info.profit / total_profit_without_expenses : 0;
                     // total_amount += +info.amount
                     // total_ganho += +info.ganho
                     // total_expensive += +info.expensive_value
