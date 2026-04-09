@@ -8,10 +8,12 @@ export class DeleteExpensivesController {
 
         const deleteExpensivesUseCase = new DeleteExpensivesUseCase();
 
-        // if(date_expensive && payed_for && value && status && method && type && id) {
-        // const result = await deleteExpensivesUseCase.execute({ id: +id });
-        // return response.json(result);
-        // }
+
+
+
+        const result = await deleteExpensivesUseCase.execute({ id: +id });
+        return response.json(result);
+
 
 
 
