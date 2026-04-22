@@ -236,7 +236,9 @@ export class GetClientsProfitUseCase {
                 WHERE q.month = ${month} AND q.year = ${year} AND q.status = 'REVISED' AND (j.fk_id_client = 55 OR j.fk_id_client = 80 OR j.fk_id_client = 364)
                 GROUP BY j.fk_id_client
         `
-
+        const total_55 = total_support_grouped_total.find((item: any) => item.fk_id_client === 55)?.total || 0;
+        const total_80 = total_support_grouped_total.find((item: any) => item.fk_id_client === 80)?.total || 0;
+        const total_364 = total_support_grouped_total.find((item: any) => item.fk_id_client === 364)?.total || 0;
 
 
 
@@ -249,6 +251,10 @@ export class GetClientsProfitUseCase {
                 GROUP BY j.fk_id_client
         `
 
+        const total_55_1 = total_support_grouped_1.find((item: any) => item.fk_id_client === 55)?.total || 0;
+        const total_80_1 = total_support_grouped_1.find((item: any) => item.fk_id_client === 80)?.total || 0;
+        const total_364_1 = total_support_grouped_1.find((item: any) => item.fk_id_client === 364)?.total || 0;
+
 
         const total_support_grouped_2: any = await prisma.$queryRaw`
             SELECT j.fk_id_client,SUM(a.value*q.value_hour) AS total FROM jobs AS j
@@ -258,20 +264,21 @@ export class GetClientsProfitUseCase {
                 WHERE q.month = ${month} AND q.year = ${year} AND q.order = 2 AND q.status = 'REVISED' AND (j.fk_id_client = 55 OR j.fk_id_client = 80 OR j.fk_id_client = 364)
                 GROUP BY j.fk_id_client
         `
+        const total_55_2 = total_support_grouped_2.find((item: any) => item.fk_id_client === 55)?.total || 0;
+        const total_80_2 = total_support_grouped_2.find((item: any) => item.fk_id_client === 80)?.total || 0;
+        const total_364_2 = total_support_grouped_2.find((item: any) => item.fk_id_client === 364)?.total || 0;
 
 
 
-
-        let total_support = total_support_grouped_total.length > 0 ? +total_support_grouped_total[0]?.total + +total_support_grouped_total[1]?.total + +total_support_grouped_total[2]?.total : 0;
-        let total_support_1 = total_support_grouped_1.length > 0 ? +total_support_grouped_1[0]?.total + +total_support_grouped_1[1]?.total + +total_support_grouped_1[2]?.total : 0;
-
-        const total_support_global_1 = total_support_grouped_1.length > 0 ? +total_support_grouped_1[0]?.total : 0;
-        const total_support_global_2 = total_support_grouped_2.length > 0 ? +total_support_grouped_2[0]?.total : 0;
-        const total_support_comissoes_1 = total_support_grouped_1.length > 0 ? +total_support_grouped_1[1]?.total : 0;
-        const total_support_comissoes_2 = total_support_grouped_2.length > 0 ? +total_support_grouped_2[1]?.total : 0;
-        const total_support_office_1 = total_support_grouped_1.length > 0 ? +total_support_grouped_1[2]?.total : 0;
-        const total_support_office_2 = total_support_grouped_2.length > 0 ? +total_support_grouped_2[2]?.total : 0;
-        let total_support_2 = total_support_grouped_2.length > 0 ? +total_support_grouped_2[0]?.total + +total_support_grouped_2[1]?.total + +total_support_grouped_2[2]?.total : 0;
+        let total_support = total_support_grouped_total.length > 0 ? +total_55 + +total_80 + +total_364 : 0;
+        let total_support_1 = total_support_grouped_1.length > 0 ? +total_55_1 + +total_80_1 + +total_364_1 : 0;
+        let total_support_2 = total_support_grouped_2.length > 0 ? +total_55_2 + +total_80_2 + +total_364_2 : 0;
+        const total_support_global_1 = total_support_grouped_1.length > 0 ? +total_55_1 : 0;
+        const total_support_global_2 = total_support_grouped_2.length > 0 ? +total_55_2 : 0;
+        const total_support_comissoes_1 = total_support_grouped_1.length > 0 ? +total_80_1 : 0;
+        const total_support_comissoes_2 = total_support_grouped_2.length > 0 ? +total_80_2 : 0;
+        const total_support_office_1 = total_support_grouped_1.length > 0 ? +total_364_1 : 0;
+        const total_support_office_2 = total_support_grouped_2.length > 0 ? +total_364_2 : 0;
 
         let total_labour = total_labour_total ? total_labour_total[0]?.total : 0;
         let total_labour_1 = total_labour_1_grouped ? total_labour_1_grouped[0]?.total : 0;
