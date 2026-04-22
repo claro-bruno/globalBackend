@@ -98,6 +98,7 @@ export class GetJobsUseCase {
                 id: true
               }
             },
+
             contractor: {
               select: {
                 first_name: true,
@@ -117,6 +118,7 @@ export class GetJobsUseCase {
         value_hour: true,
         status: true,
         others: true,
+        comments: true,
         appointment: true,
       }
     });
