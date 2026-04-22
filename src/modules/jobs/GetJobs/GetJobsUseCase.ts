@@ -238,6 +238,7 @@ export class GetJobsUseCase {
         // job_info.client_name = name;
         // job_info.client_id = client_id;
         job_info.status = status;
+        job_info.checked = false;
 
         job.forEach((quarter: any) => {
           quarter.appointment.forEach((ap: any) => {

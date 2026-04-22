@@ -11,6 +11,7 @@ interface IServiceComplete {
   status: string;
   status_payment: string;
   workedDaysInfos: any[];
+  comments?: string;
 }
 
 interface IAppointment {
@@ -46,7 +47,8 @@ export class CompleteJobsUseCase {
     status,
     status_payment,
     others,
-    workedDaysInfos
+    workedDaysInfos,
+    comments
   }: IServiceComplete) {
     const arr = [] as any;
     let dia: string = '';
@@ -104,7 +106,9 @@ export class CompleteJobsUseCase {
         data: {
           status: status_payment as any,
           value_hour: +valueHour,
-          others: +others
+          others: +others,
+          comments: comments || null
+
         }
       });
     }

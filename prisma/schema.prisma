@@ -473,6 +473,7 @@ model Quarters {
   order       Int
   status      Status         @default(PENDING)
   others      Float          @default(0)
+  comments    String?
   appointment Appointments[]
 
   @@map("quarters")

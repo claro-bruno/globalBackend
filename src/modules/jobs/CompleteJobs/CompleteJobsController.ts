@@ -12,7 +12,8 @@ export class CompleteJobsController {
       quarter,
       status,
       status_payment,
-      others
+      others,
+      comments
     } = request.body;
 
 
@@ -26,7 +27,8 @@ export class CompleteJobsController {
       status,
       status_payment,
       workedDaysInfos,
-      others: +others
+      others: +others,
+      comments
     });
 
     return response.json(result);
