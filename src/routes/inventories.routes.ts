@@ -13,6 +13,7 @@ import { GetTransactionsInventoriesController } from "../modules/inventories/use
 import { CreateInventoriesSequenceController } from "../modules/inventories/useCases/CreateInventoriesSequence/CreateInventoriesSequenceController";
 import { UpdateInventoriesSequenceController } from "../modules/inventories/useCases/UpdateInventoriesSequence/UpdateInventoriesSequenceController";
 import { GetInventoriesSequenceController } from "../modules/inventories/useCases/GetInventoriesSequence/GetInventoriesSequenceController";
+import { DeleteInventoriesSequenceController } from "../modules/inventories/useCases/DeleteInventoriesSequence/DeleteInventoriesSequenceController";
 
 import { GetInventoriesLogController } from "../modules/inventories/useCases/GetInventoriesLog/GetInventoriesLogController";
 
@@ -29,6 +30,7 @@ const getInventoriesLogController = new GetInventoriesLogController();
 
 const createTransactionsInventoriesController = new CreateTransactionsInventoriesController();
 const updateTransactionsInventoriesController = new UpdateTransactionsInventoriesController();
+const deleteInventoriesSequenceController = new DeleteInventoriesSequenceController();
 const getTransactionsInventoriesController = new GetTransactionsInventoriesController();
 
 const createInventoriesSequenceController = new CreateInventoriesSequenceController();
@@ -52,6 +54,7 @@ inventoriesRoutes.get("/sequences", use(ensureAuthenticate), use(getInventoriesS
 inventoriesRoutes.get("/logs", use(ensureAuthenticate), use(getInventoriesLogController.handle));
 inventoriesRoutes.get("/", use(ensureAuthenticate), use(getInventoriesController.handle));
 // salesRoutes.get("/all", use(ensureAuthenticate), use(getAllSalesController.handle));
+inventoriesRoutes.delete("/sequences/:id", use(ensureAuthenticate), use(deleteInventoriesSequenceController.handle));
 inventoriesRoutes.put("/transactions/:id", use(ensureAuthenticate), use(updateTransactionsInventoriesController.handle));
 inventoriesRoutes.put("/sequences/:id", use(ensureAuthenticate), use(updateInventoriesSequenceController.handle));
 inventoriesRoutes.put("/:id", use(ensureAuthenticate), use(updateInventoriesController.handle));
