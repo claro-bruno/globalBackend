@@ -7,6 +7,7 @@ export class UpdateOrderMaterialsInventoriesController {
         const { id, created_at, description, fk_client_id, fk_contractor_id, total, status, supplies, fk_user } = request.body;
         const updateOrderMaterialsInventoriesUseCase = new UpdateOrderMaterialsInventoriesUseCase();
 
+        //console.log(id, description, created_at, fk_client_id, fk_contractor_id, status, supplies, fk_user, total)
         const result = await updateOrderMaterialsInventoriesUseCase.execute({
             id,
             description,
@@ -19,7 +20,7 @@ export class UpdateOrderMaterialsInventoriesController {
             fk_user: +fk_user
         });
 
-        //return response.status(200).json({ message: "Ordem de materiais e inventários atualizada com sucesso!" });
-        return response.json(result);
+        return response.status(200).json({ message: "Ordem de materiais e inventários atualizada com sucesso!" });
+        //return response.json(result);
     }
 }

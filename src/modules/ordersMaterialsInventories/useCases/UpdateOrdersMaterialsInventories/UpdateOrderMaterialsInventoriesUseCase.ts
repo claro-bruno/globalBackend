@@ -57,6 +57,8 @@ function toMonthName(monthNumber: number) {
 export class UpdateOrderMaterialsInventoriesUseCase {
     async execute({ id, description, created_at, fk_id_client, fk_id_contractor, status, supplies, fk_user }: IOrderMaterialsInventories): Promise<any> {
 
+
+
         //validar se o client existe
         const orderExist = await prisma.ordersMaterialsInventories.findFirst({
             where: {
@@ -101,6 +103,7 @@ export class UpdateOrderMaterialsInventoriesUseCase {
             }, 0)
         }
 
+        totalSupplies = totall * 1.45 || 0;
 
 
         // let totalInventories = 0;
