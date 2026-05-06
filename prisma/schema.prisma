@@ -42,7 +42,7 @@ model OrdersMaterialsInventories {
   created_at       DateTime @default(now())
   status           String?
   fk_user          Int?
-  // fk_invoice_id    String?
+  fk_invoice       String?
 
   client     Clients?     @relation(fields: [fk_client_id], references: [id])
   contractor Contractors? @relation(fields: [fk_contractor_id], references: [id])
