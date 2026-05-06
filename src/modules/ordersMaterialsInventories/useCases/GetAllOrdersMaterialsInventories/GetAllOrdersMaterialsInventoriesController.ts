@@ -9,7 +9,6 @@ export class GetAllOrdersMaterialsInventoriesController {
 
 
 
-        console.log(month, year, 'sdasdsa')
         let result: any = [];
         if (month && year) {
             result = await getAllOrdersMaterialsInventoriesUseCase.execute({

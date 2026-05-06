@@ -20,7 +20,7 @@ export class UpdateOrderMaterialsInventoriesController {
             fk_user: +fk_user
         });
 
-        return response.status(200).json({ message: "Ordem de materiais e inventários atualizada com sucesso!" });
-        //return response.json(result);
+        //return response.status(200).json({ message: "Ordem de materiais e inventários atualizada com sucesso!" });
+        return response.json(result);
     }
 }
