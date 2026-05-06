@@ -24,10 +24,10 @@ function toMonthName(monthNumber: number) {
 }
 
 export class GetAllOrdersMaterialsInventoriesUseCase {
-  async execute() {
+  async execute({ year, month }: IService) {
 
 
-
+    let ret: any = []
     let result = await prisma.ordersMaterialsInventories.findMany({
 
       orderBy: [
@@ -57,7 +57,19 @@ export class GetAllOrdersMaterialsInventoriesUseCase {
       }
     });
 
-    return result;
+    result.forEach((i: any) => {
+      const dt = new Date(i?.created_at)
+
+      const fullYear = dt.getUTCFullYear();
+      const fullMonth = dt.getUTCMonth() + 1;
+      const fullMonthLiteral = toMonthName(fullMonth - 1);
+      if (fullMonthLiteral === month && fullYear === year) {
+        ret.push(i)
+      }
+
+    })
+
+    return ret;
 
   }
 }
