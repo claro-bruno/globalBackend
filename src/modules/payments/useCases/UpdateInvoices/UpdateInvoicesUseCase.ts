@@ -11,7 +11,7 @@ interface IUpdateInvoice {
     id: number;
     taxa: number;
     total_pago?: number;
-    date_payment?: Date;
+    date_payment?: string;
     method?: string;
     ref?: string;
     fk_id_order?: number;
@@ -106,9 +106,7 @@ export class UpdateInvoicesUseCase {
         const data_invoice = new Date(date_invoice);
         const quarter = data_invoice.getDate() > 15 ? 2 : 1;
         const id_client = isNaN(fk_id_client) ? fk_id_client.split("-")[0] : fk_id_client;
-        const data_pagamento = date_payment ? new Date(date_payment) : undefined;
-
-        // throw new AppError('Invoice does not exists', 400)
+        //const data_pagamento = date_payment && date_payment.length > 0 ? new Date(date_payment) : "";
 
         await prisma.invoices.update({
             where: {
@@ -125,7 +123,7 @@ export class UpdateInvoicesUseCase {
                 taxa: taxa ? +taxa : 0,
                 total: +value + +taxa,
                 total_pago: typeof total_pago !== "undefined" ? +total_pago : undefined,
-                date_payment: typeof date_payment !== "undefined" ? data_pagamento : undefined,
+                date_payment: date_payment!.length > 0 ? new Date(date_payment as any) : null,
                 date_log: data_log,
                 method,
                 ref,
