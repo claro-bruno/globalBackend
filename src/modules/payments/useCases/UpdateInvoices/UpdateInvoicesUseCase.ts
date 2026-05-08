@@ -39,7 +39,7 @@ function toMonthName(monthNumber: number) {
 export class UpdateInvoicesUseCase {
     async execute({ id, date_invoice, value, identification, description, fk_id_client, taxa, total_pago, date_payment, method, ref, fk_id_order, fk_id_contractor }: IUpdateInvoice) {
 
-
+        console.log(id, date_invoice, value, identification, description, fk_id_client, taxa, total_pago, date_payment, method, ref, fk_id_order, fk_id_contractor)
 
         // const allInvoices = await prisma.invoices.findMany({
         //     orderBy: {
@@ -108,6 +108,7 @@ export class UpdateInvoicesUseCase {
         const id_client = isNaN(fk_id_client) ? fk_id_client.split("-")[0] : fk_id_client;
         //const data_pagamento = date_payment && date_payment.length > 0 ? new Date(date_payment) : "";
 
+        console.log(date_payment)
         await prisma.invoices.update({
             where: {
                 id,
@@ -123,7 +124,7 @@ export class UpdateInvoicesUseCase {
                 taxa: taxa ? +taxa : 0,
                 total: +value + +taxa,
                 total_pago: typeof total_pago !== "undefined" ? +total_pago : undefined,
-                date_payment: date_payment!.length > 0 ? new Date(date_payment as any) : null,
+                date_payment: typeof total_pago !== "undefined" ? date_payment && date_payment.length > 0 ? new Date(date_payment as any) : null : undefined,
                 date_log: data_log,
                 method,
                 ref,
