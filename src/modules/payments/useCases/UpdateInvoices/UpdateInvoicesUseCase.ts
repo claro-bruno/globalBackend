@@ -107,7 +107,7 @@ export class UpdateInvoicesUseCase {
         const quarter = data_invoice.getDate() > 15 ? 2 : 1;
         const id_client = isNaN(fk_id_client) ? fk_id_client.split("-")[0] : fk_id_client;
         //const data_pagamento = date_payment && date_payment.length > 0 ? new Date(date_payment) : "";
-
+        console.log('data_invoice')
         console.log(date_payment)
         await prisma.invoices.update({
             where: {
