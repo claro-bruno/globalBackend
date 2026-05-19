@@ -516,6 +516,7 @@ enum Access {
   ADMIN
   DEV
   MEDIUM
+  LEADS
 }
 
 enum Role {
