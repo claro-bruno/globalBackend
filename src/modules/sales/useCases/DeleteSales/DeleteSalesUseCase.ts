@@ -17,8 +17,8 @@ export class DeleteSalesUseCase {
 
 
 
-        // console.log(id)
-        // throw new AppError('Inventory does not exists', 400)
+
+
 
 
         const salesExist = await prisma.sales.findFirst({
