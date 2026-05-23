@@ -71,17 +71,17 @@ export class GetExpensivesByMonthUseCase {
 
         const total_extra: any = await prisma.$queryRaw`
            SELECT SUM(p.value) AS total FROM payments AS p
-            WHERE p.month = ${month} AND p.year = ${year} AND p.type = 'Extra'
+            WHERE p.month = ${month} AND p.year = ${year} AND p.category = 'Extra'
             ;`;
 
         const total_supplies_materials: any = await prisma.$queryRaw`
            SELECT SUM(p.value) AS total FROM payments AS p
-            WHERE p.month = ${month} AND p.year = ${year} AND p.type = 'Supplies & Materials - COGS'
+            WHERE p.month = ${month} AND p.year = ${year} AND p.category = 'Supplies & Materials - COGS'
             ;`;
 
         const total_quickbooks: any = await prisma.$queryRaw`
            SELECT SUM(p.value) AS total FROM payments AS p
-            WHERE p.month = ${month} AND p.year = ${year} AND p.type = 'Quick Books Payment Fees'
+            WHERE p.month = ${month} AND p.year = ${year} AND p.category = 'Quick Books Payment Fees'
             ;`;
 
 
@@ -121,7 +121,6 @@ export class GetExpensivesByMonthUseCase {
         //     resultt[`${ type }`] = typeof payments_type === 'undefined' || payments_type === null ? 0 : payments_type._sum.value as any;
 
         // });
-
 
 
 
