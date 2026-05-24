@@ -226,10 +226,7 @@ export class GetExpensivesByMonthUseCase {
             WHERE year = ${year} AND p.category = 'Supplies & Materials - COGS'
             ;`;
 
-        const total_quickbooks: any = await prisma.$queryRaw`
-           SELECT SUM(p.value) AS total FROM payments AS p
-            WHERE year = ${year} AND p.category = 'Quick Books Payment Fees'
-            ;`;
+
 
         const total_months_: any = []
         total_months_.push({
@@ -280,8 +277,8 @@ export class GetExpensivesByMonthUseCase {
         return {
             total: total,
             total_extra: total_extra,
-            total_supplies_materials: total_supplies_materials[0].total || 0,
-            total_quickbooks: total_quickbooks[0].total || 0,
+            total_supplies_materials: total_supplies_materials,
+
             totals_month: total_months_,
             totals_category: totals_category,
             result

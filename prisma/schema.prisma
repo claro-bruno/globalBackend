@@ -365,6 +365,7 @@ model Contractors {
   account                    Accounts?    @relation(fields: [fk_id_account], references: [id])
 
   jobs              Jobs[]
+  jobsBase          JobsBase[]
   ordersSupport     Orders[]
   ordersContractors OrderContractors[]
 
@@ -411,6 +412,7 @@ model Clients {
   inventoriesTransactions     inventoriesTransactions[]
   logInventories              logInventories[]
   ordersMaterialsInventories  OrdersMaterialsInventories[]
+  jobsBases                   JobsBase[]
 
   @@map("clients")
 }
@@ -462,6 +464,25 @@ model Jobs {
   Quarters         Quarters[]
 
   @@map("jobs")
+}
+
+model JobsBase {
+  id               Int         @id @default(autoincrement())
+  fk_id_contractor Int
+  contractor       Contractors @relation(fields: [fk_id_contractor], references: [id])
+  fk_id_client     Int
+  client           Clients     @relation(fields: [fk_id_client], references: [id])
+  created_at       DateTime    @default(now())
+  value_sunday     Float?
+  value_monday     Float?
+  value_tuesday    Float?
+  value_wednesday  Float?
+  value_thursday   Float?
+  value_friday     Float?
+  value_saturday   Float?
+  status           Status      @default(ACTIVE)
+
+  @@map("jobsBase")
 }
 
 model Quarters {
