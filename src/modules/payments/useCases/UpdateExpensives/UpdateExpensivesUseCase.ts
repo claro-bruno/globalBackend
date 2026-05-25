@@ -29,24 +29,24 @@ export class UpdateExpensivesUseCase {
 
 
 
-        if (value > 0) {
 
 
-            await prisma.payments.update({
-                where: {
-                    id: +id,
-                },
-                data: {
-                    value,
-                    month,
-                    year: +year,
-                    category,
-                    description
-                }
-            });
+
+        await prisma.payments.update({
+            where: {
+                id: +id,
+            },
+            data: {
+                value,
+                month,
+                year: +year,
+                category,
+                description
+            }
+        });
 
 
-            return 'Ok';
-        }
+        return 'Ok';
+
     }
 }
