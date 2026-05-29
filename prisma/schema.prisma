@@ -189,6 +189,7 @@ model sales {
   month            String?
   description      String?
   year             Int?
+  notes            String?
   created_at       DateTime? @default(now())
   fk_id_contractor Int?
 

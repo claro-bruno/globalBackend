@@ -49,6 +49,7 @@ export class GetSalesByMonthUseCase {
                     bid: true,
                     month: true,
                     year: true,
+                    notes: true,
                     description: true,
                     fk_id_contractor: true,
                     contractor: {

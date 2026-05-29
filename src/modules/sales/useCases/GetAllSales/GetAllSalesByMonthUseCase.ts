@@ -44,6 +44,7 @@ export class GetAllSalesByMonthUseCase {
                 month: true,
                 year: true,
                 description: true,
+                notes: true,
                 fk_id_contractor: true,
                 contractor: {
                     select: {
