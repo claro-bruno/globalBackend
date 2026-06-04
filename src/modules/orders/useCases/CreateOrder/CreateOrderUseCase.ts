@@ -85,8 +85,8 @@ export class CreateOrderUseCase {
                     description,
                     notes,
                     created_at: new Date(date_at),
-                    // month: fullMonthLiteral
-                    // year: +fullYear,
+                    month: fullMonthLiteral,
+                    year: +fullYear,
                     ended_at: new Date(date_at_end),
                     // collaborators, 
                     support,
