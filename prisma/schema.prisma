@@ -100,6 +100,8 @@ model Orders {
   fk_invoice_id      String?
   fk_support_id      Int?
   collaborators      String?
+  month              String?
+  year               Int?
   fk_id_client       Int?
   total_hours        Float?
   created_at         DateTime           @default(now())

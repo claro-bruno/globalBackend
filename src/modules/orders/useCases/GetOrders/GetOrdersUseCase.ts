@@ -45,21 +45,48 @@ export class GetOrdersUseCase {
           }
         },
         client: true
+      },
+      where: {
+        month: month,
+        year: +year
       }
+
     });
 
-    result.forEach((i: any) => {
-      const dt = new Date(i?.created_at)
 
-      const fullYear = dt.getUTCFullYear();
-      const fullMonth = dt.getUTCMonth() + 1;
-      const fullMonthLiteral = toMonthName(fullMonth - 1);
-      if (fullMonthLiteral === month && fullYear === year) {
-        ret.push(i)
-      }
+    // await result.reduce(async (memo: any, info: any) => {
+    //   await memo;
+    //   const dt = new Date(info?.created_at)
 
-    })
+    //   const fullYear = dt.getUTCFullYear();
+    //   const fullMonth = dt.getUTCMonth() + 1;
+    //   const fullMonthLiteral = toMonthName(fullMonth - 1);
 
-    return ret;
+    //   // console.log(fullMonthLiteral, fullYear, dt)
+    //   await prisma.orders.update({
+    //     where: {
+    //       id: info.id
+    //     },
+    //     data: {
+    //       month: fullMonthLiteral,
+    //       year: +fullYear
+    //     }
+    //   });
+
+    // }, undefined);
+
+    // result.forEach((i: any) => {
+    //   const dt = new Date(i?.created_at)
+
+    //   const fullYear = dt.getUTCFullYear();
+    //   const fullMonth = dt.getUTCMonth() + 1;
+    //   const fullMonthLiteral = toMonthName(fullMonth - 1);
+    //   if (fullMonthLiteral === month && fullYear === year) {
+    //     ret.push(i)
+    //   }
+
+    // })
+
+    return result;
   }
 }

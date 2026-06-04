@@ -30,6 +30,23 @@ interface IInfo {
     date_at: string;
 }
 
+function getMonthFromString(mon: string) {
+    var d = Date.parse(mon + "1, 2023");
+    if (!isNaN(d)) {
+        return new Date(d).getMonth() + 1;
+    }
+    return -1;
+}
+
+function toMonthName(monthNumber: number) {
+    const date = new Date();
+    date.setMonth(monthNumber);
+    // console.log(monthNumber)
+    return date.toLocaleString("en-US", {
+        month: "long"
+    });
+}
+
 export class CreateOrderUseCase {
     async execute({ date_at, date_at_end, description, notes, id_client, start, end, support, email, contact, contact_phone, address, total_hours, type, infos }: ICreateOrder): Promise<any> {
 
@@ -53,7 +70,11 @@ export class CreateOrderUseCase {
             }, 0)
         }
 
+        const dt = new Date(date_at)
 
+        const fullYear = dt.getUTCFullYear();
+        const fullMonth = dt.getUTCMonth() + 1;
+        const fullMonthLiteral = toMonthName(fullMonth - 1);
 
         if (total > 0) {
             const order = await prisma.orders.create({
@@ -64,6 +85,8 @@ export class CreateOrderUseCase {
                     description,
                     notes,
                     created_at: new Date(date_at),
+                    // month: fullMonthLiteral
+                    // year: +fullYear,
                     ended_at: new Date(date_at_end),
                     // collaborators, 
                     support,

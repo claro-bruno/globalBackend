@@ -2,6 +2,23 @@ import { prisma } from "../../../../database/prismaClient";
 import { AppError } from "../../../../middlewares/AppError";
 import { contractorsRoutes } from "../../../../routes/contractors.routes";
 
+function getMonthFromString(mon: string) {
+    var d = Date.parse(mon + "1, 2023");
+    if (!isNaN(d)) {
+        return new Date(d).getMonth() + 1;
+    }
+    return -1;
+}
+
+function toMonthName(monthNumber: number) {
+    const date = new Date();
+    date.setMonth(monthNumber);
+    // console.log(monthNumber)
+    return date.toLocaleString("en-US", {
+        month: "long"
+    });
+}
+
 interface IUpdateOrder {
     description: string;
     notes?: string;
@@ -63,6 +80,13 @@ export class UpdateOrderUseCase {
         }
 
         if (total > 0) {
+
+            const dt = new Date(date_at)
+
+            const fullYear = dt.getUTCFullYear();
+            const fullMonth = dt.getUTCMonth() + 1;
+            const fullMonthLiteral = toMonthName(fullMonth - 1);
+
             const order = await prisma.orders.update({
                 where: {
                     id,
@@ -74,6 +98,8 @@ export class UpdateOrderUseCase {
                     description,
                     notes,
                     created_at: new Date(date_at),
+                    // month: fullMonthLiteral,
+                    // year: +fullYear,
                     ended_at: new Date(date_at_end),
                     support,
                     // email, 
