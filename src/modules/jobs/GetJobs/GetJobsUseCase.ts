@@ -1,9 +1,9 @@
 import { prisma } from "../../../database/prismaClient";
 import { AppError } from "../../../middlewares/AppError";
 
-function getMonthFromString(mon: string) {
+function getMonthFromString(mon: string, year: number) {
 
-  var d = Date.parse(mon + "1, 2024");
+  var d = Date.parse(mon + "1, " + year);
   if (!isNaN(d)) {
     return new Date(d).getMonth() + 1;
   }
@@ -22,7 +22,7 @@ export class GetJobsUseCase {
 
       }
     })
-    let month_number = getMonthFromString(month)
+    let month_number = getMonthFromString(month, year)
     if (!isTotals) {
       const last_date = new Date(year, month_number, 0);
       for (let i = 1; i <= last_date.getDate(); i += 1) {

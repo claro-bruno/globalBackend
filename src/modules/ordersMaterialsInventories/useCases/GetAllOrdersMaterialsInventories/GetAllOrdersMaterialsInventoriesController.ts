@@ -4,21 +4,23 @@ import { GetAllOrdersMaterialsInventoriesUseCase } from "./GetAllOrdersMaterials
 
 export class GetAllOrdersMaterialsInventoriesController {
     async handle(request: Request, response: Response, next: NextFunction): Promise<Response> {
-        const { month, year } = request.query;
+        // const { month, year } = request.query;
         const getAllOrdersMaterialsInventoriesUseCase = new GetAllOrdersMaterialsInventoriesUseCase();
 
 
 
         let result: any = [];
-        if (month && year) {
-            result = await getAllOrdersMaterialsInventoriesUseCase.execute({
-                year: +year,
-                month: String(month),
+        // if (month && year) {
+        result = await getAllOrdersMaterialsInventoriesUseCase.execute(
+            // {
+            // year: +year,
+            // month: String(month),
 
-            });
+            // }
+        );
 
 
-        }
+        // }
         return response.json(result);
 
 

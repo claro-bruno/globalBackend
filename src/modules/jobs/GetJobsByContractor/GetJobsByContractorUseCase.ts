@@ -18,7 +18,13 @@ export class GetJobsByContractorUseCase {
       orderBy: [
         {
           // fk_id_job: 'asc',
-          id: "asc"
+          jobs: {
+            status: "asc",
+            name: "asc",
+          },
+
+          // id: "asc",
+
         }
       ],
       where: {

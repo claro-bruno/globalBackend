@@ -24,7 +24,8 @@ function toMonthName(monthNumber: number) {
 }
 
 export class GetAllOrdersMaterialsInventoriesUseCase {
-  async execute({ year, month }: IService) {
+  async execute() {
+    // async execute({ year, month }: IService) {
 
 
     let ret: any = []
@@ -63,13 +64,15 @@ export class GetAllOrdersMaterialsInventoriesUseCase {
       const fullYear = dt.getUTCFullYear();
       const fullMonth = dt.getUTCMonth() + 1;
       const fullMonthLiteral = toMonthName(fullMonth - 1);
-      if (fullMonthLiteral === month && fullYear === year) {
-        ret.push(i)
-      }
+      i.month = fullMonthLiteral
+      i.year = fullYear
+      // if (fullMonthLiteral === month && fullYear === year) {
+      //   ret.push(i)
+      // }
 
     })
 
-    return ret;
+    return result;
 
   }
 }
