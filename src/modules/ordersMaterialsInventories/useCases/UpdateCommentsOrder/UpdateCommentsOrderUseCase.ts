@@ -4,11 +4,12 @@ import { AppError } from "../../../../middlewares/AppError";
 interface IUpdateOrder {
     id: number;
     comments: string;
+    fk_user: number;
 }
 
 
 export class UpdateCommentsOrderUseCase {
-    async execute({ id, comments }: IUpdateOrder): Promise<any> {
+    async execute({ id, comments, fk_user }: IUpdateOrder): Promise<any> {
 
 
         //validar se o client existe
@@ -32,6 +33,7 @@ export class UpdateCommentsOrderUseCase {
             },
             data: {
                 description: comments,
+                fk_user,
             }
         });
 
