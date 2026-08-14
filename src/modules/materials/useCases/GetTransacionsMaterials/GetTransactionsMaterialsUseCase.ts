@@ -16,6 +16,7 @@ export class GetTransactionsMaterialsUseCase {
                 quantity: true,
                 description: true,
                 fk_user: true,
+                fk_order_id: true,
                 month: true,
                 year: true,
                 users: {
@@ -35,6 +36,7 @@ export class GetTransactionsMaterialsUseCase {
                         name: true,
                     }
                 },
+
                 material: {
                     select: {
                         name: true,
