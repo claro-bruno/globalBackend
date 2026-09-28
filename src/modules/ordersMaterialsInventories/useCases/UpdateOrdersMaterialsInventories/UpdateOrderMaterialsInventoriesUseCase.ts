@@ -213,7 +213,7 @@ export class UpdateOrderMaterialsInventoriesUseCase {
                         qtd: +info.qtd,
                         description: info?.description,
                         created_at: new Date(date_at),
-                        total: +info.total,
+                        total: +info.qtd * +info.unit_cost,
 
                     }
                 });
@@ -222,7 +222,7 @@ export class UpdateOrderMaterialsInventoriesUseCase {
                     data: {
                         fk_id_material: +id_material,
                         quantity: +info.qtd,
-                        total_cost: +info.total,
+                        total_cost: +info.qtd * +info.unit_cost,
                         fk_id_input: Number(364),
                         fk_id_output: +fk_id_client,
                         description,
