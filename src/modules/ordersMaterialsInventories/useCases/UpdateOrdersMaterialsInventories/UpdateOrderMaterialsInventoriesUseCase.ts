@@ -22,7 +22,7 @@ interface IInfoSupply {
     fk_id_material?: number;
     description?: string;
     qtd: number;
-
+    unit_cost: number;
     total: number;
     totalSupplies: number;
     created_at: string;
@@ -58,7 +58,7 @@ export class UpdateOrderMaterialsInventoriesUseCase {
     async execute({ id, description, created_at, fk_id_client, fk_id_contractor, status, supplies, fk_user }: IOrderMaterialsInventories): Promise<any> {
 
 
-
+        console.log(supplies, 'supplies');
         //validar se o client existe
         const orderExist = await prisma.ordersMaterialsInventories.findFirst({
             where: {
@@ -96,14 +96,13 @@ export class UpdateOrderMaterialsInventoriesUseCase {
 
         if (supplies.length > 0) {
             totall = supplies.reduce((acc: number, currently: IInfoSupply) => {
-                return acc + Number(currently?.total)
+                return acc + ((Number(currently?.qtd) * Number(currently?.unit_cost)))
             }, 0)
             totalSupplies = supplies.reduce((acc: number, currently: IInfoSupply) => {
-                return acc + Number(currently?.totalSupplies)
+                return acc + ((Number(currently?.qtd) * Number(currently?.unit_cost)) * 1.45)
             }, 0)
         }
 
-        totalSupplies = totall * 1.45 || 0;
 
 
         // let totalInventories = 0;
