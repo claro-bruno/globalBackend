@@ -94,14 +94,8 @@ export class UpdateOrderMaterialsInventoriesUseCase {
         let totalSupplies = 0;
         let totall = 0;
 
-        if (supplies.length > 0) {
-            totall = supplies.reduce((acc: number, currently: IInfoSupply) => {
-                return acc + ((Number(currently?.qtd) * Number(currently?.unit_cost)))
-            }, 0)
-            totalSupplies = supplies.reduce((acc: number, currently: IInfoSupply) => {
-                return acc + ((Number(currently?.qtd) * Number(currently?.unit_cost)) * 1.45)
-            }, 0)
-        }
+
+
 
 
 
@@ -114,8 +108,7 @@ export class UpdateOrderMaterialsInventoriesUseCase {
         // }
 
 
-
-        if (totalSupplies > 0) {
+        if (supplies.length > 0) {
             const data_transaction = !created_at ? new Date() : new Date(created_at)
 
 
@@ -127,6 +120,13 @@ export class UpdateOrderMaterialsInventoriesUseCase {
                 // const value_order: number = Number(info.total_hours)
                 // const date_at = new Date(info.date_at)
 
+                const info_supply: any = await prisma.materials.findFirst({
+                    where: {
+                        id: +id_material,
+                    }
+                });
+                //console.log('info_supply', info_supply);
+                info.unit_cost = +info_supply?.unit_cost.toFixed(2)
 
                 const transaction: any = await prisma.materialsTransactions.findFirst({
                     where: {
@@ -162,6 +162,14 @@ export class UpdateOrderMaterialsInventoriesUseCase {
                     throw new AppError("Quantidade insuficiente para realizar a transação.", 404);
                 }
             }, undefined);
+
+
+            totall = supplies.reduce((acc: number, currently: IInfoSupply) => {
+                return acc + ((Number(currently?.qtd) * Number(currently?.unit_cost)))
+            }, 0)
+            totalSupplies = supplies.reduce((acc: number, currently: IInfoSupply) => {
+                return acc + ((Number(+currently?.qtd) * Number(+currently?.unit_cost)) * 1.45)
+            }, 0)
 
 
             const order = await prisma.ordersMaterialsInventories.update({
@@ -202,6 +210,7 @@ export class UpdateOrderMaterialsInventoriesUseCase {
                 });
 
             await supplies.reduce(async (memo: any, info: IInfoSupply) => {
+
                 await memo;
                 // const id_order: number = Number(order?.id)
                 const id_material: number = Number(info?.fk_id_material?.toString().split(' - ')[0].trim())
@@ -209,7 +218,7 @@ export class UpdateOrderMaterialsInventoriesUseCase {
                 await prisma.orderMaterialsItems.create({
                     data: {
                         fk_id_order_materials: +id,
-                        fk_id_material: id_material,
+                        fk_id_material: +id_material,
                         qtd: +info.qtd,
                         description: info?.description,
                         created_at: new Date(date_at),
@@ -217,7 +226,6 @@ export class UpdateOrderMaterialsInventoriesUseCase {
 
                     }
                 });
-
                 await prisma.materialsTransactions.create({
                     data: {
                         fk_id_material: +id_material,
