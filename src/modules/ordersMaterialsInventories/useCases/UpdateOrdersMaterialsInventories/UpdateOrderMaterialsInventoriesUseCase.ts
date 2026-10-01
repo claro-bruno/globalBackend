@@ -23,6 +23,7 @@ interface IInfoSupply {
     description?: string;
     qtd: number;
     unit_cost: number;
+    custo: number;
     total: number;
     totalSupplies: number;
     created_at: string;
@@ -58,7 +59,7 @@ export class UpdateOrderMaterialsInventoriesUseCase {
     async execute({ id, description, created_at, fk_id_client, fk_id_contractor, status, supplies, fk_user }: IOrderMaterialsInventories): Promise<any> {
 
 
-        console.log(supplies, 'supplies');
+
         //validar se o client existe
         const orderExist = await prisma.ordersMaterialsInventories.findFirst({
             where: {
@@ -126,7 +127,7 @@ export class UpdateOrderMaterialsInventoriesUseCase {
                     }
                 });
                 //console.log('info_supply', info_supply);
-                info.unit_cost = +info_supply?.unit_cost.toFixed(2)
+                info.unit_cost = +info_supply?.unit_cost || info.custo
 
                 const transaction: any = await prisma.materialsTransactions.findFirst({
                     where: {
