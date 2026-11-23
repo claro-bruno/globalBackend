@@ -87,6 +87,17 @@ export class CompleteJobsUseCase {
         fk_id_job: id
       }
     });
+
+    // let appointmentsResult = await prisma.appointments.findMany({
+    //   where: {
+    //     fk_id_quarter: quarterResult?.id
+    //   },
+    //   orderBy: {
+    //     date: "asc"
+    //   }
+
+    // });
+
     if (!quarterResult) {
       quarterResult = await prisma.quarters.create({
         data: {

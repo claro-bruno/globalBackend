@@ -8,6 +8,7 @@ import { GetInvoicesByYearController } from "../modules/payments/useCases/GetInv
 import { UpdateInvoicesController } from "../modules/payments/useCases/UpdateInvoices/UpdateInvoicesController";
 import { GetInvoiceController } from "../modules/payments/useCases/GetInvoice/GetInvoiceController";
 import { GetInvoicesController } from "../modules/payments/useCases/GetInvoices/GetInvoicesController";
+import { DeleteInvoicesController } from "../modules/payments/useCases/DeleteInvoices/DeleteInvoicesController";
 
 const invoicesRoutes = Router();
 
@@ -17,6 +18,7 @@ const getInvoicesByYearController = new GetInvoicesByYearController();
 const updateInvoicesController = new UpdateInvoicesController();
 const getInvoiceController = new GetInvoiceController();
 const getInvoicesController = new GetInvoicesController();
+const deleteInvoicesController = new DeleteInvoicesController();
 
 invoicesRoutes.post("/", use(ensureAuthenticate), use(createInvoicesController.handle));
 // invoicesRoutes.get("/invoices", use(ensureAuthenticate), use(getInvoicesController.handle));
@@ -24,6 +26,8 @@ invoicesRoutes.get("/:id", use(ensureAuthenticate), use(getInvoiceController.han
 invoicesRoutes.get("/annual/:year", use(ensureAuthenticate), use(getInvoicesByYearController.handle));
 
 invoicesRoutes.get("/", use(ensureAuthenticate), use(getInvoicesByMonthController.handle));
+invoicesRoutes.delete("/:id", use(ensureAuthenticate), use(deleteInvoicesController.handle));
+
 invoicesRoutes.put("/:id", use(ensureAuthenticate), use(updateInvoicesController.handle));
 
 export { invoicesRoutes };
